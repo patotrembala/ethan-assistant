@@ -1,0 +1,96 @@
+/* Ethan Assistant - Print Stylesheet (RF18) */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+  }
+
+  .app-sidebar,
+  .app-topbar,
+  .page-actions,
+  .btn,
+  .undo-banner,
+  .filter-bar,
+  .modal-backdrop,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-main {
+    margin-left: 0 !important;
+  }
+
+  .app-content {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .print-page {
+    width: 100%;
+    margin: 0;
+    padding: 10mm;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .print-header {
+    border-bottom: 2px solid #000000;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .print-title {
+    font-size: 18pt;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .print-os-number {
+    font-size: 16pt;
+    font-weight: bold;
+  }
+
+  .print-section {
+    border: 1px solid #333333;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+  }
+
+  .print-section-title {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+
+  .print-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 10pt;
+  }
+
+  .print-signatures {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-around;
+    page-break-inside: avoid;
+  }
+
+  .signature-box {
+    width: 40%;
+    text-align: center;
+    border-top: 1px solid #000000;
+    padding-top: 6px;
+    font-size: 9pt;
+  }
+}
