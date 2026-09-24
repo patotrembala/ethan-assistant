@@ -27,9 +27,7 @@ require __DIR__ . '/../layouts/sidebar.php';
       <div class="page-title-wrap">
         <div style="display: flex; align-items: center; gap: var(--spacing-3);">
           <h1>Ordem de Serviço #<?= (int)($ordem['id'] ?? 0) ?></h1>
-          <span class="badge badge-status-<?= strtolower(str_replace(' ', '', $ordem['status'] ?? 'aberta')) ?>">
-            <?= htmlspecialchars($ordem['status'] ?? 'Aberta') ?>
-          </span>
+          <?= renderStatusBadge($ordem['status'] ?? 'Aberta') ?>
           <?php if (!empty($ordem['prioridade'])): ?>
             <span class="badge badge-prioridade-<?= strtolower($ordem['prioridade']) ?>">
               Prioridade <?= ucfirst(htmlspecialchars($ordem['prioridade'])) ?>
@@ -72,11 +70,11 @@ require __DIR__ . '/../layouts/sidebar.php';
           Editar Dados
         </a>
 
-        <button 
-          type="button" 
-          class="btn btn-outline" 
+        <button
+          type="button"
+          class="btn btn-outline"
           style="color: var(--color-danger);"
-          data-modal-target="modalExclusao" 
+          data-modal-target="modalExclusao"
           data-record-id="<?= (int)$ordem['id'] ?>"
           data-record-name="OS #<?= (int)$ordem['id'] ?>"
           onclick="document.getElementById('formConfirmarExclusao').action='<?= $baseUrl ?>/ordens/<?= (int)$ordem['id'] ?>/excluir'"
@@ -153,9 +151,9 @@ require __DIR__ . '/../layouts/sidebar.php';
               <div class="form-group">
                 <label for="novo_status" class="form-label">Atualizar Situação</label>
                 <select name="status" id="novo_status" class="form-select">
-                  <?php 
+                  <?php
                   $statusList = ['Aberta', 'Em diagnóstico', 'Aguardando aprovação', 'Em andamento', 'Concluída', 'Cancelada'];
-                  foreach ($statusList as $st): 
+                  foreach ($statusList as $st):
                   ?>
                     <option value="<?= $st ?>" <?= (($ordem['status'] ?? '') === $st) ? 'selected' : '' ?>>
                       <?= $st ?>

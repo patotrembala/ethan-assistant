@@ -38,11 +38,11 @@ require __DIR__ . '/../layouts/sidebar.php';
     <form method="GET" action="<?= $baseUrl ?>/ordens" class="filter-bar">
       <div class="filter-group">
         <div class="search-input-wrap">
-          <input 
-            type="text" 
-            name="busca" 
-            class="form-control" 
-            placeholder="Buscar por cliente, equipamento..." 
+          <input
+            type="text"
+            name="busca"
+            class="form-control"
+            placeholder="Buscar por cliente, equipamento..."
             value="<?= htmlspecialchars($_GET['busca'] ?? '') ?>"
             data-table-filter="tabelaOrdens"
           >
@@ -50,9 +50,9 @@ require __DIR__ . '/../layouts/sidebar.php';
 
         <select name="status" class="form-select" onchange="this.form.submit()" style="width: auto;">
           <option value="">Todos os Status</option>
-          <?php 
+          <?php
           $statusList = ['Aberta', 'Em diagnóstico', 'Aguardando aprovação', 'Em andamento', 'Concluída', 'Cancelada'];
-          foreach ($statusList as $st): 
+          foreach ($statusList as $st):
           ?>
             <option value="<?= $st ?>" <?= (($_GET['status'] ?? '') === $st) ? 'selected' : '' ?>>
               <?= $st ?>
@@ -110,7 +110,6 @@ require __DIR__ . '/../layouts/sidebar.php';
           <?php else: ?>
             <?php foreach ($ordens as $os): ?>
               <?php
-                $statusKey = strtolower(str_replace([' ', 'á', 'ã'], ['', 'a', 'a'], $os['status'] ?? 'aberta'));
                 $isAtrasada = !empty($os['prazo_violado']);
                 $semTecnico = empty($os['tecnico_id']);
               ?>
@@ -147,9 +146,7 @@ require __DIR__ . '/../layouts/sidebar.php';
                   </span>
                 </td>
                 <td>
-                  <span class="badge badge-status-<?= $statusKey ?>">
-                    <?= htmlspecialchars($os['status'] ?? 'Aberta') ?>
-                  </span>
+                  <?= renderStatusBadge($os['status'] ?? 'Aberta') ?>
                 </td>
                 <td>
                   <div><?= htmlspecialchars($os['prazo_formatado'] ?? '-') ?></div>
@@ -168,11 +165,11 @@ require __DIR__ . '/../layouts/sidebar.php';
                     <a href="<?= $baseUrl ?>/ordens/<?= (int)$os['id'] ?>/imprimir" class="btn btn-outline btn-sm" title="Imprimir OS" target="_blank">
                       🖨️
                     </a>
-                    <button 
-                      type="button" 
-                      class="btn btn-outline btn-sm" 
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
                       style="color: var(--color-danger);"
-                      data-modal-target="modalExclusao" 
+                      data-modal-target="modalExclusao"
                       data-record-id="<?= (int)$os['id'] ?>"
                       data-record-name="OS #<?= (int)$os['id'] ?>"
                       onclick="document.getElementById('formConfirmarExclusao').action='<?= $baseUrl ?>/ordens/<?= (int)$os['id'] ?>/excluir'"

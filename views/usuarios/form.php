@@ -38,26 +38,26 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-grid-2">
             <div class="form-group">
               <label for="nome" class="form-label required">Nome Completo</label>
-              <input 
-                type="text" 
-                name="nome" 
-                id="nome" 
-                class="form-control" 
-                value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" 
-                placeholder="Ex.: Carlos Mendes" 
+              <input
+                type="text"
+                name="nome"
+                id="nome"
+                class="form-control"
+                value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>"
+                placeholder="Ex.: Carlos Mendes"
                 required
               >
             </div>
 
             <div class="form-group">
               <label for="email" class="form-label required">E-mail Corporativo</label>
-              <input 
-                type="email" 
-                name="email" 
-                id="email" 
-                class="form-control" 
-                value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" 
-                placeholder="carlos@empresa.com" 
+              <input
+                type="email"
+                name="email"
+                id="email"
+                class="form-control"
+                value="<?= htmlspecialchars($usuario['email'] ?? '') ?>"
+                placeholder="carlos@empresa.com"
                 required
               >
             </div>
@@ -83,12 +83,12 @@ require __DIR__ . '/../layouts/sidebar.php';
               <label for="senha" class="form-label <?= $isEdit ? '' : 'required' ?>">
                 <?= $isEdit ? 'Nova Senha (opcional)' : 'Senha de Acesso' ?>
               </label>
-              <input 
-                type="password" 
-                name="senha" 
-                id="senha" 
-                class="form-control" 
-                placeholder="<?= $isEdit ? 'Deixe em branco para manter a atual' : 'Mínimo de caracteres seguros' ?>" 
+              <input
+                type="password"
+                name="senha"
+                id="senha"
+                class="form-control"
+                placeholder="<?= $isEdit ? 'Deixe em branco para manter a atual' : 'Mínimo de caracteres seguros' ?>"
                 <?= $isEdit ? '' : 'required' ?>
               >
               <?php if ($isEdit): ?>
@@ -100,12 +100,12 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-group" style="margin-top: var(--spacing-2);">
             <label class="form-label">Situação da Conta</label>
             <div class="form-check">
-              <input 
-                type="checkbox" 
-                name="ativo" 
-                id="ativo" 
-                value="1" 
-                class="form-check-input" 
+              <input
+                type="checkbox"
+                name="ativo"
+                id="ativo"
+                value="1"
+                class="form-check-input"
                 <?= (!isset($usuario['ativo']) || $usuario['ativo'] == 1) ? 'checked' : '' ?>
               >
               <label for="ativo" class="form-check-label">

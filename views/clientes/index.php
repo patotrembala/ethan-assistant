@@ -37,10 +37,10 @@ require __DIR__ . '/../layouts/sidebar.php';
     <div class="filter-bar">
       <div class="filter-group">
         <div class="search-input-wrap">
-          <input 
-            type="text" 
-            class="form-control" 
-            placeholder="Buscar por razão social ou CNPJ..." 
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Buscar por razão social ou CNPJ..."
             data-table-filter="tabelaClientes"
           >
         </div>
@@ -103,11 +103,11 @@ require __DIR__ . '/../layouts/sidebar.php';
                       <a href="<?= $baseUrl ?>/clientes/<?= (int)$c['id'] ?>/editar" class="btn btn-secondary btn-sm">
                         Editar
                       </a>
-                      <button 
-                        type="button" 
-                        class="btn btn-outline btn-sm" 
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm"
                         style="color: var(--color-danger);"
-                        data-modal-target="modalExclusao" 
+                        data-modal-target="modalExclusao"
                         data-record-id="<?= (int)$c['id'] ?>"
                         data-record-name="<?= htmlspecialchars($c['razao_social']) ?>"
                         onclick="document.getElementById('formConfirmarExclusao').action='<?= $baseUrl ?>/clientes/<?= (int)$c['id'] ?>/excluir'"

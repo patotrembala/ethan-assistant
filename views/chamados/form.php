@@ -74,21 +74,21 @@ require __DIR__ . '/../layouts/sidebar.php';
 
           <div class="form-group">
             <label for="descricao" class="form-label required">Descrição da Solicitação / Problema</label>
-            <textarea 
-              name="descricao" 
-              id="descricao" 
-              class="form-control" 
-              placeholder="Descreva a demanda relatada pelo cliente para este atendimento remoto..." 
+            <textarea
+              name="descricao"
+              id="descricao"
+              class="form-control"
+              placeholder="Descreva a demanda relatada pelo cliente para este atendimento remoto..."
               required
             ><?= htmlspecialchars($chamado['descricao'] ?? '') ?></textarea>
           </div>
 
           <div class="form-group">
             <label for="solucao" class="form-label">Solução Aplicada / Procedimentos Realizados</label>
-            <textarea 
-              name="solucao" 
-              id="solucao" 
-              class="form-control" 
+            <textarea
+              name="solucao"
+              id="solucao"
+              class="form-control"
               placeholder="Descreva as ações realizadas para solucionar o chamado (obrigatório para finalizar)..."
             ><?= htmlspecialchars($chamado['solucao'] ?? '') ?></textarea>
           </div>
@@ -106,23 +106,23 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="aberto_em" class="form-label required">Data de Abertura</label>
-              <input 
-                type="datetime-local" 
-                name="aberto_em" 
-                id="aberto_em" 
-                class="form-control" 
-                value="<?= htmlspecialchars(!empty($chamado['aberto_em']) ? date('Y-m-d\TH:i', strtotime($chamado['aberto_em'])) : $agora) ?>" 
+              <input
+                type="datetime-local"
+                name="aberto_em"
+                id="aberto_em"
+                class="form-control"
+                value="<?= htmlspecialchars(!empty($chamado['aberto_em']) ? date('Y-m-d\TH:i', strtotime($chamado['aberto_em'])) : $agora) ?>"
                 required
               >
             </div>
 
             <div class="form-group">
               <label for="concluido_em" class="form-label">Data de Conclusão</label>
-              <input 
-                type="datetime-local" 
-                name="concluido_em" 
-                id="concluido_em" 
-                class="form-control" 
+              <input
+                type="datetime-local"
+                name="concluido_em"
+                id="concluido_em"
+                class="form-control"
                 value="<?= htmlspecialchars(!empty($chamado['concluido_em']) ? date('Y-m-d\TH:i', strtotime($chamado['concluido_em'])) : '') ?>"
               >
             </div>

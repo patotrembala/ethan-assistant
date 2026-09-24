@@ -34,17 +34,18 @@ require __DIR__ . '/../layouts/sidebar.php';
 
     <div class="card" style="max-width: 900px;">
       <form action="<?= $actionUrl ?>" method="POST" data-validate>
+        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
         <div class="card-body">
           <div class="form-grid-2">
             <div class="form-group">
               <label for="razao_social" class="form-label required">Razão Social / Nome Fantasia</label>
-              <input 
-                type="text" 
-                id="razao_social" 
-                name="razao_social" 
-                class="form-control <?= isset($errors['razao_social']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars($cliente['razao_social'] ?? '') ?>" 
-                placeholder="Ex.: Alfa Tecnologia Ltda." 
+              <input
+                type="text"
+                id="razao_social"
+                name="razao_social"
+                class="form-control <?= isset($errors['razao_social']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars($cliente['razao_social'] ?? '') ?>"
+                placeholder="Ex.: Alfa Tecnologia Ltda."
                 required
               >
               <?php if (isset($errors['razao_social'])): ?>
@@ -54,14 +55,14 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="cnpj" class="form-label required">CNPJ (14 dígitos)</label>
-              <input 
-                type="text" 
-                id="cnpj" 
-                name="cnpj" 
-                class="form-control <?= isset($errors['cnpj']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars($cliente['cnpj'] ?? '') ?>" 
-                placeholder="00.000.000/0000-00" 
-                data-mask="cnpj" 
+              <input
+                type="text"
+                id="cnpj"
+                name="cnpj"
+                class="form-control <?= isset($errors['cnpj']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars($cliente['cnpj'] ?? '') ?>"
+                placeholder="00.000.000/0000-00"
+                data-mask="cnpj"
                 maxlength="18"
                 required
               >
@@ -75,13 +76,13 @@ require __DIR__ . '/../layouts/sidebar.php';
 
           <div class="form-group">
             <label for="endereco" class="form-label required">Endereço Completo</label>
-            <input 
-              type="text" 
-              id="endereco" 
-              name="endereco" 
-              class="form-control <?= isset($errors['endereco']) ? 'is-invalid' : '' ?>" 
-              value="<?= htmlspecialchars($cliente['endereco'] ?? '') ?>" 
-              placeholder="Rua, número, complemento, bairro, cidade - UF" 
+            <input
+              type="text"
+              id="endereco"
+              name="endereco"
+              class="form-control <?= isset($errors['endereco']) ? 'is-invalid' : '' ?>"
+              value="<?= htmlspecialchars($cliente['endereco'] ?? '') ?>"
+              placeholder="Rua, número, complemento, bairro, cidade - UF"
               required
             >
             <?php if (isset($errors['endereco'])): ?>
@@ -92,13 +93,13 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-grid-2">
             <div class="form-group">
               <label for="telefone" class="form-label required">Telefone de Contato</label>
-              <input 
-                type="tel" 
-                id="telefone" 
-                name="telefone" 
-                class="form-control <?= isset($errors['telefone']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars($cliente['telefone'] ?? '') ?>" 
-                placeholder="(00) 00000-0000" 
+              <input
+                type="tel"
+                id="telefone"
+                name="telefone"
+                class="form-control <?= isset($errors['telefone']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars($cliente['telefone'] ?? '') ?>"
+                placeholder="(00) 00000-0000"
                 data-mask="telefone"
                 required
               >
@@ -109,13 +110,13 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="email" class="form-label required">E-mail Comercial</label>
-              <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars($cliente['email'] ?? '') ?>" 
-                placeholder="contato@empresa.com.br" 
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars($cliente['email'] ?? '') ?>"
+                placeholder="contato@empresa.com.br"
                 required
               >
               <?php if (isset($errors['email'])): ?>
@@ -127,11 +128,11 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-group" style="margin-top: var(--spacing-2);">
             <label class="form-label">Status do Cliente</label>
             <div class="form-check">
-              <input 
-                type="checkbox" 
-                id="ativo" 
-                name="ativo" 
-                value="1" 
+              <input
+                type="checkbox"
+                id="ativo"
+                name="ativo"
+                value="1"
                 class="form-check-input"
                 <?= (!isset($cliente['ativo']) || $cliente['ativo'] == 1) ? 'checked' : '' ?>
               >

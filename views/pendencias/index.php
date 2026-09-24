@@ -34,10 +34,10 @@ require __DIR__ . '/../layouts/sidebar.php';
     <div class="filter-bar">
       <div class="filter-group">
         <div class="search-input-wrap">
-          <input 
-            type="text" 
-            class="form-control" 
-            placeholder="Buscar por título ou responsável..." 
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Buscar por título ou responsável..."
             data-table-filter="tabelaPendencias"
           >
         </div>
@@ -89,9 +89,7 @@ require __DIR__ . '/../layouts/sidebar.php';
                   </span>
                 </td>
                 <td>
-                  <span class="badge badge-status-<?= strtolower(str_replace(' ', '', $p['status'] ?? 'pendente')) ?>">
-                    <?= htmlspecialchars($p['status'] ?? 'Pendente') ?>
-                  </span>
+                  <?= renderStatusBadge($p['status'] ?? 'Pendente') ?>
                 </td>
                 <td>
                   <span><?= htmlspecialchars($p['prazo_formatado'] ?? '-') ?></span>
@@ -107,11 +105,11 @@ require __DIR__ . '/../layouts/sidebar.php';
                     <a href="<?= $baseUrl ?>/pendencias/<?= (int)$p['id'] ?>/editar" class="btn btn-secondary btn-sm">
                       Editar
                     </a>
-                    <button 
-                      type="button" 
-                      class="btn btn-outline btn-sm" 
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
                       style="color: var(--color-danger);"
-                      data-modal-target="modalExclusao" 
+                      data-modal-target="modalExclusao"
                       data-record-id="<?= (int)$p['id'] ?>"
                       data-record-name="Pendência: <?= htmlspecialchars($p['titulo']) ?>"
                       onclick="document.getElementById('formConfirmarExclusao').action='<?= $baseUrl ?>/pendencias/<?= (int)$p['id'] ?>/excluir'"

@@ -41,23 +41,23 @@ require __DIR__ . '/../layouts/sidebar.php';
         <div class="card-body">
           <div class="form-group">
             <label for="titulo" class="form-label required">Título da Pendência</label>
-            <input 
-              type="text" 
-              name="titulo" 
-              id="titulo" 
-              class="form-control" 
-              value="<?= htmlspecialchars($pendencia['titulo'] ?? '') ?>" 
-              placeholder="Ex.: Realizar backup semanal do servidor local" 
+            <input
+              type="text"
+              name="titulo"
+              id="titulo"
+              class="form-control"
+              value="<?= htmlspecialchars($pendencia['titulo'] ?? '') ?>"
+              placeholder="Ex.: Realizar backup semanal do servidor local"
               required
             >
           </div>
 
           <div class="form-group">
             <label for="descricao" class="form-label">Descrição Detalhada</label>
-            <textarea 
-              name="descricao" 
-              id="descricao" 
-              class="form-control" 
+            <textarea
+              name="descricao"
+              id="descricao"
+              class="form-control"
               placeholder="Orientações e procedimentos necessários para conclusão desta pendência..."
             ><?= htmlspecialchars($pendencia['descricao'] ?? '') ?></textarea>
           </div>
@@ -94,12 +94,12 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-grid-3">
             <div class="form-group">
               <label for="prazo" class="form-label required">Prazo Limite</label>
-              <input 
-                type="datetime-local" 
-                name="prazo" 
-                id="prazo" 
-                class="form-control" 
-                value="<?= htmlspecialchars(!empty($pendencia['prazo']) ? date('Y-m-d\TH:i', strtotime($pendencia['prazo'])) : $prazoDefault) ?>" 
+              <input
+                type="datetime-local"
+                name="prazo"
+                id="prazo"
+                class="form-control"
+                value="<?= htmlspecialchars(!empty($pendencia['prazo']) ? date('Y-m-d\TH:i', strtotime($pendencia['prazo'])) : $prazoDefault) ?>"
                 required
               >
             </div>
@@ -116,11 +116,11 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="concluido_em" class="form-label">Data de Conclusão</label>
-              <input 
-                type="datetime-local" 
-                name="concluido_em" 
-                id="concluido_em" 
-                class="form-control" 
+              <input
+                type="datetime-local"
+                name="concluido_em"
+                id="concluido_em"
+                class="form-control"
                 value="<?= htmlspecialchars(!empty($pendencia['concluido_em']) ? date('Y-m-d\TH:i', strtotime($pendencia['concluido_em'])) : '') ?>"
               >
             </div>

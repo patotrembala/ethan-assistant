@@ -1,6 +1,11 @@
 .env
 .env.*
 !.env.example
+/config/auth.local.php
+/config/database.local.php
+/database/seed.local.sql
+/storage/sessions/*
+!/storage/sessions/.gitkeep
 /vendor/
 /node_modules/
 *.log

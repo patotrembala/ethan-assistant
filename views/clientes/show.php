@@ -110,9 +110,7 @@ require __DIR__ . '/../layouts/sidebar.php';
                   <td><?= htmlspecialchars("{$os['equipamento_tipo']} {$os['equipamento_marca']} {$os['equipamento_modelo']}") ?></td>
                   <td><?= htmlspecialchars($os['tecnico_nome'] ?? 'Não atribuído') ?></td>
                   <td>
-                    <span class="badge badge-status-<?= strtolower(str_replace(' ', '', $os['status'] ?? 'aberta')) ?>">
-                      <?= htmlspecialchars($os['status'] ?? 'Aberta') ?>
-                    </span>
+                    <?= renderStatusBadge($os['status'] ?? 'Aberta') ?>
                   </td>
                   <td><?= htmlspecialchars($os['abertura_em_formatada'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($os['prazo_formatado'] ?? '-') ?></td>

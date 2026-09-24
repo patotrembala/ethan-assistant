@@ -29,7 +29,7 @@ $baseUrl = $baseUrl ?? '';
         <span class="user-role-tag"><?= ($currentUser['perfil'] ?? '') === 'admin' ? 'Administrador' : 'Técnico de Suporte' ?></span>
       </div>
     </div>
-    
+
     <a href="<?= $baseUrl ?>/logout" class="btn btn-outline btn-sm" title="Sair do sistema" style="margin-left: var(--spacing-2);">
       <span>Sair</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

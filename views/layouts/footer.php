@@ -22,6 +22,7 @@ $isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
         <button type="button" class="btn btn-outline btn-sm" data-modal-close>✕</button>
       </div>
       <form id="formConfirmarExclusao" method="POST" action="">
+        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
         <div class="modal-body">
           <input type="hidden" name="id" value="">
           <p>Você tem certeza que deseja excluir <strong class="modal-record-name">este registro</strong>?</p>

@@ -5,31 +5,172 @@
  * enquanto os controllers do Codex são integrados.
  */
 
+$sessionPath = __DIR__ . '/storage/sessions';
+if (!is_dir($sessionPath)) {
+    mkdir($sessionPath, 0775, true);
+}
+session_save_path($sessionPath);
+
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'samesite' => 'Lax'
+]);
 session_start();
 
-// Simulação de perfil para teste do frontend (Admin ou Técnico)
-if (isset($_GET['perfil'])) {
-    $_SESSION['user'] = [
-        'id' => $_GET['perfil'] === 'admin' ? 1 : 2,
-        'nome' => $_GET['perfil'] === 'admin' ? 'Cauã Meira (Admin)' : 'Lucas Oliveira (Técnico)',
-        'email' => $_GET['perfil'] === 'admin' ? 'caua@ethan.local' : 'lucas@ethan.local',
-        'perfil' => $_GET['perfil'] === 'admin' ? 'admin' : 'tecnico'
-    ];
-} elseif (!isset($_SESSION['user'])) {
-    $_SESSION['user'] = [
-        'id' => 1,
-        'nome' => 'Cauã Meira (Admin)',
-        'email' => 'caua@ethan.local',
-        'perfil' => 'admin'
-    ];
-}
-
-$currentUser = $_SESSION['user'];
-$isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/validation.php';
+require_once __DIR__ . '/src/Repositories/ClienteRepository.php';
 
 // Roteamento amigável
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $baseUrl = '';
+
+// Autenticação temporária da prévia publicada.
+// As credenciais reais ficam em auth.local.php, arquivo ignorado pelo Git.
+$authFile = __DIR__ . '/config/auth.local.php';
+$authConfig = is_file($authFile) ? require $authFile : [];
+$pdo = database();
+$userCount = (int)$pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn();
+
+function csrfToken(): string
+{
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf_token'];
+}
+
+function verifyCsrf(): void
+{
+    $sessionToken = (string)($_SESSION['csrf_token'] ?? '');
+    $requestToken = (string)($_POST['_token'] ?? '');
+    if ($sessionToken === '' || !hash_equals($sessionToken, $requestToken)) {
+        http_response_code(419);
+        exit('Sessão expirada. Atualize a página e tente novamente.');
+    }
+}
+
+$csrfToken = csrfToken();
+
+if ($requestUri === '/logout') {
+    $_SESSION = [];
+    session_destroy();
+    header('Location: /login');
+    exit;
+}
+
+if ($requestUri === '/primeiro-acesso') {
+    if ($userCount > 0) {
+        header('Location: /login');
+        exit;
+    }
+
+    $error = null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        verifyCsrf();
+        $email = strtolower(trim($_POST['email'] ?? ''));
+        $senha = (string)($_POST['senha'] ?? '');
+        $confirmacao = (string)($_POST['confirmacao_senha'] ?? '');
+        $adminEmail = strtolower((string)($authConfig['admin_email'] ?? ''));
+
+        if ($adminEmail === '' || !hash_equals($adminEmail, $email)) {
+            $error = 'Use o e-mail administrador autorizado.';
+        } elseif (strlen($senha) < 8) {
+            $error = 'A senha deve possuir pelo menos 8 caracteres.';
+        } elseif (!hash_equals($senha, $confirmacao)) {
+            $error = 'A confirmação da senha não corresponde.';
+        } else {
+            $stmt = $pdo->prepare(
+                'INSERT INTO usuarios (nome, email, senha_hash, perfil, ativo) VALUES (:nome, :email, :senha_hash, :perfil, 1)'
+            );
+            $stmt->execute([
+                'nome' => (string)($authConfig['admin_name'] ?? 'Administrador'),
+                'email' => $adminEmail,
+                'senha_hash' => password_hash($senha, PASSWORD_DEFAULT),
+                'perfil' => 'admin'
+            ]);
+
+            header('Location: /login?cadastro=sucesso');
+            exit;
+        }
+    }
+
+    require __DIR__ . '/views/auth/first_access.php';
+    exit;
+}
+
+if ($requestUri === '/login') {
+    if (isset($_SESSION['user']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: /dashboard');
+        exit;
+    }
+
+    if ($userCount === 0) {
+        header('Location: /primeiro-acesso');
+        exit;
+    }
+
+    $error = null;
+    $success = ($_GET['cadastro'] ?? '') === 'sucesso'
+        ? 'Administrador criado. Entre com sua senha.'
+        : null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        verifyCsrf();
+        $email = strtolower(trim($_POST['email'] ?? ''));
+        $senha = (string)($_POST['senha'] ?? '');
+
+        $stmt = $pdo->prepare(
+            'SELECT id, nome, email, senha_hash, perfil FROM usuarios WHERE email = :email AND ativo = 1 LIMIT 1'
+        );
+        $stmt->execute(['email' => $email]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($senha, $user['senha_hash'])) {
+            session_regenerate_id(true);
+            $_SESSION['user'] = [
+                'id' => (int)$user['id'],
+                'nome' => (string)$user['nome'],
+                'email' => (string)$user['email'],
+                'perfil' => (string)$user['perfil']
+            ];
+            header('Location: /dashboard');
+            exit;
+        }
+
+        $error = 'E-mail ou senha incorretos.';
+    }
+
+    require __DIR__ . '/views/auth/login.php';
+    exit;
+}
+
+if (!isset($_SESSION['user'])) {
+    header('Location: /login');
+    exit;
+}
+
+$currentUser = $_SESSION['user'];
+$isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
+$flash = $_SESSION['flash'] ?? null;
+unset($_SESSION['flash']);
+$clienteRepository = new ClienteRepository($pdo);
+
+function requireAdmin(bool $isAdmin): void
+{
+    if (!$isAdmin) {
+        http_response_code(403);
+        exit('Acesso restrito ao administrador.');
+    }
+}
+
+function redirectWithFlash(string $location, string $type, string $message): never
+{
+    $_SESSION['flash'] = ['tipo' => $type, 'mensagem' => $message];
+    header('Location: ' . $location);
+    exit;
+}
 
 // Dados mock para visualização das telas
 $mockClientes = [
@@ -166,15 +307,6 @@ $mockPendencias = [
 
 // Roteador simples
 switch (true) {
-    case $requestUri === '/login':
-        require __DIR__ . '/views/auth/login.php';
-        break;
-
-    case $requestUri === '/logout':
-        session_destroy();
-        header('Location: /login');
-        exit;
-
     case $requestUri === '/' || $requestUri === '/dashboard':
         $metricas = [
             'servicos_concluidos' => 18,
@@ -213,25 +345,96 @@ switch (true) {
         break;
 
     case $requestUri === '/clientes':
-        $clientes = $mockClientes;
+        $clientes = $clienteRepository->all();
         require __DIR__ . '/views/clientes/index.php';
         break;
 
     case $requestUri === '/clientes/novo':
+        requireAdmin($isAdmin);
         $cliente = null;
+        $errors = [];
         require __DIR__ . '/views/clientes/form.php';
         break;
 
+    case $requestUri === '/clientes/salvar' && $_SERVER['REQUEST_METHOD'] === 'POST':
+        requireAdmin($isAdmin);
+        verifyCsrf();
+        [$cliente, $errors] = validateCliente($_POST);
+        if ($errors) {
+            require __DIR__ . '/views/clientes/form.php';
+            break;
+        }
+        try {
+            $clienteRepository->create($cliente);
+            redirectWithFlash('/clientes', 'success', 'Cliente cadastrado com sucesso.');
+        } catch (PDOException $exception) {
+            if ((string)$exception->getCode() === '23000') {
+                $errors['cnpj'] = 'Este CNPJ já está cadastrado.';
+                require __DIR__ . '/views/clientes/form.php';
+                break;
+            }
+            throw $exception;
+        }
+
     case preg_match('#^/clientes/(\d+)$#', $requestUri, $m):
-        $cliente = $mockClientes[0];
-        $historicoOS = $mockOrdens;
+        $cliente = $clienteRepository->find((int)$m[1]);
+        if (!$cliente) {
+            http_response_code(404);
+            exit('Cliente não encontrado.');
+        }
+        $historicoOS = $clienteRepository->serviceOrders((int)$m[1]);
         require __DIR__ . '/views/clientes/show.php';
         break;
 
     case preg_match('#^/clientes/(\d+)/editar$#', $requestUri, $m):
-        $cliente = $mockClientes[0];
+        requireAdmin($isAdmin);
+        $cliente = $clienteRepository->find((int)$m[1]);
+        if (!$cliente) {
+            http_response_code(404);
+            exit('Cliente não encontrado.');
+        }
+        $errors = [];
         require __DIR__ . '/views/clientes/form.php';
         break;
+
+    case preg_match('#^/clientes/(\d+)/atualizar$#', $requestUri, $m) && $_SERVER['REQUEST_METHOD'] === 'POST':
+        requireAdmin($isAdmin);
+        verifyCsrf();
+        $id = (int)$m[1];
+        if (!$clienteRepository->find($id)) {
+            http_response_code(404);
+            exit('Cliente não encontrado.');
+        }
+        [$cliente, $errors] = validateCliente($_POST);
+        $cliente['id'] = $id;
+        if ($errors) {
+            require __DIR__ . '/views/clientes/form.php';
+            break;
+        }
+        try {
+            $clienteRepository->update($id, $cliente);
+            redirectWithFlash('/clientes/' . $id, 'success', 'Cliente atualizado com sucesso.');
+        } catch (PDOException $exception) {
+            if ((string)$exception->getCode() === '23000') {
+                $errors['cnpj'] = 'Este CNPJ já está cadastrado.';
+                require __DIR__ . '/views/clientes/form.php';
+                break;
+            }
+            throw $exception;
+        }
+
+    case preg_match('#^/clientes/(\d+)/excluir$#', $requestUri, $m) && $_SERVER['REQUEST_METHOD'] === 'POST':
+        requireAdmin($isAdmin);
+        verifyCsrf();
+        try {
+            $clienteRepository->delete((int)$m[1]);
+            redirectWithFlash('/clientes', 'success', 'Cliente excluído com sucesso.');
+        } catch (PDOException $exception) {
+            if ((string)$exception->getCode() === '23000') {
+                redirectWithFlash('/clientes', 'danger', 'O cliente possui atendimentos vinculados e não pode ser excluído.');
+            }
+            throw $exception;
+        }
 
     case $requestUri === '/ordens':
         $ordens = $mockOrdens;

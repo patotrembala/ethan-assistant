@@ -24,9 +24,7 @@ require __DIR__ . '/../layouts/sidebar.php';
       <div class="page-title-wrap">
         <div style="display: flex; align-items: center; gap: var(--spacing-3);">
           <h1>Pendência #<?= (int)($pendencia['id'] ?? 0) ?></h1>
-          <span class="badge badge-status-<?= strtolower(str_replace([' ', 'í'], ['', 'i'], $pendencia['status'] ?? 'pendente')) ?>">
-            <?= htmlspecialchars($pendencia['status'] ?? 'Pendente') ?>
-          </span>
+          <?= renderStatusBadge($pendencia['status'] ?? 'Pendente') ?>
           <?php if (!empty($pendencia['prioridade'])): ?>
             <span class="badge badge-prioridade-<?= strtolower($pendencia['prioridade']) ?>">
               Prioridade <?= ucfirst(htmlspecialchars($pendencia['prioridade'])) ?>
@@ -56,11 +54,11 @@ require __DIR__ . '/../layouts/sidebar.php';
           Editar
         </a>
 
-        <button 
-          type="button" 
-          class="btn btn-outline" 
+        <button
+          type="button"
+          class="btn btn-outline"
           style="color: var(--color-danger);"
-          data-modal-target="modalExclusao" 
+          data-modal-target="modalExclusao"
           data-record-id="<?= (int)$pendencia['id'] ?>"
           data-record-name="Pendência: <?= htmlspecialchars($pendencia['titulo'] ?? '') ?>"
           onclick="document.getElementById('formConfirmarExclusao').action='<?= $baseUrl ?>/pendencias/<?= (int)$pendencia['id'] ?>/excluir'"

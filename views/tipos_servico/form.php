@@ -36,23 +36,23 @@ require __DIR__ . '/../layouts/sidebar.php';
         <div class="card-body">
           <div class="form-group">
             <label for="nome" class="form-label required">Nome do Tipo de Serviço</label>
-            <input 
-              type="text" 
-              name="nome" 
-              id="nome" 
-              class="form-control" 
-              value="<?= htmlspecialchars($tipoServico['nome'] ?? '') ?>" 
-              placeholder="Ex.: Formatação e Instalação de SO, Troca de Tela, Reparo em Placa-Mãe" 
+            <input
+              type="text"
+              name="nome"
+              id="nome"
+              class="form-control"
+              value="<?= htmlspecialchars($tipoServico['nome'] ?? '') ?>"
+              placeholder="Ex.: Formatação e Instalação de SO, Troca de Tela, Reparo em Placa-Mãe"
               required
             >
           </div>
 
           <div class="form-group">
             <label for="descricao" class="form-label">Descrição do Escopo Padrão</label>
-            <textarea 
-              name="descricao" 
-              id="descricao" 
-              class="form-control" 
+            <textarea
+              name="descricao"
+              id="descricao"
+              class="form-control"
               placeholder="Descreva resumidamente o que está incluso neste procedimento técnico..."
             ><?= htmlspecialchars($tipoServico['descricao'] ?? '') ?></textarea>
           </div>
@@ -60,12 +60,12 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-group">
             <label class="form-label">Disponibilidade</label>
             <div class="form-check">
-              <input 
-                type="checkbox" 
-                name="ativo" 
-                id="ativo" 
-                value="1" 
-                class="form-check-input" 
+              <input
+                type="checkbox"
+                name="ativo"
+                id="ativo"
+                value="1"
+                class="form-check-input"
                 <?= (!isset($tipoServico['ativo']) || $tipoServico['ativo'] == 1) ? 'checked' : '' ?>
               >
               <label for="ativo" class="form-check-label">

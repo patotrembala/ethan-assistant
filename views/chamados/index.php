@@ -36,10 +36,10 @@ require __DIR__ . '/../layouts/sidebar.php';
     <div class="filter-bar">
       <div class="filter-group">
         <div class="search-input-wrap">
-          <input 
-            type="text" 
-            class="form-control" 
-            placeholder="Buscar chamado por cliente ou descrição..." 
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Buscar chamado por cliente ou descrição..."
             data-table-filter="tabelaChamados"
           >
         </div>
@@ -82,9 +82,7 @@ require __DIR__ . '/../layouts/sidebar.php';
                   <?= htmlspecialchars($ch['descricao']) ?>
                 </td>
                 <td>
-                  <span class="badge badge-status-<?= strtolower(str_replace(' ', '', $ch['status'] ?? 'aberto')) ?>">
-                    <?= htmlspecialchars($ch['status'] ?? 'Aberto') ?>
-                  </span>
+                  <?= renderStatusBadge($ch['status'] ?? 'Aberto') ?>
                 </td>
                 <td><?= htmlspecialchars($ch['aberto_em_formatada'] ?? '-') ?></td>
                 <td><?= htmlspecialchars($ch['concluido_em_formatada'] ?? '-') ?></td>
@@ -93,11 +91,11 @@ require __DIR__ . '/../layouts/sidebar.php';
                     <a href="<?= $baseUrl ?>/chamados/<?= (int)$ch['id'] ?>/editar" class="btn btn-outline btn-sm">
                       Atender / Editar
                     </a>
-                    <button 
-                      type="button" 
-                      class="btn btn-outline btn-sm" 
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
                       style="color: var(--color-danger);"
-                      data-modal-target="modalExclusao" 
+                      data-modal-target="modalExclusao"
                       data-record-id="<?= (int)$ch['id'] ?>"
                       data-record-name="Chamado #<?= (int)$ch['id'] ?>"
                       onclick="document.getElementById('formConfirmarExclusao').action='<?= $baseUrl ?>/chamados/<?= (int)$ch['id'] ?>/excluir'"

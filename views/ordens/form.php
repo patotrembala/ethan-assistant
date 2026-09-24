@@ -101,11 +101,11 @@ require __DIR__ . '/../layouts/sidebar.php';
                 <?php if ($pertenceAOutro): ?>
                   <!-- OS atribuída a outro técnico: bloqueado para alteração por técnicos -->
                   <input type="hidden" name="tecnico_id" value="<?= htmlspecialchars($ordemTecnicoId) ?>">
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    value="<?= htmlspecialchars($ordem['tecnico_nome'] ?? 'Outro Técnico') ?>" 
-                    disabled 
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="<?= htmlspecialchars($ordem['tecnico_nome'] ?? 'Outro Técnico') ?>"
+                    disabled
                     readonly
                   >
                   <div class="form-text" style="color: var(--color-danger);">
@@ -138,13 +138,13 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-grid-3">
             <div class="form-group">
               <label for="equipamento_tipo" class="form-label required">Tipo de Equipamento</label>
-              <input 
-                type="text" 
-                id="equipamento_tipo" 
-                name="equipamento_tipo" 
-                class="form-control <?= isset($errors['equipamento_tipo']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars($ordem['equipamento_tipo'] ?? '') ?>" 
-                placeholder="Ex.: Notebook, Servidor, Desktop" 
+              <input
+                type="text"
+                id="equipamento_tipo"
+                name="equipamento_tipo"
+                class="form-control <?= isset($errors['equipamento_tipo']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars($ordem['equipamento_tipo'] ?? '') ?>"
+                placeholder="Ex.: Notebook, Servidor, Desktop"
                 required
               >
               <?php if (isset($errors['equipamento_tipo'])): ?>
@@ -154,13 +154,13 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="equipamento_marca" class="form-label required">Marca</label>
-              <input 
-                type="text" 
-                id="equipamento_marca" 
-                name="equipamento_marca" 
-                class="form-control <?= isset($errors['equipamento_marca']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars($ordem['equipamento_marca'] ?? '') ?>" 
-                placeholder="Ex.: Dell, Lenovo, HP" 
+              <input
+                type="text"
+                id="equipamento_marca"
+                name="equipamento_marca"
+                class="form-control <?= isset($errors['equipamento_marca']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars($ordem['equipamento_marca'] ?? '') ?>"
+                placeholder="Ex.: Dell, Lenovo, HP"
                 required
               >
               <?php if (isset($errors['equipamento_marca'])): ?>
@@ -170,13 +170,13 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="equipamento_modelo" class="form-label required">Modelo</label>
-              <input 
-                type="text" 
-                id="equipamento_modelo" 
-                name="equipamento_modelo" 
-                class="form-control <?= isset($errors['equipamento_modelo']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars($ordem['equipamento_modelo'] ?? '') ?>" 
-                placeholder="Ex.: Vostro 3520, ThinkPad E14" 
+              <input
+                type="text"
+                id="equipamento_modelo"
+                name="equipamento_modelo"
+                class="form-control <?= isset($errors['equipamento_modelo']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars($ordem['equipamento_modelo'] ?? '') ?>"
+                placeholder="Ex.: Vostro 3520, ThinkPad E14"
                 required
               >
               <?php if (isset($errors['equipamento_modelo'])): ?>
@@ -195,11 +195,11 @@ require __DIR__ . '/../layouts/sidebar.php';
         <div class="card-body">
           <div class="form-group">
             <label for="defeito" class="form-label required">Defeito Relatado (Problema do Cliente)</label>
-            <textarea 
-              name="defeito" 
-              id="defeito" 
-              class="form-control <?= isset($errors['defeito']) ? 'is-invalid' : '' ?>" 
-              placeholder="Descreva detalhadamente o sintoma ou falha informada pelo cliente..." 
+            <textarea
+              name="defeito"
+              id="defeito"
+              class="form-control <?= isset($errors['defeito']) ? 'is-invalid' : '' ?>"
+              placeholder="Descreva detalhadamente o sintoma ou falha informada pelo cliente..."
               required
             ><?= htmlspecialchars($ordem['defeito'] ?? '') ?></textarea>
             <?php if (isset($errors['defeito'])): ?>
@@ -209,20 +209,20 @@ require __DIR__ . '/../layouts/sidebar.php';
 
           <div class="form-group">
             <label for="diagnostico" class="form-label">Diagnóstico Técnico</label>
-            <textarea 
-              name="diagnostico" 
-              id="diagnostico" 
-              class="form-control" 
+            <textarea
+              name="diagnostico"
+              id="diagnostico"
+              class="form-control"
               placeholder="Constatações técnicas, testes realizados ou peças identificadas..."
             ><?= htmlspecialchars($ordem['diagnostico'] ?? '') ?></textarea>
           </div>
 
           <div class="form-group">
             <label for="observacoes" class="form-label">Observações Complementares</label>
-            <textarea 
-              name="observacoes" 
-              id="observacoes" 
-              class="form-control" 
+            <textarea
+              name="observacoes"
+              id="observacoes"
+              class="form-control"
               placeholder="Acessórios entregues, senhas de acesso, autorizações específicas..."
             ><?= htmlspecialchars($ordem['observacoes'] ?? '') ?></textarea>
           </div>
@@ -249,11 +249,11 @@ require __DIR__ . '/../layouts/sidebar.php';
               <?php else: ?>
                 <!-- Campo desabilitado para Técnico com campo oculto para preservar valor -->
                 <input type="hidden" name="prioridade" value="<?= htmlspecialchars($ordem['prioridade'] ?? 'media') ?>">
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  value="<?= ucfirst(htmlspecialchars($ordem['prioridade'] ?? 'Média')) ?>" 
-                  disabled 
+                <input
+                  type="text"
+                  class="form-control"
+                  value="<?= ucfirst(htmlspecialchars($ordem['prioridade'] ?? 'Média')) ?>"
+                  disabled
                   readonly
                 >
                 <div class="form-text" style="color: var(--color-slate-500);">Alterável somente pelo administrador (RN04).</div>
@@ -264,9 +264,9 @@ require __DIR__ . '/../layouts/sidebar.php';
             <div class="form-group">
               <label for="status" class="form-label required">Status da OS</label>
               <select name="status" id="status" class="form-select" required>
-                <?php 
+                <?php
                 $statusList = ['Aberta', 'Em diagnóstico', 'Aguardando aprovação', 'Em andamento', 'Concluída', 'Cancelada'];
-                foreach ($statusList as $st): 
+                foreach ($statusList as $st):
                 ?>
                   <option value="<?= $st ?>" <?= (($ordem['status'] ?? 'Aberta') === $st) ? 'selected' : '' ?>>
                     <?= $st ?>
@@ -278,12 +278,12 @@ require __DIR__ . '/../layouts/sidebar.php';
             <!-- Data de Abertura -->
             <div class="form-group">
               <label for="abertura_em" class="form-label required">Data de Abertura</label>
-              <input 
-                type="datetime-local" 
-                name="abertura_em" 
-                id="abertura_em" 
-                class="form-control" 
-                value="<?= htmlspecialchars(!empty($ordem['abertura_em']) ? date('Y-m-d\TH:i', strtotime($ordem['abertura_em'])) : $agora) ?>" 
+              <input
+                type="datetime-local"
+                name="abertura_em"
+                id="abertura_em"
+                class="form-control"
+                value="<?= htmlspecialchars(!empty($ordem['abertura_em']) ? date('Y-m-d\TH:i', strtotime($ordem['abertura_em'])) : $agora) ?>"
                 required
               >
             </div>
@@ -291,12 +291,12 @@ require __DIR__ . '/../layouts/sidebar.php';
             <!-- Prazo Previsto (Seção 13: O prazo deve ser posterior à abertura) -->
             <div class="form-group">
               <label for="prazo_previsto" class="form-label required">Prazo Previsto</label>
-              <input 
-                type="datetime-local" 
-                name="prazo_previsto" 
-                id="prazo_previsto" 
-                class="form-control <?= isset($errors['prazo_previsto']) ? 'is-invalid' : '' ?>" 
-                value="<?= htmlspecialchars(!empty($ordem['prazo_previsto']) ? date('Y-m-d\TH:i', strtotime($ordem['prazo_previsto'])) : $prazoDefault) ?>" 
+              <input
+                type="datetime-local"
+                name="prazo_previsto"
+                id="prazo_previsto"
+                class="form-control <?= isset($errors['prazo_previsto']) ? 'is-invalid' : '' ?>"
+                value="<?= htmlspecialchars(!empty($ordem['prazo_previsto']) ? date('Y-m-d\TH:i', strtotime($ordem['prazo_previsto'])) : $prazoDefault) ?>"
                 required
               >
               <?php if (isset($errors['prazo_previsto'])): ?>
@@ -310,11 +310,11 @@ require __DIR__ . '/../layouts/sidebar.php';
           <?php if ($isEdit && in_array($ordem['status'] ?? '', ['Concluída', 'Cancelada'])): ?>
             <div class="form-group" style="max-width: 300px; margin-top: var(--spacing-2);">
               <label for="conclusao_em" class="form-label">Data de Conclusão / Encerramento</label>
-              <input 
-                type="datetime-local" 
-                name="conclusao_em" 
-                id="conclusao_em" 
-                class="form-control" 
+              <input
+                type="datetime-local"
+                name="conclusao_em"
+                id="conclusao_em"
+                class="form-control"
                 value="<?= htmlspecialchars(!empty($ordem['conclusao_em']) ? date('Y-m-d\TH:i', strtotime($ordem['conclusao_em'])) : $agora) ?>"
               >
             </div>

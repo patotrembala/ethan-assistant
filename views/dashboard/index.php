@@ -190,9 +190,7 @@ require __DIR__ . '/../layouts/sidebar.php';
                     <?php endif; ?>
                   </td>
                   <td>
-                    <span class="badge badge-status-<?= strtolower(str_replace(' ', '', $item['status'] ?? 'aberta')) ?>">
-                      <?= htmlspecialchars($item['status'] ?? 'Aberta') ?>
-                    </span>
+                    <?= renderStatusBadge($item['status'] ?? 'Aberta') ?>
                   </td>
                   <td>
                     <span><?= htmlspecialchars($item['prazo_formatado'] ?? '-') ?></span>
