@@ -11,6 +11,7 @@ $pageTitle = ($isEdit ? 'Atender Chamado #' . (int)$chamado['id'] : 'Novo Chamad
 $currentRoute = 'chamados';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);
+$isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
 $actionUrl = $isEdit ? "{$baseUrl}/chamados/{$chamado['id']}/atualizar" : "{$baseUrl}/chamados/salvar";
 $agora = date('Y-m-d\TH:i');
 
@@ -54,14 +55,20 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="tecnico_id" class="form-label required">Técnico Responsável</label>
-              <select name="tecnico_id" id="tecnico_id" class="form-select" required>
-                <option value="">Selecione o técnico atendente...</option>
-                <?php foreach (($tecnicos ?? []) as $tec): ?>
-                  <option value="<?= $tec['id'] ?>" <?= ((string)($chamado['tecnico_id'] ?? $currentUser['id']) === (string)$tec['id']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($tec['nome']) ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
+              <?php if ($isAdmin): ?>
+                <select name="tecnico_id" id="tecnico_id" class="form-select" required>
+                  <option value="">Selecione o técnico atendente...</option>
+                  <?php foreach (($tecnicos ?? []) as $tec): ?>
+                    <option value="<?= $tec['id'] ?>" <?= ((string)($chamado['tecnico_id'] ?? '') === (string)$tec['id']) ? 'selected' : '' ?>>
+                      <?= htmlspecialchars($tec['nome']) ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              <?php else: ?>
+                <input type="hidden" name="tecnico_id" value="<?= htmlspecialchars($currentUser['id']) ?>">
+                <input type="text" class="form-control" value="<?= htmlspecialchars($currentUser['nome']) ?>" disabled readonly>
+                <div class="form-text">Atendimento realizado pelo técnico logado.</div>
+              <?php endif; ?>
             </div>
           </div>
 

@@ -277,6 +277,7 @@ switch (true) {
         require __DIR__ . '/views/chamados/form.php';
         break;
 
+    case preg_match('#^/chamados/(\d+)$#', $requestUri, $m):
     case preg_match('#^/chamados/(\d+)/editar$#', $requestUri, $m):
         $chamado = $mockChamados[0];
         $clientes = $mockClientes;
@@ -293,6 +294,11 @@ switch (true) {
         $pendencia = null;
         $usuarios = $mockTecnicos;
         require __DIR__ . '/views/pendencias/form.php';
+        break;
+
+    case preg_match('#^/pendencias/(\d+)$#', $requestUri, $m):
+        $pendencia = $mockPendencias[0];
+        require __DIR__ . '/views/pendencias/show.php';
         break;
 
     case preg_match('#^/pendencias/(\d+)/editar$#', $requestUri, $m):

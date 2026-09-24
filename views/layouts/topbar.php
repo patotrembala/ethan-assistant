@@ -9,6 +9,13 @@ $baseUrl = $baseUrl ?? '';
 ?>
 <header class="app-topbar">
   <div class="topbar-left">
+    <button type="button" class="btn-sidebar-toggle" id="btnSidebarToggle" aria-label="Abrir menu de navegação">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
     <span style="font-size: var(--font-size-sm); color: var(--color-slate-500); font-weight: 500;">
       Assistência Técnica & Gestão Operacional
     </span>

@@ -101,7 +101,10 @@ require __DIR__ . '/../layouts/sidebar.php';
                 </td>
                 <td>
                   <div class="table-actions" style="justify-content: flex-end;">
-                    <a href="<?= $baseUrl ?>/pendencias/<?= (int)$p['id'] ?>/editar" class="btn btn-outline btn-sm">
+                    <a href="<?= $baseUrl ?>/pendencias/<?= (int)$p['id'] ?>" class="btn btn-outline btn-sm">
+                      Detalhes
+                    </a>
+                    <a href="<?= $baseUrl ?>/pendencias/<?= (int)$p['id'] ?>/editar" class="btn btn-secondary btn-sm">
                       Editar
                     </a>
                     <button 

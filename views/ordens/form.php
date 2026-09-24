@@ -81,15 +81,49 @@ require __DIR__ . '/../layouts/sidebar.php';
 
             <div class="form-group">
               <label for="tecnico_id" class="form-label">Técnico Responsável</label>
-              <select name="tecnico_id" id="tecnico_id" class="form-select">
-                <option value="">Aguardando atribuição (Disponível)</option>
-                <?php foreach (($tecnicos ?? []) as $tec): ?>
-                  <option value="<?= $tec['id'] ?>" <?= ((string)($ordem['tecnico_id'] ?? ($isAdmin ? '' : $currentUser['id'])) === (string)$tec['id']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($tec['nome']) ?>
-                  </option>
-                <?php endforeach; ?>
-              </select>
-              <div class="form-text">O técnico pode assumir a OS posteriormente.</div>
+              <?php if ($isAdmin): ?>
+                <!-- Administrador pode atribuir livremente a qualquer técnico (RF06) -->
+                <select name="tecnico_id" id="tecnico_id" class="form-select">
+                  <option value="">Aguardando atribuição (Disponível)</option>
+                  <?php foreach (($tecnicos ?? []) as $tec): ?>
+                    <option value="<?= $tec['id'] ?>" <?= ((string)($ordem['tecnico_id'] ?? '') === (string)$tec['id']) ? 'selected' : '' ?>>
+                      <?= htmlspecialchars($tec['nome']) ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+                <div class="form-text">Administrador pode distribuir e reatribuir livremente entre técnicos.</div>
+              <?php else: ?>
+                <!-- Técnico: Não pode atribuir a outro técnico -->
+                <?php
+                  $ordemTecnicoId = $ordem['tecnico_id'] ?? null;
+                  $pertenceAOutro = !empty($ordemTecnicoId) && (string)$ordemTecnicoId !== (string)$currentUser['id'];
+                ?>
+                <?php if ($pertenceAOutro): ?>
+                  <!-- OS atribuída a outro técnico: bloqueado para alteração por técnicos -->
+                  <input type="hidden" name="tecnico_id" value="<?= htmlspecialchars($ordemTecnicoId) ?>">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    value="<?= htmlspecialchars($ordem['tecnico_nome'] ?? 'Outro Técnico') ?>" 
+                    disabled 
+                    readonly
+                  >
+                  <div class="form-text" style="color: var(--color-danger);">
+                    Esta OS já pertence a outro técnico. Apenas administradores podem transferi-la.
+                  </div>
+                <?php else: ?>
+                  <!-- Nova OS ou OS própria/disponível: técnico só pode atribuir a si mesmo ou deixar disponível -->
+                  <select name="tecnico_id" id="tecnico_id" class="form-select">
+                    <option value="<?= $currentUser['id'] ?>" <?= (!empty($ordemTecnicoId) && (string)$ordemTecnicoId === (string)$currentUser['id']) || empty($ordem) ? 'selected' : '' ?>>
+                      Atribuído a mim (<?= htmlspecialchars($currentUser['nome']) ?>)
+                    </option>
+                    <option value="" <?= (isset($ordem) && empty($ordemTecnicoId)) ? 'selected' : '' ?>>
+                      Aguardando atribuição (Disponível)
+                    </option>
+                  </select>
+                  <div class="form-text">Técnicos só podem assumir OS para si mesmos ou deixá-la disponível.</div>
+                <?php endif; ?>
+              <?php endif; ?>
             </div>
           </div>
         </div>

@@ -20,6 +20,7 @@ $baseUrl = $baseUrl ?? '';
       Ethan Assistant
       <span class="brand-badge"><?= $isAdmin ? 'Admin' : 'Técnico' ?></span>
     </div>
+    <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">✕</button>
   </div>
 
   <nav class="sidebar-nav">

@@ -11,6 +11,9 @@ $isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
     </main><!-- /.app-main -->
   </div><!-- /.app-container -->
 
+  <!-- Overlay para fechar sidebar mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <!-- Modal Global de Exclusão (RN08) -->
   <div class="modal-backdrop" id="modalExclusao">
     <div class="modal-dialog">

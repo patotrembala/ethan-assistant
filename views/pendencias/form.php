@@ -10,6 +10,7 @@ $pageTitle = ($isEdit ? 'Editar Pendência' : 'Nova Pendência Interna') . ' - E
 $currentRoute = 'pendencias';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);
+$isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
 $actionUrl = $isEdit ? "{$baseUrl}/pendencias/{$pendencia['id']}/atualizar" : "{$baseUrl}/pendencias/salvar";
 $prazoDefault = date('Y-m-d\TH:i', strtotime('+1 day'));
 
@@ -64,14 +65,20 @@ require __DIR__ . '/../layouts/sidebar.php';
           <div class="form-grid-2">
             <div class="form-group">
               <label for="responsavel_id" class="form-label required">Responsável</label>
-              <select name="responsavel_id" id="responsavel_id" class="form-select" required>
-                <option value="">Selecione o responsável...</option>
-                <?php foreach (($usuarios ?? []) as $u): ?>
-                  <option value="<?= $u['id'] ?>" <?= ((string)($pendencia['responsavel_id'] ?? $currentUser['id']) === (string)$u['id']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($u['nome']) ?> (<?= $u['perfil'] === 'admin' ? 'Admin' : 'Técnico' ?>)
-                  </option>
-                <?php endforeach; ?>
-              </select>
+              <?php if ($isAdmin): ?>
+                <select name="responsavel_id" id="responsavel_id" class="form-select" required>
+                  <option value="">Selecione o responsável...</option>
+                  <?php foreach (($usuarios ?? []) as $u): ?>
+                    <option value="<?= $u['id'] ?>" <?= ((string)($pendencia['responsavel_id'] ?? '') === (string)$u['id']) ? 'selected' : '' ?>>
+                      <?= htmlspecialchars($u['nome']) ?> (<?= $u['perfil'] === 'admin' ? 'Admin' : 'Técnico' ?>)
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              <?php else: ?>
+                <input type="hidden" name="responsavel_id" value="<?= htmlspecialchars($currentUser['id']) ?>">
+                <input type="text" class="form-control" value="<?= htmlspecialchars($currentUser['nome']) ?>" disabled readonly>
+                <div class="form-text">Pendência atribuída ao técnico logado.</div>
+              <?php endif; ?>
             </div>
 
             <div class="form-group">
