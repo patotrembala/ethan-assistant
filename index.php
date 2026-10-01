@@ -21,6 +21,8 @@ session_start();
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/validation.php';
 require_once __DIR__ . '/src/Repositories/ClienteRepository.php';
+require_once __DIR__ . '/src/Services/PasswordResetService.php';
+require_once __DIR__ . '/src/Services/SmtpMailer.php';
 
 // Roteamento amigável
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
@@ -30,6 +32,8 @@ $baseUrl = '';
 // As credenciais reais ficam em auth.local.php, arquivo ignorado pelo Git.
 $authFile = __DIR__ . '/config/auth.local.php';
 $authConfig = is_file($authFile) ? require $authFile : [];
+$mailFile = __DIR__ . '/config/mail.local.php';
+$mailConfig = is_file($mailFile) ? require $mailFile : [];
 $pdo = database();
 $userCount = (int)$pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn();
 
@@ -113,9 +117,11 @@ if ($requestUri === '/login') {
     }
 
     $error = null;
-    $success = ($_GET['cadastro'] ?? '') === 'sucesso'
-        ? 'Administrador criado. Entre com sua senha.'
-        : null;
+    $success = match ($_GET['status'] ?? ($_GET['cadastro'] ?? '')) {
+        'sucesso' => 'Administrador criado. Entre com sua senha.',
+        'senha-alterada' => 'Senha alterada com sucesso. Entre com sua nova senha.',
+        default => null
+    };
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         verifyCsrf();
         $email = strtolower(trim($_POST['email'] ?? ''));
@@ -143,6 +149,96 @@ if ($requestUri === '/login') {
     }
 
     require __DIR__ . '/views/auth/login.php';
+    exit;
+}
+
+if ($requestUri === '/esqueci-senha') {
+    if ($userCount === 0) {
+        header('Location: /primeiro-acesso');
+        exit;
+    }
+
+    $error = null;
+    $success = null;
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        verifyCsrf();
+        $email = strtolower(trim($_POST['email'] ?? ''));
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = 'Informe um e-mail válido.';
+        } elseif (
+            trim((string)($mailConfig['host'] ?? '')) === ''
+            || trim((string)($mailConfig['username'] ?? '')) === ''
+            || (string)($mailConfig['password'] ?? '') === ''
+        ) {
+            $error = 'O envio de recuperação ainda não foi configurado. Procure o administrador do sistema.';
+        } else {
+            $resetService = new PasswordResetService($pdo);
+            $user = $resetService->findActiveUserByEmail($email);
+
+            if ($user && $resetService->canRequest((int)$user['id'])) {
+                $token = $resetService->createToken((int)$user['id']);
+                $appUrl = rtrim((string)($authConfig['app_url'] ?? ''), '/');
+
+                if ($appUrl === '') {
+                    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+                    $host = (string)($_SERVER['HTTP_HOST'] ?? 'localhost');
+                    $appUrl = ($isHttps ? 'https://' : 'http://') . $host;
+                }
+
+                try {
+                    $mailer = new SmtpMailer($mailConfig);
+                    $mailer->sendPasswordReset(
+                        (string)$user['email'],
+                        (string)$user['nome'],
+                        $appUrl . '/redefinir-senha?token=' . rawurlencode($token)
+                    );
+                } catch (Throwable $exception) {
+                    $resetService->revokeToken($token);
+                    error_log('Falha ao enviar recuperação de senha: ' . $exception->getMessage());
+                }
+            }
+
+            if ($error === null) {
+                $success = 'Se o e-mail estiver cadastrado, enviaremos um link válido por 30 minutos.';
+            }
+        }
+    }
+
+    require __DIR__ . '/views/auth/forgot_password.php';
+    exit;
+}
+
+if ($requestUri === '/redefinir-senha') {
+    $resetService = new PasswordResetService($pdo);
+    $token = strtolower(trim((string)($_POST['token'] ?? $_GET['token'] ?? '')));
+    $tokenIsValid = $resetService->isValidToken($token);
+    $error = null;
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        verifyCsrf();
+        $senha = (string)($_POST['senha'] ?? '');
+        $confirmacao = (string)($_POST['confirmacao_senha'] ?? '');
+
+        if (!$tokenIsValid) {
+            $error = 'Este link é inválido ou expirou. Solicite um novo.';
+        } elseif (strlen($senha) < 8) {
+            $error = 'A senha deve possuir pelo menos 8 caracteres.';
+        } elseif (!hash_equals($senha, $confirmacao)) {
+            $error = 'A confirmação da senha não corresponde.';
+        } elseif ($resetService->resetPassword($token, $senha)) {
+            $_SESSION = [];
+            session_regenerate_id(true);
+            header('Location: /login?status=senha-alterada');
+            exit;
+        } else {
+            $error = 'Este link é inválido ou expirou. Solicite um novo.';
+            $tokenIsValid = false;
+        }
+    }
+
+    require __DIR__ . '/views/auth/reset_password.php';
     exit;
 }
 

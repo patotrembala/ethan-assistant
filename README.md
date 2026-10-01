@@ -5,6 +5,7 @@ Sistema web em PHP e MySQL para organizar o fluxo de trabalho de técnicos de in
 ## Recursos atuais
 
 - Login e primeiro acesso do administrador.
+- Recuperação de senha por link temporário enviado via SMTP.
 - Controle de sessão e separação de permissões.
 - Dashboard para acompanhamento operacional.
 - Cadastro, visualização, edição e exclusão de clientes.
@@ -30,12 +31,16 @@ git clone -b frontend-antigravity https://github.com/patotrembala/ethan-assistan
 cd ethan-assistant
 Copy-Item config/database.example.php config/database.local.php
 Copy-Item config/auth.example.php config/auth.local.php
+Copy-Item config/mail.example.php config/mail.local.php
 ```
 
-Os dois arquivos terminados em `.local.php` são privados e não são enviados ao GitHub. Edite:
+Os arquivos terminados em `.local.php` são privados e não são enviados ao GitHub. Edite:
 
 - `config/database.local.php`: conexão do MySQL local. No XAMPP padrão, o exemplo já utiliza usuário `root` sem senha.
 - `config/auth.local.php`: nome e e-mail autorizados para criar o primeiro administrador.
+- `config/mail.local.php`: servidor SMTP utilizado para enviar links de recuperação de senha.
+
+Na hospedagem gratuita da InfinityFree, a função `mail()` não está disponível. Configure um SMTP externo. Para Gmail, ative a verificação em duas etapas e utilize uma senha de aplicativo; nunca coloque a senha normal da conta no arquivo.
 
 ## Criar o banco local
 
@@ -44,7 +49,9 @@ Os dois arquivos terminados em `.local.php` são privados e não são enviados a
 3. Entre na aba **Importar**.
 4. Selecione `database/schema.sql` e confirme a importação.
 
-O script cria o banco `ethan_assistant`, suas sete tabelas e o catálogo inicial de serviços.
+O script cria o banco `ethan_assistant`, suas oito tabelas e o catálogo inicial de serviços.
+
+Em bancos criados antes da recuperação de senha, importe também `database/migrations/20261001_password_reset_tokens.sql`.
 
 ## Executar o sistema
 
@@ -76,7 +83,7 @@ git commit -m "Descreva a alteração"
 git push origin frontend-antigravity
 ```
 
-Não envie `config/database.local.php`, `config/auth.local.php` ou arquivos de sessão. Eles já estão protegidos pelo `.gitignore`.
+Não envie `config/database.local.php`, `config/auth.local.php`, `config/mail.local.php` ou arquivos de sessão. Eles já estão protegidos pelo `.gitignore`.
 
 ## Estrutura principal
 

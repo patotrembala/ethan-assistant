@@ -3,6 +3,7 @@
 !.env.example
 /config/auth.local.php
 /config/database.local.php
+/config/mail.local.php
 /database/seed.local.sql
 /storage/sessions/*
 !/storage/sessions/.gitkeep

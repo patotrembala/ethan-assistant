@@ -90,7 +90,7 @@ $success = $success ?? null;
           </div>
 
           <div class="auth-field">
-            <div class="auth-label-row"><label for="senha">Senha</label><span>Acesso restrito</span></div>
+            <div class="auth-label-row"><label for="senha">Senha</label><a class="auth-link" href="<?= $baseUrl ?>/esqueci-senha">Esqueci minha senha</a></div>
             <div class="auth-input-wrap">
               <span class="auth-input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
               <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required autocomplete="current-password">
