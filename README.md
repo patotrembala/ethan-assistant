@@ -13,6 +13,7 @@ Sistema web em PHP e MySQL para organizar o fluxo de trabalho de técnicos de in
 - Impressão de ordem de serviço.
 - Banco de dados com consultas preparadas contra SQL Injection.
 - Documentação do projeto em DOCX e PDF na pasta `docs`.
+- Avaliação técnica e plano de adequação à LGPD em [`docs/ADEQUACAO_LGPD.md`](docs/ADEQUACAO_LGPD.md).
 
 ## Requisitos
 
