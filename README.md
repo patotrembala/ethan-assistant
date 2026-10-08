@@ -5,7 +5,7 @@ Sistema web em PHP e MySQL para organizar o fluxo de trabalho de técnicos de in
 ## Recursos atuais
 
 - Login e primeiro acesso do administrador.
-- Recuperação de senha por link temporário enviado via SMTP.
+- Recuperação de senha com aprovação do administrador e link temporário enviado via SMTP.
 - Controle de sessão e separação de permissões.
 - Dashboard para acompanhamento operacional.
 - Cadastro, visualização, edição e exclusão de clientes.
@@ -51,7 +51,7 @@ Na hospedagem gratuita da InfinityFree, a função `mail()` não está disponív
 
 O script cria o banco `ethan_assistant`, suas oito tabelas e o catálogo inicial de serviços.
 
-Em bancos criados antes da recuperação de senha, importe também `database/migrations/20261001_password_reset_tokens.sql`.
+Em bancos criados antes da recuperação de senha, importe `database/migrations/20261001_password_reset_tokens.sql` e depois `database/migrations/20261008_password_reset_approval.sql`.
 
 ## Executar o sistema
 

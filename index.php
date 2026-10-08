@@ -167,42 +167,15 @@ if ($requestUri === '/esqueci-senha') {
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = 'Informe um e-mail válido.';
-        } elseif (
-            trim((string)($mailConfig['host'] ?? '')) === ''
-            || trim((string)($mailConfig['username'] ?? '')) === ''
-            || (string)($mailConfig['password'] ?? '') === ''
-        ) {
-            $error = 'O envio de recuperação ainda não foi configurado. Procure o administrador do sistema.';
         } else {
             $resetService = new PasswordResetService($pdo);
             $user = $resetService->findActiveUserByEmail($email);
 
             if ($user && $resetService->canRequest((int)$user['id'])) {
-                $token = $resetService->createToken((int)$user['id']);
-                $appUrl = rtrim((string)($authConfig['app_url'] ?? ''), '/');
-
-                if ($appUrl === '') {
-                    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-                    $host = (string)($_SERVER['HTTP_HOST'] ?? 'localhost');
-                    $appUrl = ($isHttps ? 'https://' : 'http://') . $host;
-                }
-
-                try {
-                    $mailer = new SmtpMailer($mailConfig);
-                    $mailer->sendPasswordReset(
-                        (string)$user['email'],
-                        (string)$user['nome'],
-                        $appUrl . '/redefinir-senha?token=' . rawurlencode($token)
-                    );
-                } catch (Throwable $exception) {
-                    $resetService->revokeToken($token);
-                    error_log('Falha ao enviar recuperação de senha: ' . $exception->getMessage());
-                }
+                $resetService->createRequest((int)$user['id']);
             }
 
-            if ($error === null) {
-                $success = 'Se o e-mail estiver cadastrado, enviaremos um link válido por 30 minutos.';
-            }
+            $success = 'Se o e-mail estiver cadastrado, a solicitação foi enviada para aprovação do administrador.';
         }
     }
 
@@ -249,6 +222,8 @@ if (!isset($_SESSION['user'])) {
 
 $currentUser = $_SESSION['user'];
 $isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
+$passwordResetService = new PasswordResetService($pdo);
+$pendingPasswordResetCount = $isAdmin ? $passwordResetService->pendingCount() : 0;
 $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 $clienteRepository = new ClienteRepository($pdo);
@@ -625,6 +600,64 @@ switch (true) {
         $usuarios = $mockTecnicos;
         require __DIR__ . '/views/usuarios/index.php';
         break;
+
+    case $requestUri === '/recuperacoes-senha':
+        requireAdmin($isAdmin);
+        $passwordResetRequests = $passwordResetService->pendingRequests();
+        require __DIR__ . '/views/password_resets/index.php';
+        break;
+
+    case preg_match('#^/recuperacoes-senha/(\d+)/aprovar$#', $requestUri, $m) && $_SERVER['REQUEST_METHOD'] === 'POST':
+        requireAdmin($isAdmin);
+        verifyCsrf();
+
+        if (
+            trim((string)($mailConfig['host'] ?? '')) === ''
+            || trim((string)($mailConfig['username'] ?? '')) === ''
+            || (string)($mailConfig['password'] ?? '') === ''
+        ) {
+            redirectWithFlash('/recuperacoes-senha', 'danger', 'Configure o SMTP antes de aprovar solicitações.');
+        }
+
+        $resetRequest = $passwordResetService->findPendingRequest((int)$m[1]);
+        if (!$resetRequest) {
+            redirectWithFlash('/recuperacoes-senha', 'danger', 'A solicitação não existe ou já foi analisada.');
+        }
+
+        $token = $passwordResetService->createToken((int)$resetRequest['usuario_id']);
+        $appUrl = rtrim((string)($authConfig['app_url'] ?? ''), '/');
+        if ($appUrl === '') {
+            $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+            $host = (string)($_SERVER['HTTP_HOST'] ?? 'localhost');
+            $appUrl = ($isHttps ? 'https://' : 'http://') . $host;
+        }
+
+        try {
+            (new SmtpMailer($mailConfig))->sendPasswordReset(
+                (string)$resetRequest['email'],
+                (string)$resetRequest['nome'],
+                $appUrl . '/redefinir-senha?token=' . rawurlencode($token)
+            );
+
+            if (!$passwordResetService->approveRequest((int)$m[1], (int)$currentUser['id'])) {
+                $passwordResetService->revokeToken($token);
+                redirectWithFlash('/recuperacoes-senha', 'danger', 'A solicitação já foi analisada por outro administrador.');
+            }
+        } catch (Throwable $exception) {
+            $passwordResetService->revokeToken($token);
+            error_log('Falha ao aprovar recuperação de senha: ' . $exception->getMessage());
+            redirectWithFlash('/recuperacoes-senha', 'danger', 'Não foi possível enviar o e-mail. A solicitação continua pendente.');
+        }
+
+        redirectWithFlash('/recuperacoes-senha', 'success', 'Solicitação aprovada e link de redefinição enviado ao usuário.');
+
+    case preg_match('#^/recuperacoes-senha/(\d+)/recusar$#', $requestUri, $m) && $_SERVER['REQUEST_METHOD'] === 'POST':
+        requireAdmin($isAdmin);
+        verifyCsrf();
+        if ($passwordResetService->rejectRequest((int)$m[1], (int)$currentUser['id'])) {
+            redirectWithFlash('/recuperacoes-senha', 'success', 'Solicitação recusada.');
+        }
+        redirectWithFlash('/recuperacoes-senha', 'danger', 'A solicitação não existe ou já foi analisada.');
 
     case $requestUri === '/usuarios/novo':
         $usuario = null;

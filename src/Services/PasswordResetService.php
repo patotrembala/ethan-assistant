@@ -25,13 +25,83 @@ final class PasswordResetService
     public function canRequest(int $userId): bool
     {
         $stmt = $this->pdo->prepare(
-            'SELECT COUNT(*) FROM password_reset_tokens
+            'SELECT COUNT(*) FROM password_reset_requests
              WHERE usuario_id = :usuario_id
-               AND solicitado_em >= DATE_SUB(NOW(), INTERVAL ' . self::REQUEST_INTERVAL_MINUTES . ' MINUTE)'
+               AND (status = \'pendente\'
+                    OR solicitado_em >= DATE_SUB(NOW(), INTERVAL ' . self::REQUEST_INTERVAL_MINUTES . ' MINUTE))'
         );
         $stmt->execute(['usuario_id' => $userId]);
 
         return (int)$stmt->fetchColumn() === 0;
+    }
+
+    public function createRequest(int $userId): int
+    {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO password_reset_requests (usuario_id) VALUES (:usuario_id)'
+        );
+        $stmt->execute(['usuario_id' => $userId]);
+
+        return (int)$this->pdo->lastInsertId();
+    }
+
+    public function pendingRequests(): array
+    {
+        $stmt = $this->pdo->query(
+            'SELECT pr.id, pr.usuario_id, pr.solicitado_em, u.nome, u.email, u.perfil
+             FROM password_reset_requests pr
+             INNER JOIN usuarios u ON u.id = pr.usuario_id
+             WHERE pr.status = \'pendente\' AND u.ativo = 1
+             ORDER BY pr.solicitado_em ASC'
+        );
+
+        return $stmt->fetchAll();
+    }
+
+    public function pendingCount(): int
+    {
+        return (int)$this->pdo->query(
+            "SELECT COUNT(*) FROM password_reset_requests WHERE status = 'pendente'"
+        )->fetchColumn();
+    }
+
+    public function findPendingRequest(int $requestId): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT pr.id, pr.usuario_id, u.nome, u.email
+             FROM password_reset_requests pr
+             INNER JOIN usuarios u ON u.id = pr.usuario_id
+             WHERE pr.id = :id AND pr.status = \'pendente\' AND u.ativo = 1
+             LIMIT 1'
+        );
+        $stmt->execute(['id' => $requestId]);
+        $request = $stmt->fetch();
+
+        return $request ?: null;
+    }
+
+    public function approveRequest(int $requestId, int $adminId): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE password_reset_requests
+             SET status = \'aprovada\', decidido_em = NOW(), decidido_por = :admin_id
+             WHERE id = :id AND status = \'pendente\''
+        );
+        $stmt->execute(['id' => $requestId, 'admin_id' => $adminId]);
+
+        return $stmt->rowCount() === 1;
+    }
+
+    public function rejectRequest(int $requestId, int $adminId): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE password_reset_requests
+             SET status = \'rejeitada\', decidido_em = NOW(), decidido_por = :admin_id
+             WHERE id = :id AND status = \'pendente\''
+        );
+        $stmt->execute(['id' => $requestId, 'admin_id' => $adminId]);
+
+        return $stmt->rowCount() === 1;
     }
 
     public function createToken(int $userId): string

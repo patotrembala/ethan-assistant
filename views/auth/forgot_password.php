@@ -25,7 +25,7 @@ $success = $success ?? null;
       <div class="showcase-copy">
         <span class="showcase-eyebrow"><span class="status-dot"></span>Recuperação protegida</span>
         <h1>Retome seu acesso.<br><span>Com segurança.</span></h1>
-        <p>O link de recuperação é individual, expira em 30 minutos e funciona somente uma vez.</p>
+        <p>O administrador analisa a solicitação antes de liberar o link seguro de recuperação.</p>
       </div>
       <div class="showcase-footer"><span>Ethan Assistant</span><span>•</span><span>Uso interno corporativo</span></div>
     </section>
@@ -36,7 +36,7 @@ $success = $success ?? null;
         <div class="auth-heading">
           <span class="secure-label">Recuperar acesso</span>
           <h2>Esqueceu sua senha?</h2>
-          <p>Informe o e-mail da sua conta para receber o link de redefinição.</p>
+          <p>Informe o e-mail da sua conta. Após a aprovação do administrador, você receberá o link para criar uma nova senha.</p>
         </div>
 
         <?php if ($error): ?>
@@ -57,7 +57,7 @@ $success = $success ?? null;
               </div>
               <span class="auth-field-error">Informe um e-mail válido.</span>
             </div>
-            <button type="submit" class="auth-submit"><span class="auth-submit__label">Enviar link de recuperação</span><span class="auth-submit__arrow" aria-hidden="true">→</span><span class="auth-submit__loader" aria-hidden="true"></span></button>
+            <button type="submit" class="auth-submit"><span class="auth-submit__label">Solicitar recuperação</span><span class="auth-submit__arrow" aria-hidden="true">→</span><span class="auth-submit__loader" aria-hidden="true"></span></button>
           </form>
         <?php endif; ?>
 

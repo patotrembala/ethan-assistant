@@ -76,7 +76,7 @@ final class SmtpMailer
             $safeName = trim(preg_replace('/[\r\n]+/', ' ', $recipientName)) ?: 'usuário';
             $subject = 'Redefinição de senha - Ethan Assistant';
             $body = "Olá, {$safeName}!\n\n"
-                . "Recebemos uma solicitação para redefinir sua senha no Ethan Assistant.\n\n"
+                . "O administrador aprovou sua solicitação para redefinir a senha no Ethan Assistant.\n\n"
                 . "Abra o link abaixo. Ele é válido por 30 minutos e pode ser usado uma única vez:\n"
                 . $resetUrl . "\n\n"
                 . "Se você não fez esta solicitação, ignore este e-mail. Sua senha continuará a mesma.\n";

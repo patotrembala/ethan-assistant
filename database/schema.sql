@@ -124,6 +124,19 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
   INDEX idx_password_reset_validade (token_hash, utilizado_em, expira_em)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS password_reset_requests (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  usuario_id BIGINT UNSIGNED NOT NULL,
+  status ENUM('pendente', 'aprovada', 'rejeitada') NOT NULL DEFAULT 'pendente',
+  solicitado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  decidido_em DATETIME NULL,
+  decidido_por BIGINT UNSIGNED NULL,
+  CONSTRAINT fk_password_reset_request_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  CONSTRAINT fk_password_reset_request_admin FOREIGN KEY (decidido_por) REFERENCES usuarios(id) ON DELETE SET NULL,
+  INDEX idx_password_reset_request_status (status, solicitado_em),
+  INDEX idx_password_reset_request_usuario (usuario_id, solicitado_em)
+) ENGINE=InnoDB;
+
 INSERT IGNORE INTO tipos_servico (nome, descricao) VALUES
   ('Formatacao com backup', 'Formatacao do sistema com copia previa dos dados do cliente.'),
   ('Formatacao sem backup', 'Formatacao do sistema sem copia de dados.'),

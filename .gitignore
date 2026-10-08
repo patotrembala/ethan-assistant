@@ -9,6 +9,7 @@
 !/storage/sessions/.gitkeep
 /vendor/
 /node_modules/
+/deploy/
 *.log
 /storage/logs/*
 .DS_Store

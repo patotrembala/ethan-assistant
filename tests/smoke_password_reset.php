@@ -27,10 +27,17 @@ try {
     assert($user !== null && (int)$user['id'] === $userId);
     assert($service->canRequest($userId));
 
+    $requestId = $service->createRequest($userId);
+    assert($requestId > 0);
+    assert(!$service->canRequest($userId));
+    $pending = $service->findPendingRequest($requestId);
+    assert($pending !== null && (int)$pending['usuario_id'] === $userId);
+
     $token = $service->createToken($userId);
     assert(strlen($token) === 64);
     assert($service->isValidToken($token));
-    assert(!$service->canRequest($userId));
+    assert($service->approveRequest($requestId, $userId));
+    assert($service->findPendingRequest($requestId) === null);
     assert($service->resetPassword($token, 'NovaSenha123!'));
     assert(!$service->isValidToken($token));
     assert(!$service->resetPassword($token, 'OutraSenha123!'));

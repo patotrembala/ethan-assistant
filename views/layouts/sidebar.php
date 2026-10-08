@@ -73,6 +73,12 @@ $baseUrl = $baseUrl ?? '';
           <span>Técnicos & Usuários</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="<?= $baseUrl ?>/recuperacoes-senha" class="nav-link <?= str_starts_with($currentRoute, 'recuperacoes-senha') ? 'active' : '' ?>">
+          <span class="icon">🔐</span>
+          <span>Recuperações de Senha<?= !empty($pendingPasswordResetCount) ? ' (' . (int)$pendingPasswordResetCount . ')' : '' ?></span>
+        </a>
+      </li>
     </ul>
     <?php endif; ?>
   </nav>
