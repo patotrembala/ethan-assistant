@@ -88,12 +88,11 @@ require __DIR__ . '/../layouts/sidebar.php';
                 name="senha"
                 id="senha"
                 class="form-control"
-                placeholder="<?= $isEdit ? 'Deixe em branco para manter a atual' : 'Mínimo de caracteres seguros' ?>"
+                minlength="12"
+                placeholder="<?= $isEdit ? 'Deixe em branco para manter a atual' : 'Mínimo de 12 caracteres' ?>"
                 <?= $isEdit ? '' : 'required' ?>
               >
-              <?php if ($isEdit): ?>
-                <div class="form-text">Preencha apenas caso deseje redefinir a senha do usuário.</div>
-              <?php endif; ?>
+              <div class="form-text"><?= $isEdit ? 'Preencha apenas para redefinir. ' : '' ?>Use maiúscula, minúscula, número e símbolo.</div>
             </div>
           </div>
 

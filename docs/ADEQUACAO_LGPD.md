@@ -64,6 +64,13 @@ O controlador deve manter um registro das operações de tratamento contendo, no
 | Proteção CSRF | Implementada nas operações reais atuais | token aleatório validado com `hash_equals` |
 | Perfis de acesso | Parcial | perfis `admin` e `tecnico`; ações de clientes são restritas ao administrador |
 | Recuperação de senha | Implementado | solicitação depende de aprovação administrativa; o token é aleatório, armazenado como hash, expira em 30 minutos e é de uso único |
+| Proteção contra força bruta | Implementado | bloqueio temporário após cinco falhas por conta ou origem pseudonimizada |
+| MFA administrativo | Implementado | código temporário enviado ao e-mail do administrador quando o SMTP está configurado |
+| Expiração de sessão | Implementado | 30 minutos de inatividade e limite absoluto de 12 horas |
+| Trilha de auditoria | Implementado | eventos relevantes, usuário, entidade, data e origem pseudonimizada |
+| Canal do titular | Implementado | aviso público, formulário com protocolo e painel administrativo |
+| Menor privilégio em clientes | Implementado | técnicos veem somente clientes ligados às suas ordens ou chamados |
+| Retenção e backup | Parcial | políticas e scripts criados; execução agendada e testes ainda dependem do controlador |
 | Segredos fora do Git | Implementado | arquivos `*.local.php` ignorados pelo repositório |
 | Codificação segura na saída | Predominante | uso de `htmlspecialchars` nas telas analisadas |
 | HTTPS público | Implementado na publicação atual | aplicação acessível por HTTPS |
@@ -72,22 +79,18 @@ O controlador deve manter um registro das operações de tratamento contendo, no
 
 ### Prioridade crítica
 
-1. **Sessões dentro da pasta pública.** Os arquivos de sessão são gravados em `storage/sessions`, abaixo da raiz publicada. Eles devem ficar fora do diretório acessível pela web ou ser bloqueados de forma explícita pelo servidor.
-2. **Possibilidade de registrar senhas de clientes.** O texto da ordem de serviço sugere inserir senhas de acesso em observações. Essa prática deve ser proibida ou substituída por solução temporária e controlada.
-3. **Hospedagem e transferência de dados não avaliadas.** É necessário identificar onde os dados ficam armazenados, quem é o operador, quais suboperadores existem e se ocorre transferência internacional. Também devem ser avaliados os termos contratuais e as garantias do provedor.
+1. **Hospedagem e transferência de dados não avaliadas.** É necessário identificar onde os dados ficam armazenados, quem é o operador, quais suboperadores existem e se ocorre transferência internacional. Também devem ser avaliados os termos contratuais e as garantias do provedor.
 
 ### Prioridade alta
 
-1. Não existe aviso de privacidade informando controlador, finalidades, bases legais, retenção, compartilhamentos, direitos e canal de contato.
-2. Não existe fluxo para pedidos de confirmação, acesso, correção, bloqueio, anonimização, portabilidade ou eliminação.
-3. Não há política de retenção por categoria de dado nem rotina segura de eliminação ou anonimização.
+1. O aviso e o canal técnico foram criados, mas o controlador e o contato precisam ser formalmente confirmados na configuração de produção.
+2. O fluxo registra e acompanha pedidos, mas a equipe ainda precisa definir a verificação de identidade e o procedimento de resposta para cada direito.
+3. A política e a limpeza técnica foram criadas; prazos jurídicos de clientes, ordens e documentos ainda precisam de validação.
 4. Não há registro formal das operações de tratamento.
 5. Não há plano documentado de resposta a incidentes nem procedimento de comunicação à ANPD e aos titulares quando aplicável.
-6. Não há trilha de auditoria suficiente para acessos e alterações de dados pessoais.
-7. Não há limitação de tentativas de login, bloqueio progressivo ou autenticação em dois fatores.
-8. Não há expiração por inatividade nem tempo máximo de sessão definidos no código.
-9. Técnicos autenticados podem visualizar todos os clientes. Deve-se validar se isso é realmente necessário; o princípio do menor privilégio recomenda restringir o acesso às atividades atribuídas quando possível.
-10. Não há política documentada e testada de backup, restauração e descarte seguro.
+6. A trilha foi implementada, mas sua revisão periódica e proteção operacional precisam ser atribuídas a um responsável.
+7. O MFA por e-mail depende da disponibilidade e segurança da conta Gmail; um autenticador TOTP pode ser adotado futuramente.
+8. O backup criptografado foi implementado, mas o agendamento, cópia externa e teste mensal ainda precisam ser executados.
 
 ### Prioridade média
 

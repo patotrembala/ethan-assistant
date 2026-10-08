@@ -109,7 +109,7 @@ $success = $success ?? null;
           </button>
         </form>
 
-        <div class="auth-help"><span>Problemas para acessar?</span><span>Procure o administrador do sistema.</span></div>
+        <div class="auth-help"><span>Problemas para acessar?</span><span>Procure o administrador do sistema.</span><a class="auth-link" href="<?= $baseUrl ?>/privacidade">Privacidade e proteção de dados</a></div>
       </div>
     </section>
   </main>

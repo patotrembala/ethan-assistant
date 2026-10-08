@@ -45,13 +45,14 @@ $adminEmail = (string)($authConfig['admin_email'] ?? '');
 
           <div class="form-group">
             <label for="senha" class="form-label required">Nova senha</label>
-            <input type="password" id="senha" name="senha" class="form-control" minlength="8" required autocomplete="new-password">
+            <input type="password" id="senha" name="senha" class="form-control" minlength="12" required autocomplete="new-password">
+            <div class="form-text">Mínimo de 12 caracteres, com maiúscula, minúscula, número e símbolo.</div>
             <div class="form-text">Utilize pelo menos 8 caracteres.</div>
           </div>
 
           <div class="form-group" style="margin-bottom: var(--spacing-6);">
             <label for="confirmacao_senha" class="form-label required">Confirmar senha</label>
-            <input type="password" id="confirmacao_senha" name="confirmacao_senha" class="form-control" minlength="8" required autocomplete="new-password">
+            <input type="password" id="confirmacao_senha" name="confirmacao_senha" class="form-control" minlength="12" required autocomplete="new-password">
           </div>
 
           <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.625rem;">

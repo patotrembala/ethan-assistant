@@ -5,12 +5,17 @@
  * enquanto os controllers do Codex são integrados.
  */
 
-$sessionPath = __DIR__ . '/storage/sessions';
+$sessionPath = dirname(__DIR__) . '/ethan-assistant-private/sessions';
 if (!is_dir($sessionPath)) {
-    mkdir($sessionPath, 0775, true);
+    @mkdir($sessionPath, 0700, true);
+}
+if (!is_dir($sessionPath) || !is_writable($sessionPath)) {
+    $sessionPath = sys_get_temp_dir();
 }
 session_save_path($sessionPath);
 
+ini_set('session.use_strict_mode', '1');
+ini_set('session.use_only_cookies', '1');
 session_set_cookie_params([
     'httponly' => true,
     'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
@@ -18,11 +23,23 @@ session_set_cookie_params([
 ]);
 session_start();
 
+header_remove('X-Powered-By');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+}
+
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/validation.php';
 require_once __DIR__ . '/src/Repositories/ClienteRepository.php';
 require_once __DIR__ . '/src/Services/PasswordResetService.php';
 require_once __DIR__ . '/src/Services/SmtpMailer.php';
+require_once __DIR__ . '/src/Services/SecurityService.php';
+require_once __DIR__ . '/src/Services/PrivacyRequestService.php';
 
 // Roteamento amigável
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
@@ -34,8 +51,28 @@ $authFile = __DIR__ . '/config/auth.local.php';
 $authConfig = is_file($authFile) ? require $authFile : [];
 $mailFile = __DIR__ . '/config/mail.local.php';
 $mailConfig = is_file($mailFile) ? require $mailFile : [];
+$securityFile = __DIR__ . '/config/security.local.php';
+$securityConfig = is_file($securityFile) ? require $securityFile : [];
 $pdo = database();
+$securityService = new SecurityService($pdo, (string)($securityConfig['key'] ?? $authConfig['admin_email'] ?? 'ethan-assistant'));
+$privacyRequestService = new PrivacyRequestService($pdo);
 $userCount = (int)$pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn();
+
+if (isset($_SESSION['user'])) {
+    $now = time();
+    $lastActivity = (int)($_SESSION['last_activity'] ?? $now);
+    $loginAt = (int)($_SESSION['login_at'] ?? $now);
+    if (($now - $lastActivity) > 1800 || ($now - $loginAt) > 43200) {
+        $_SESSION = [];
+        session_regenerate_id(true);
+        if (!in_array($requestUri, ['/login', '/esqueci-senha', '/redefinir-senha', '/privacidade', '/solicitacao-privacidade'], true)) {
+            header('Location: /login?status=sessao-expirada');
+            exit;
+        }
+    } else {
+        $_SESSION['last_activity'] = $now;
+    }
+}
 
 function csrfToken(): string
 {
@@ -56,9 +93,30 @@ function verifyCsrf(): void
     }
 }
 
+function passwordPolicyError(string $password): ?string
+{
+    if (strlen($password) < 12) {
+        return 'A senha deve possuir pelo menos 12 caracteres.';
+    }
+    if (!preg_match('/[a-z]/', $password) || !preg_match('/[A-Z]/', $password)
+        || !preg_match('/\d/', $password) || !preg_match('/[^a-zA-Z0-9]/', $password)) {
+        return 'Use letra maiúscula, minúscula, número e caractere especial.';
+    }
+    $normalized = strtolower(preg_replace('/\s+/', '', $password));
+    if (in_array($normalized, ['123456789012', 'senha123456!', 'administrador1!', 'ethanassistant1!'], true)) {
+        return 'Escolha uma senha menos previsível.';
+    }
+
+    return null;
+}
+
 $csrfToken = csrfToken();
 
-if ($requestUri === '/logout') {
+if ($requestUri === '/logout' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrf();
+    if (!empty($_SESSION['user']['id'])) {
+        $securityService->audit((int)$_SESSION['user']['id'], 'logout', 'sessao');
+    }
     $_SESSION = [];
     session_destroy();
     header('Location: /login');
@@ -81,8 +139,8 @@ if ($requestUri === '/primeiro-acesso') {
 
         if ($adminEmail === '' || !hash_equals($adminEmail, $email)) {
             $error = 'Use o e-mail administrador autorizado.';
-        } elseif (strlen($senha) < 8) {
-            $error = 'A senha deve possuir pelo menos 8 caracteres.';
+        } elseif (($passwordError = passwordPolicyError($senha)) !== null) {
+            $error = $passwordError;
         } elseif (!hash_equals($senha, $confirmacao)) {
             $error = 'A confirmação da senha não corresponde.';
         } else {
@@ -120,12 +178,20 @@ if ($requestUri === '/login') {
     $success = match ($_GET['status'] ?? ($_GET['cadastro'] ?? '')) {
         'sucesso' => 'Administrador criado. Entre com sua senha.',
         'senha-alterada' => 'Senha alterada com sucesso. Entre com sua nova senha.',
+        'sessao-expirada' => 'Sua sessão expirou por segurança. Entre novamente.',
         default => null
     };
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         verifyCsrf();
         $email = strtolower(trim($_POST['email'] ?? ''));
         $senha = (string)($_POST['senha'] ?? '');
+        $ip = (string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+
+        if ($securityService->isLoginBlocked($email, $ip)) {
+            $error = 'Muitas tentativas de acesso. Aguarde 15 minutos e tente novamente.';
+            require __DIR__ . '/views/auth/login.php';
+            exit;
+        }
 
         $stmt = $pdo->prepare(
             'SELECT id, nome, email, senha_hash, perfil FROM usuarios WHERE email = :email AND ativo = 1 LIMIT 1'
@@ -134,6 +200,32 @@ if ($requestUri === '/login') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($senha, $user['senha_hash'])) {
+            $securityService->recordLoginAttempt($email, $ip, true);
+            if ((string)$user['perfil'] === 'admin' && $securityService->mailIsConfigured($mailConfig)) {
+                $code = (string)random_int(100000, 999999);
+                $_SESSION['mfa_pending'] = [
+                    'user' => [
+                        'id' => (int)$user['id'],
+                        'nome' => (string)$user['nome'],
+                        'email' => (string)$user['email'],
+                        'perfil' => (string)$user['perfil']
+                    ],
+                    'code_hash' => password_hash($code, PASSWORD_DEFAULT),
+                    'expires_at' => time() + 600,
+                    'attempts' => 0
+                ];
+                try {
+                    (new SmtpMailer($mailConfig))->sendLoginCode((string)$user['email'], (string)$user['nome'], $code);
+                    header('Location: /verificar-acesso');
+                    exit;
+                } catch (Throwable $exception) {
+                    unset($_SESSION['mfa_pending']);
+                    error_log('Falha ao enviar MFA: ' . $exception->getMessage());
+                    $error = 'Não foi possível enviar o código de segurança. Tente novamente.';
+                    require __DIR__ . '/views/auth/login.php';
+                    exit;
+                }
+            }
             session_regenerate_id(true);
             $_SESSION['user'] = [
                 'id' => (int)$user['id'],
@@ -141,14 +233,55 @@ if ($requestUri === '/login') {
                 'email' => (string)$user['email'],
                 'perfil' => (string)$user['perfil']
             ];
+            $_SESSION['login_at'] = time();
+            $_SESSION['last_activity'] = time();
+            $securityService->audit((int)$user['id'], 'login', 'sessao');
             header('Location: /dashboard');
             exit;
         }
 
+        $securityService->recordLoginAttempt($email, $ip, false);
         $error = 'E-mail ou senha incorretos.';
     }
 
     require __DIR__ . '/views/auth/login.php';
+    exit;
+}
+
+if ($requestUri === '/verificar-acesso') {
+    $pendingMfa = $_SESSION['mfa_pending'] ?? null;
+    if (!$pendingMfa || (int)($pendingMfa['expires_at'] ?? 0) < time()) {
+        unset($_SESSION['mfa_pending']);
+        header('Location: /login');
+        exit;
+    }
+
+    $error = null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        verifyCsrf();
+        $code = preg_replace('/\D/', '', (string)($_POST['codigo'] ?? ''));
+        $_SESSION['mfa_pending']['attempts'] = (int)($_SESSION['mfa_pending']['attempts'] ?? 0) + 1;
+
+        if ($_SESSION['mfa_pending']['attempts'] > 5) {
+            unset($_SESSION['mfa_pending']);
+            header('Location: /login');
+            exit;
+        }
+
+        if (strlen($code) === 6 && password_verify($code, (string)$pendingMfa['code_hash'])) {
+            session_regenerate_id(true);
+            $_SESSION['user'] = $pendingMfa['user'];
+            $_SESSION['login_at'] = time();
+            $_SESSION['last_activity'] = time();
+            unset($_SESSION['mfa_pending']);
+            $securityService->audit((int)$_SESSION['user']['id'], 'login_mfa', 'sessao');
+            header('Location: /dashboard');
+            exit;
+        }
+        $error = 'Código inválido ou expirado.';
+    }
+
+    require __DIR__ . '/views/auth/verify_mfa.php';
     exit;
 }
 
@@ -172,7 +305,8 @@ if ($requestUri === '/esqueci-senha') {
             $user = $resetService->findActiveUserByEmail($email);
 
             if ($user && $resetService->canRequest((int)$user['id'])) {
-                $resetService->createRequest((int)$user['id']);
+                $requestId = $resetService->createRequest((int)$user['id']);
+                $securityService->audit(null, 'solicitar_recuperacao', 'password_reset_request', $requestId);
             }
 
             $success = 'Se o e-mail estiver cadastrado, a solicitação foi enviada para aprovação do administrador.';
@@ -196,8 +330,8 @@ if ($requestUri === '/redefinir-senha') {
 
         if (!$tokenIsValid) {
             $error = 'Este link é inválido ou expirou. Solicite um novo.';
-        } elseif (strlen($senha) < 8) {
-            $error = 'A senha deve possuir pelo menos 8 caracteres.';
+        } elseif (($passwordError = passwordPolicyError($senha)) !== null) {
+            $error = $passwordError;
         } elseif (!hash_equals($senha, $confirmacao)) {
             $error = 'A confirmação da senha não corresponde.';
         } elseif ($resetService->resetPassword($token, $senha)) {
@@ -212,6 +346,45 @@ if ($requestUri === '/redefinir-senha') {
     }
 
     require __DIR__ . '/views/auth/reset_password.php';
+    exit;
+}
+
+if ($requestUri === '/privacidade') {
+    $privacyController = (string)($authConfig['privacy_controller'] ?? 'Responsável pelo Ethan Assistant');
+    $privacyEmail = (string)($authConfig['privacy_email'] ?? $authConfig['admin_email'] ?? '');
+    require __DIR__ . '/views/privacy/notice.php';
+    exit;
+}
+
+if ($requestUri === '/solicitacao-privacidade') {
+    $error = null;
+    $success = null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        verifyCsrf();
+        $requestData = [
+            'nome' => trim((string)($_POST['nome'] ?? '')),
+            'email' => strtolower(trim((string)($_POST['email'] ?? ''))),
+            'tipo' => (string)($_POST['tipo'] ?? ''),
+            'descricao' => trim((string)($_POST['descricao'] ?? ''))
+        ];
+        $allowedTypes = ['acesso', 'correcao', 'eliminacao', 'bloqueio', 'portabilidade', 'informacao', 'outro'];
+        if (mb_strlen($requestData['nome']) < 3 || mb_strlen($requestData['nome']) > 120) {
+            $error = 'Informe seu nome completo.';
+        } elseif (!filter_var($requestData['email'], FILTER_VALIDATE_EMAIL)) {
+            $error = 'Informe um e-mail válido.';
+        } elseif (!in_array($requestData['tipo'], $allowedTypes, true)) {
+            $error = 'Selecione o tipo da solicitação.';
+        } elseif (mb_strlen($requestData['descricao']) < 10 || mb_strlen($requestData['descricao']) > 2000) {
+            $error = 'Descreva a solicitação entre 10 e 2.000 caracteres.';
+        } elseif (!$privacyRequestService->canSubmit($requestData['email'])) {
+            $error = 'Limite temporário atingido. Tente novamente mais tarde.';
+        } else {
+            $protocol = $privacyRequestService->create($requestData);
+            $securityService->audit(null, 'criar', 'privacy_request', null, ['protocolo' => $protocol]);
+            $success = 'Solicitação registrada. Anote o protocolo: ' . $protocol;
+        }
+    }
+    require __DIR__ . '/views/privacy/request.php';
     exit;
 }
 
@@ -416,7 +589,8 @@ switch (true) {
         break;
 
     case $requestUri === '/clientes':
-        $clientes = $clienteRepository->all();
+        $clientes = $clienteRepository->all($currentUser);
+        $securityService->audit((int)$currentUser['id'], 'listar', 'cliente');
         require __DIR__ . '/views/clientes/index.php';
         break;
 
@@ -437,6 +611,7 @@ switch (true) {
         }
         try {
             $clienteRepository->create($cliente);
+            $securityService->audit((int)$currentUser['id'], 'criar', 'cliente', (int)$pdo->lastInsertId());
             redirectWithFlash('/clientes', 'success', 'Cliente cadastrado com sucesso.');
         } catch (PDOException $exception) {
             if ((string)$exception->getCode() === '23000') {
@@ -448,12 +623,13 @@ switch (true) {
         }
 
     case preg_match('#^/clientes/(\d+)$#', $requestUri, $m):
-        $cliente = $clienteRepository->find((int)$m[1]);
+        $cliente = $clienteRepository->find((int)$m[1], $currentUser);
         if (!$cliente) {
             http_response_code(404);
             exit('Cliente não encontrado.');
         }
-        $historicoOS = $clienteRepository->serviceOrders((int)$m[1]);
+        $historicoOS = $clienteRepository->serviceOrders((int)$m[1], $currentUser);
+        $securityService->audit((int)$currentUser['id'], 'visualizar', 'cliente', (int)$m[1]);
         require __DIR__ . '/views/clientes/show.php';
         break;
 
@@ -484,6 +660,7 @@ switch (true) {
         }
         try {
             $clienteRepository->update($id, $cliente);
+            $securityService->audit((int)$currentUser['id'], 'atualizar', 'cliente', $id);
             redirectWithFlash('/clientes/' . $id, 'success', 'Cliente atualizado com sucesso.');
         } catch (PDOException $exception) {
             if ((string)$exception->getCode() === '23000') {
@@ -499,6 +676,7 @@ switch (true) {
         verifyCsrf();
         try {
             $clienteRepository->delete((int)$m[1]);
+            $securityService->audit((int)$currentUser['id'], 'excluir', 'cliente', (int)$m[1]);
             redirectWithFlash('/clientes', 'success', 'Cliente excluído com sucesso.');
         } catch (PDOException $exception) {
             if ((string)$exception->getCode() === '23000') {
@@ -607,6 +785,28 @@ switch (true) {
         require __DIR__ . '/views/password_resets/index.php';
         break;
 
+    case $requestUri === '/auditoria':
+        requireAdmin($isAdmin);
+        $auditLogs = $securityService->recentAuditLogs();
+        require __DIR__ . '/views/audit/index.php';
+        break;
+
+    case $requestUri === '/solicitacoes-privacidade':
+        requireAdmin($isAdmin);
+        $privacyRequests = $privacyRequestService->all();
+        require __DIR__ . '/views/privacy/admin.php';
+        break;
+
+    case preg_match('#^/solicitacoes-privacidade/(\d+)/status$#', $requestUri, $m) && $_SERVER['REQUEST_METHOD'] === 'POST':
+        requireAdmin($isAdmin);
+        verifyCsrf();
+        $status = (string)($_POST['status'] ?? '');
+        if ($privacyRequestService->updateStatus((int)$m[1], $status, (int)$currentUser['id'])) {
+            $securityService->audit((int)$currentUser['id'], 'atualizar_status', 'privacy_request', (int)$m[1], ['status' => $status]);
+            redirectWithFlash('/solicitacoes-privacidade', 'success', 'Solicitação atualizada.');
+        }
+        redirectWithFlash('/solicitacoes-privacidade', 'danger', 'Não foi possível atualizar a solicitação.');
+
     case preg_match('#^/recuperacoes-senha/(\d+)/aprovar$#', $requestUri, $m) && $_SERVER['REQUEST_METHOD'] === 'POST':
         requireAdmin($isAdmin);
         verifyCsrf();
@@ -643,6 +843,7 @@ switch (true) {
                 $passwordResetService->revokeToken($token);
                 redirectWithFlash('/recuperacoes-senha', 'danger', 'A solicitação já foi analisada por outro administrador.');
             }
+            $securityService->audit((int)$currentUser['id'], 'aprovar', 'password_reset_request', (int)$m[1]);
         } catch (Throwable $exception) {
             $passwordResetService->revokeToken($token);
             error_log('Falha ao aprovar recuperação de senha: ' . $exception->getMessage());
@@ -655,6 +856,7 @@ switch (true) {
         requireAdmin($isAdmin);
         verifyCsrf();
         if ($passwordResetService->rejectRequest((int)$m[1], (int)$currentUser['id'])) {
+            $securityService->audit((int)$currentUser['id'], 'recusar', 'password_reset_request', (int)$m[1]);
             redirectWithFlash('/recuperacoes-senha', 'success', 'Solicitação recusada.');
         }
         redirectWithFlash('/recuperacoes-senha', 'danger', 'A solicitação não existe ou já foi analisada.');

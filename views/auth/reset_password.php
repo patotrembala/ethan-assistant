@@ -44,12 +44,12 @@ $error = $error ?? null;
             <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
             <div class="auth-field">
               <label for="senha">Nova senha</label>
-              <div class="auth-input-wrap"><span class="auth-input-icon" aria-hidden="true">●</span><input type="password" id="senha" name="senha" placeholder="Mínimo de 8 caracteres" minlength="8" required autocomplete="new-password"></div>
-              <span class="auth-field-error">Informe uma senha com pelo menos 8 caracteres.</span>
+              <div class="auth-input-wrap"><span class="auth-input-icon" aria-hidden="true">●</span><input type="password" id="senha" name="senha" placeholder="Mínimo de 12 caracteres" minlength="12" required autocomplete="new-password"></div>
+              <span class="auth-field-error">Use 12 caracteres, maiúscula, minúscula, número e símbolo.</span>
             </div>
             <div class="auth-field">
               <label for="confirmacao_senha">Confirmar nova senha</label>
-              <div class="auth-input-wrap"><span class="auth-input-icon" aria-hidden="true">●</span><input type="password" id="confirmacao_senha" name="confirmacao_senha" placeholder="Digite a senha novamente" minlength="8" required autocomplete="new-password"></div>
+              <div class="auth-input-wrap"><span class="auth-input-icon" aria-hidden="true">●</span><input type="password" id="confirmacao_senha" name="confirmacao_senha" placeholder="Digite a senha novamente" minlength="12" required autocomplete="new-password"></div>
               <span class="auth-field-error">Confirme sua nova senha.</span>
             </div>
             <button type="submit" class="auth-submit"><span class="auth-submit__label">Salvar nova senha</span><span class="auth-submit__arrow" aria-hidden="true">→</span><span class="auth-submit__loader" aria-hidden="true"></span></button>

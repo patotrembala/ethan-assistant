@@ -7,6 +7,9 @@ Sistema web em PHP e MySQL para organizar o fluxo de trabalho de técnicos de in
 - Login e primeiro acesso do administrador.
 - Recuperação de senha com aprovação do administrador e link temporário enviado via SMTP.
 - Controle de sessão e separação de permissões.
+- MFA por e-mail para administradores, bloqueio contra força bruta e expiração por inatividade.
+- Trilha de auditoria e acesso de técnicos limitado aos clientes atribuídos.
+- Aviso de privacidade, canal do titular e painel administrativo de solicitações LGPD.
 - Dashboard para acompanhamento operacional.
 - Cadastro, visualização, edição e exclusão de clientes.
 - Telas de ordens de serviço, chamados, pendências, serviços e usuários.
@@ -32,6 +35,7 @@ cd ethan-assistant
 Copy-Item config/database.example.php config/database.local.php
 Copy-Item config/auth.example.php config/auth.local.php
 Copy-Item config/mail.example.php config/mail.local.php
+Copy-Item config/security.example.php config/security.local.php
 ```
 
 Os arquivos terminados em `.local.php` são privados e não são enviados ao GitHub. Edite:
@@ -39,6 +43,7 @@ Os arquivos terminados em `.local.php` são privados e não são enviados ao Git
 - `config/database.local.php`: conexão do MySQL local. No XAMPP padrão, o exemplo já utiliza usuário `root` sem senha.
 - `config/auth.local.php`: nome e e-mail autorizados para criar o primeiro administrador.
 - `config/mail.local.php`: servidor SMTP utilizado para enviar links de recuperação de senha.
+- `config/security.local.php`: chave aleatória privada usada para pseudonimizar origens nos registros de segurança.
 
 Na hospedagem gratuita da InfinityFree, a função `mail()` não está disponível. Configure um SMTP externo. Para Gmail, ative a verificação em duas etapas e utilize uma senha de aplicativo; nunca coloque a senha normal da conta no arquivo.
 
@@ -51,7 +56,7 @@ Na hospedagem gratuita da InfinityFree, a função `mail()` não está disponív
 
 O script cria o banco `ethan_assistant`, suas oito tabelas e o catálogo inicial de serviços.
 
-Em bancos criados antes da recuperação de senha, importe `database/migrations/20261001_password_reset_tokens.sql` e depois `database/migrations/20261008_password_reset_approval.sql`.
+Em bancos existentes, importe em ordem `database/migrations/20261001_password_reset_tokens.sql`, `database/migrations/20261008_password_reset_approval.sql` e `database/migrations/20261008_security_controls.sql`.
 
 ## Executar o sistema
 
@@ -83,7 +88,7 @@ git commit -m "Descreva a alteração"
 git push origin frontend-antigravity
 ```
 
-Não envie `config/database.local.php`, `config/auth.local.php`, `config/mail.local.php` ou arquivos de sessão. Eles já estão protegidos pelo `.gitignore`.
+Não envie arquivos `config/*.local.php` nem arquivos de sessão. Eles já estão protegidos pelo `.gitignore`.
 
 ## Estrutura principal
 
@@ -93,7 +98,8 @@ config/       conexão, validações e configurações de exemplo
 database/     script SQL de criação do banco
 docs/         documentação do projeto
 src/          classes de acesso aos dados
-storage/      sessões locais da aplicação
+scripts/      manutenção de retenção e backup criptografado
+storage/      diretório legado bloqueado; sessões são gravadas fora da raiz pública
 tests/        testes de fumaça
 views/        telas organizadas por módulo
 index.php     entrada e rotas da aplicação

@@ -223,8 +223,9 @@ require __DIR__ . '/../layouts/sidebar.php';
               name="observacoes"
               id="observacoes"
               class="form-control"
-              placeholder="Acessórios entregues, senhas de acesso, autorizações específicas..."
+              placeholder="Acessórios entregues e autorizações específicas. Nunca registre senhas de clientes."
             ><?= htmlspecialchars($ordem['observacoes'] ?? '') ?></textarea>
+            <div class="form-text" style="color: var(--color-danger);">É proibido registrar senhas, códigos de acesso ou credenciais neste campo.</div>
           </div>
         </div>
       </div>

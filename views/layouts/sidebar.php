@@ -79,6 +79,18 @@ $baseUrl = $baseUrl ?? '';
           <span>Recuperações de Senha<?= !empty($pendingPasswordResetCount) ? ' (' . (int)$pendingPasswordResetCount . ')' : '' ?></span>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="<?= $baseUrl ?>/auditoria" class="nav-link <?= $currentRoute === 'auditoria' ? 'active' : '' ?>">
+          <span class="icon">🧾</span>
+          <span>Auditoria</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="<?= $baseUrl ?>/solicitacoes-privacidade" class="nav-link <?= $currentRoute === 'solicitacoes-privacidade' ? 'active' : '' ?>">
+          <span class="icon">🛡️</span>
+          <span>Solicitações LGPD</span>
+        </a>
+      </li>
     </ul>
     <?php endif; ?>
   </nav>

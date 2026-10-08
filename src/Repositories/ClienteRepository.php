@@ -8,26 +8,37 @@ final class ClienteRepository
     {
     }
 
-    public function all(): array
+    public function all(?array $user = null): array
     {
-        $stmt = $this->pdo->query(
-            'SELECT id, razao_social, cnpj, endereco, email, telefone, ativo, criado_em, atualizado_em
-             FROM clientes
-             ORDER BY razao_social'
-        );
+        $sql = 'SELECT c.id, c.razao_social, c.cnpj, c.endereco, c.email, c.telefone, c.ativo, c.criado_em, c.atualizado_em
+                FROM clientes c';
+        $params = [];
+        if (($user['perfil'] ?? 'admin') !== 'admin') {
+            $sql .= ' WHERE EXISTS (SELECT 1 FROM ordens_servico os WHERE os.cliente_id = c.id AND os.tecnico_id = :tecnico_id)
+                      OR EXISTS (SELECT 1 FROM chamados_online ch WHERE ch.cliente_id = c.id AND ch.tecnico_id = :tecnico_id_chamado)';
+            $params = ['tecnico_id' => (int)$user['id'], 'tecnico_id_chamado' => (int)$user['id']];
+        }
+        $sql .= ' ORDER BY c.razao_social';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
 
         return array_map([$this, 'format'], $stmt->fetchAll());
     }
 
-    public function find(int $id): ?array
+    public function find(int $id, ?array $user = null): ?array
     {
-        $stmt = $this->pdo->prepare(
-            'SELECT id, razao_social, cnpj, endereco, email, telefone, ativo, criado_em, atualizado_em
-             FROM clientes
-             WHERE id = :id
-             LIMIT 1'
-        );
-        $stmt->execute(['id' => $id]);
+        $sql = 'SELECT c.id, c.razao_social, c.cnpj, c.endereco, c.email, c.telefone, c.ativo, c.criado_em, c.atualizado_em
+                FROM clientes c WHERE c.id = :id';
+        $params = ['id' => $id];
+        if (($user['perfil'] ?? 'admin') !== 'admin') {
+            $sql .= ' AND (EXISTS (SELECT 1 FROM ordens_servico os WHERE os.cliente_id = c.id AND os.tecnico_id = :tecnico_id)
+                       OR EXISTS (SELECT 1 FROM chamados_online ch WHERE ch.cliente_id = c.id AND ch.tecnico_id = :tecnico_id_chamado))';
+            $params['tecnico_id'] = (int)$user['id'];
+            $params['tecnico_id_chamado'] = (int)$user['id'];
+        }
+        $sql .= ' LIMIT 1';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
         $cliente = $stmt->fetch();
 
         return $cliente ? $this->format($cliente) : null;
@@ -66,7 +77,7 @@ final class ClienteRepository
         $stmt->execute(['id' => $id]);
     }
 
-    public function serviceOrders(int $clienteId): array
+    public function serviceOrders(int $clienteId, ?array $user = null): array
     {
         $stmt = $this->pdo->prepare(
             "SELECT os.id,
@@ -79,10 +90,14 @@ final class ClienteRepository
                     u.nome AS tecnico_nome
              FROM ordens_servico os
              LEFT JOIN usuarios u ON u.id = os.tecnico_id
-             WHERE os.cliente_id = :cliente_id
+             WHERE os.cliente_id = :cliente_id" . (($user['perfil'] ?? 'admin') !== 'admin' ? ' AND os.tecnico_id = :tecnico_id' : '') . "
              ORDER BY os.abertura_em DESC"
         );
-        $stmt->execute(['cliente_id' => $clienteId]);
+        $params = ['cliente_id' => $clienteId];
+        if (($user['perfil'] ?? 'admin') !== 'admin') {
+            $params['tecnico_id'] = (int)$user['id'];
+        }
+        $stmt->execute($params);
 
         return $stmt->fetchAll();
     }
