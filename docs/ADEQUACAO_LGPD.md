@@ -1,7 +1,7 @@
 # Avaliação de Adequação à LGPD — Ethan Assistant
 
-**Versão:** 1.0  
-**Data da avaliação:** 1º de outubro de 2026  
+**Versão:** 1.1  
+**Data da avaliação:** 8 de outubro de 2026  
 **Escopo:** código-fonte da branch `frontend-antigravity`, esquema MySQL e implantação atual em hospedagem compartilhada.
 
 > Este documento é uma avaliação técnica e organizacional preliminar. Ele não substitui parecer jurídico, contrato com operador, inventário validado pelo controlador nem auditoria independente.
@@ -63,6 +63,7 @@ O controlador deve manter um registro das operações de tratamento contendo, no
 | Proteção contra SQL Injection | Implementado no CRUD real de clientes e autenticação | PDO com consultas preparadas e emulação desativada |
 | Proteção CSRF | Implementada nas operações reais atuais | token aleatório validado com `hash_equals` |
 | Perfis de acesso | Parcial | perfis `admin` e `tecnico`; ações de clientes são restritas ao administrador |
+| Recuperação de senha | Implementado | solicitação depende de aprovação administrativa; o token é aleatório, armazenado como hash, expira em 30 minutos e é de uso único |
 | Segredos fora do Git | Implementado | arquivos `*.local.php` ignorados pelo repositório |
 | Codificação segura na saída | Predominante | uso de `htmlspecialchars` nas telas analisadas |
 | HTTPS público | Implementado na publicação atual | aplicação acessível por HTTPS |
@@ -184,9 +185,11 @@ O projeto somente deve afirmar que está adequado à LGPD quando, além das corr
 - [ANPD — Direitos dos titulares](https://www.gov.br/anpd/pt-br/assuntos/titular-de-dados/direito-dos-titulares)
 - [ANPD — Guia de Segurança da Informação para Agentes de Tratamento de Pequeno Porte](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/processo-guia-orientativo-sobre-seguranca-da-informacao-para-agentes-de-tratamento-de-pequeno-porte.pdf)
 - [Resolução CD/ANPD nº 2/2022 — Agentes de Tratamento de Pequeno Porte](https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-2-de-27-de-janeiro-de-2022)
+- [Resolução CD/ANPD nº 15/2024 — Comunicação de Incidente de Segurança](https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-15-de-24-de-abril-de-2024)
 
 ## 12. Histórico de revisão
 
 | Versão | Data | Alteração |
 | --- | --- | --- |
+| 1.1 | 08/10/2026 | Atualização da avaliação após a implantação do fluxo de recuperação com aprovação administrativa. |
 | 1.0 | 01/10/2026 | Avaliação técnica inicial do projeto e plano de adequação. |
