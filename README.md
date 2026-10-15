@@ -49,6 +49,7 @@ Os arquivos terminados em `.local.php` são privados e não são enviados ao Git
 - `config/ai.local.php`: chave e modelo usados pelo Ethan IA; mantenha a chave apenas no ambiente configurado.
 
 Na hospedagem gratuita da InfinityFree, a função `mail()` não está disponível. Configure um SMTP externo. Para Gmail, ative a verificação em duas etapas e utilize uma senha de aplicativo; nunca coloque a senha normal da conta no arquivo.
+O remetente oficial do projeto é `Ethan Assistant <ethanassistant1@gmail.com>`; a senha de aplicativo deve existir apenas no `config/mail.local.php` de cada ambiente.
 
 ## Criar o banco local
 

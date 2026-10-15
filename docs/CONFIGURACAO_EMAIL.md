@@ -2,11 +2,12 @@
 
 O Ethan Assistant utiliza uma conta de e-mail exclusiva para enviar códigos de autenticação administrativa e links de redefinição de senha.
 
-## Conta oficial planejada
+## Conta oficial
 
 - E-mail: `ethanassistant1@gmail.com`
-- Situação: aguardando o Google liberar a criação da senha de aplicativo.
-- Até a liberação, a configuração SMTP existente deve ser mantida para não interromper a recuperação de senha.
+- Remetente exibido: `Ethan Assistant`
+- Situação: a aplicação está preparada; falta cadastrar no servidor uma senha de aplicativo gerada nessa conta.
+- O e-mail pessoal não deve ser usado em novas instalações.
 
 ## Como concluir a troca
 
@@ -14,13 +15,31 @@ O Ethan Assistant utiliza uma conta de e-mail exclusiva para enviar códigos de 
 2. Ativar a verificação em duas etapas.
 3. Abrir a página **Senhas de app** da Conta Google.
 4. Criar uma senha de aplicativo com o nome `Ethan Assistant`.
-5. Atualizar o arquivo privado `config/mail.local.php` no servidor:
+5. Copiar `config/mail.example.php` para `config/mail.local.php` no servidor e preencher:
    - `username`: e-mail oficial;
    - `password`: senha de aplicativo de 16 caracteres;
    - `from_email`: e-mail oficial;
    - `from_name`: `Ethan Assistant`.
 6. Testar o envio por meio do fluxo **Esqueci minha senha**.
 7. Revogar a senha de aplicativo da conta antiga somente depois que o teste for concluído com sucesso.
+
+## Configuração esperada
+
+```php
+<?php
+
+return [
+    'host' => 'smtp.gmail.com',
+    'port' => 587,
+    'encryption' => 'tls',
+    'username' => 'ethanassistant1@gmail.com',
+    'password' => 'COLE_A_SENHA_DE_APLICATIVO_DIRETAMENTE_NO_SERVIDOR',
+    'from_email' => 'ethanassistant1@gmail.com',
+    'from_name' => 'Ethan Assistant'
+];
+```
+
+No InfinityFree, esse arquivo deve ficar em `htdocs/config/mail.local.php`. A senha não deve ser copiada para o GitHub nem enviada em conversa.
 
 ## Segurança
 
