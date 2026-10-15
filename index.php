@@ -54,6 +54,7 @@ $mailFile = __DIR__ . '/config/mail.local.php';
 $mailConfig = is_file($mailFile) ? require $mailFile : [];
 $securityFile = __DIR__ . '/config/security.local.php';
 $securityConfig = is_file($securityFile) ? require $securityFile : [];
+$adminMfaEnabled = (bool)($securityConfig['admin_mfa_enabled'] ?? true);
 $aiFile = __DIR__ . '/config/ai.local.php';
 $aiConfig = is_file($aiFile) ? require $aiFile : [];
 $pdo = database();
@@ -205,7 +206,7 @@ if ($requestUri === '/login') {
 
         if ($user && password_verify($senha, $user['senha_hash'])) {
             $securityService->recordLoginAttempt($email, $ip, true);
-            if ((string)$user['perfil'] === 'admin' && $securityService->mailIsConfigured($mailConfig)) {
+            if ($adminMfaEnabled && (string)$user['perfil'] === 'admin' && $securityService->mailIsConfigured($mailConfig)) {
                 $code = (string)random_int(100000, 999999);
                 $_SESSION['mfa_pending'] = [
                     'user' => [

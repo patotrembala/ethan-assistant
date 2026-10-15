@@ -12,6 +12,7 @@ Lista de funcionalidades e configurações que ainda precisam ser concluídas.
 ## 2. Configuração do e-mail oficial
 
 - Conta planejada: `ethanassistant1@gmail.com`.
+- Reativar `admin_mfa_enabled` após configurar e testar a senha de aplicativo do e-mail oficial.
 - Aguardar o Google liberar a criação da senha de aplicativo.
 - Substituir o remetente atual no arquivo privado `config/mail.local.php`.
 - Testar o envio de códigos administrativos e links de redefinição de senha.
