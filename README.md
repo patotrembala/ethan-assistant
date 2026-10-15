@@ -9,6 +9,7 @@ Sistema web em PHP e MySQL para organizar o fluxo de trabalho de técnicos de in
 - Controle de sessão e separação de permissões.
 - MFA por e-mail para administradores, bloqueio contra força bruta e expiração por inatividade.
 - Trilha de auditoria e acesso de técnicos limitado aos clientes atribuídos.
+- Ethan IA para análise de chamados, relatórios técnicos e dúvidas de suporte.
 - Aviso de privacidade, canal do titular e painel administrativo de solicitações LGPD.
 - Dashboard para acompanhamento operacional.
 - Cadastro, visualização, edição e exclusão de clientes.
@@ -30,12 +31,13 @@ Sistema web em PHP e MySQL para organizar o fluxo de trabalho de técnicos de in
 Abra o PowerShell e execute:
 
 ```powershell
-git clone -b frontend-antigravity https://github.com/patotrembala/ethan-assistant.git
+git clone -b ethanassistant https://github.com/patotrembala/ethan-assistant.git
 cd ethan-assistant
 Copy-Item config/database.example.php config/database.local.php
 Copy-Item config/auth.example.php config/auth.local.php
 Copy-Item config/mail.example.php config/mail.local.php
 Copy-Item config/security.example.php config/security.local.php
+Copy-Item config/ai.example.php config/ai.local.php
 ```
 
 Os arquivos terminados em `.local.php` são privados e não são enviados ao GitHub. Edite:
@@ -44,6 +46,7 @@ Os arquivos terminados em `.local.php` são privados e não são enviados ao Git
 - `config/auth.local.php`: nome e e-mail autorizados para criar o primeiro administrador.
 - `config/mail.local.php`: servidor SMTP utilizado para enviar links de recuperação de senha.
 - `config/security.local.php`: chave aleatória privada usada para pseudonimizar origens nos registros de segurança.
+- `config/ai.local.php`: chave e modelo usados pelo Ethan IA; mantenha a chave apenas no ambiente configurado.
 
 Na hospedagem gratuita da InfinityFree, a função `mail()` não está disponível. Configure um SMTP externo. Para Gmail, ative a verificação em duas etapas e utilize uma senha de aplicativo; nunca coloque a senha normal da conta no arquivo.
 
@@ -76,8 +79,8 @@ Depois abra:
 Antes de começar:
 
 ```powershell
-git switch frontend-antigravity
-git pull origin frontend-antigravity
+git switch ethanassistant
+git pull origin ethanassistant
 ```
 
 Ao terminar:
@@ -85,7 +88,7 @@ Ao terminar:
 ```powershell
 git add .
 git commit -m "Descreva a alteração"
-git push origin frontend-antigravity
+git push origin ethanassistant
 ```
 
 Não envie arquivos `config/*.local.php` nem arquivos de sessão. Eles já estão protegidos pelo `.gitignore`.

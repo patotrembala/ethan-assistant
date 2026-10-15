@@ -2,12 +2,12 @@
 
 Lista de funcionalidades e configurações que ainda precisam ser concluídas.
 
-## 1. IA do Ethan Assistant
+## 1. IA do Ethan Assistant — MVP implementado, configuração pendente
 
-- Definir quais atividades a IA realizará dentro do sistema.
-- Planejar como ela ajudará técnicos e administradores sem acessar informações além das permissões do usuário.
-- Definir a tecnologia, os limites de uso, a proteção de dados e a interface da funcionalidade.
-- Implementar e testar somente depois da definição do escopo.
+- Configurar uma chave privada da API no ambiente local e na hospedagem.
+- Testar a comunicação de saída da InfinityFree com a API.
+- Conectar a análise aos chamados reais quando a persistência desse módulo for concluída.
+- Criar avaliações com exemplos reais anonimizados para medir a qualidade das respostas.
 
 ## 2. Configuração do e-mail oficial
 

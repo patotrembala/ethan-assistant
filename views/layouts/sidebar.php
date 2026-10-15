@@ -56,6 +56,12 @@ $baseUrl = $baseUrl ?? '';
           <span>Clientes</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="<?= $baseUrl ?>/ethan-ia" class="nav-link <?= $currentRoute === 'ethan-ia' ? 'active' : '' ?>">
+          <span class="icon">✨</span>
+          <span>Ethan IA</span>
+        </a>
+      </li>
     </ul>
 
     <?php if ($isAdmin): ?>

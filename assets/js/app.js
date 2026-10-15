@@ -7,7 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
   initFlashDismiss();
   initTableSearch();
   initMobileSidebar();
+  initCopyButtons();
 });
+
+/**
+ * Copia resultados gerados pela IA sem depender de bibliotecas externas.
+ */
+function initCopyButtons() {
+  document.querySelectorAll('[data-copy-target]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const target = document.getElementById(button.getAttribute('data-copy-target'));
+      if (!target || !navigator.clipboard) return;
+      await navigator.clipboard.writeText(target.innerText.trim());
+      const original = button.textContent;
+      button.textContent = 'Copiado';
+      setTimeout(() => { button.textContent = original; }, 1600);
+    });
+  });
+}
 
 /**
  * Máscaras para campos corporativos (CNPJ e Telefone)

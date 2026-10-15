@@ -40,6 +40,7 @@ require_once __DIR__ . '/src/Services/PasswordResetService.php';
 require_once __DIR__ . '/src/Services/SmtpMailer.php';
 require_once __DIR__ . '/src/Services/SecurityService.php';
 require_once __DIR__ . '/src/Services/PrivacyRequestService.php';
+require_once __DIR__ . '/src/Services/EthanAiService.php';
 
 // Roteamento amigável
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
@@ -53,9 +54,12 @@ $mailFile = __DIR__ . '/config/mail.local.php';
 $mailConfig = is_file($mailFile) ? require $mailFile : [];
 $securityFile = __DIR__ . '/config/security.local.php';
 $securityConfig = is_file($securityFile) ? require $securityFile : [];
+$aiFile = __DIR__ . '/config/ai.local.php';
+$aiConfig = is_file($aiFile) ? require $aiFile : [];
 $pdo = database();
 $securityService = new SecurityService($pdo, (string)($securityConfig['key'] ?? $authConfig['admin_email'] ?? 'ethan-assistant'));
 $privacyRequestService = new PrivacyRequestService($pdo);
+$ethanAiService = new EthanAiService($aiConfig);
 $userCount = (int)$pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn();
 
 if (isset($_SESSION['user'])) {
@@ -416,6 +420,21 @@ function redirectWithFlash(string $location, string $type, string $message): nev
     exit;
 }
 
+function consumeAiQuota(): void
+{
+    $now = time();
+    $windowStart = $now - 600;
+    $requests = array_values(array_filter(
+        (array)($_SESSION['ethan_ai_requests'] ?? []),
+        static fn($timestamp): bool => (int)$timestamp >= $windowStart
+    ));
+    if (count($requests) >= 12) {
+        throw new EthanAiException('Limite de 12 solicitações a cada 10 minutos atingido. Aguarde um pouco.');
+    }
+    $requests[] = $now;
+    $_SESSION['ethan_ai_requests'] = $requests;
+}
+
 // Dados mock para visualização das telas
 $mockClientes = [
     [
@@ -716,6 +735,82 @@ switch (true) {
         $ordem = $mockOrdens[0];
         require __DIR__ . '/views/ordens/print.php';
         break;
+
+    case $requestUri === '/ethan-ia' && $_SERVER['REQUEST_METHOD'] === 'GET':
+        $aiConfigured = $ethanAiService->isConfigured();
+        $chatHistory = (array)($_SESSION['ethan_ai_chat'] ?? []);
+        require __DIR__ . '/views/ai/index.php';
+        break;
+
+    case $requestUri === '/ethan-ia/analisar' && $_SERVER['REQUEST_METHOD'] === 'POST':
+        verifyCsrf();
+        $activeTool = 'analise';
+        $formData = ['descricao' => trim((string)($_POST['descricao'] ?? ''))];
+        $aiConfigured = $ethanAiService->isConfigured();
+        $chatHistory = (array)($_SESSION['ethan_ai_chat'] ?? []);
+        try {
+            consumeAiQuota();
+            $analysis = $ethanAiService->analyzeTicket($formData['descricao']);
+            $securityService->audit((int)$currentUser['id'], 'analisar_chamado', 'ethan_ai');
+        } catch (EthanAiException $exception) {
+            $aiError = $exception->getMessage();
+        } catch (Throwable $exception) {
+            error_log('Falha inesperada no Ethan IA: ' . $exception->getMessage());
+            $aiError = 'Não foi possível concluir a análise. Tente novamente.';
+        }
+        require __DIR__ . '/views/ai/index.php';
+        break;
+
+    case $requestUri === '/ethan-ia/relatorio' && $_SERVER['REQUEST_METHOD'] === 'POST':
+        verifyCsrf();
+        $activeTool = 'relatorio';
+        $formData = [
+            'problema' => trim((string)($_POST['problema'] ?? '')),
+            'acoes' => trim((string)($_POST['acoes'] ?? '')),
+            'resultado' => trim((string)($_POST['resultado'] ?? '')),
+        ];
+        $aiConfigured = $ethanAiService->isConfigured();
+        $chatHistory = (array)($_SESSION['ethan_ai_chat'] ?? []);
+        try {
+            consumeAiQuota();
+            $report = $ethanAiService->generateClosureReport($formData['problema'], $formData['acoes'], $formData['resultado']);
+            $securityService->audit((int)$currentUser['id'], 'gerar_relatorio', 'ethan_ai');
+        } catch (EthanAiException $exception) {
+            $aiError = $exception->getMessage();
+        } catch (Throwable $exception) {
+            error_log('Falha inesperada no Ethan IA: ' . $exception->getMessage());
+            $aiError = 'Não foi possível gerar o relatório. Tente novamente.';
+        }
+        require __DIR__ . '/views/ai/index.php';
+        break;
+
+    case $requestUri === '/ethan-ia/perguntar' && $_SERVER['REQUEST_METHOD'] === 'POST':
+        verifyCsrf();
+        $activeTool = 'chat';
+        $aiConfigured = $ethanAiService->isConfigured();
+        $chatHistory = (array)($_SESSION['ethan_ai_chat'] ?? []);
+        $question = trim((string)($_POST['pergunta'] ?? ''));
+        try {
+            consumeAiQuota();
+            $answer = $ethanAiService->answerSupportQuestion($question, $chatHistory);
+            $chatHistory[] = ['role' => 'user', 'content' => mb_substr($question, 0, 3000)];
+            $chatHistory[] = ['role' => 'assistant', 'content' => $answer];
+            $chatHistory = array_slice($chatHistory, -12);
+            $_SESSION['ethan_ai_chat'] = $chatHistory;
+            $securityService->audit((int)$currentUser['id'], 'perguntar', 'ethan_ai');
+        } catch (EthanAiException $exception) {
+            $aiError = $exception->getMessage();
+        } catch (Throwable $exception) {
+            error_log('Falha inesperada no Ethan IA: ' . $exception->getMessage());
+            $aiError = 'Não foi possível responder agora. Tente novamente.';
+        }
+        require __DIR__ . '/views/ai/index.php';
+        break;
+
+    case $requestUri === '/ethan-ia/chat/limpar' && $_SERVER['REQUEST_METHOD'] === 'POST':
+        verifyCsrf();
+        unset($_SESSION['ethan_ai_chat']);
+        redirectWithFlash('/ethan-ia', 'success', 'Conversa com o Ethan limpa.');
 
     case $requestUri === '/chamados':
         $chamados = $mockChamados;
