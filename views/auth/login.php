@@ -16,59 +16,29 @@ $success = $success ?? null;
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/forms.css">
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/auth.css">
 </head>
-<body class="auth-page">
-  <main class="auth-shell">
-    <section class="auth-showcase" aria-label="Apresentação do Ethan Assistant">
-      <div class="auth-showcase__glow auth-showcase__glow--one"></div>
-      <div class="auth-showcase__glow auth-showcase__glow--two"></div>
+<body class="auth-page auth-page--login">
+  <main class="login-portal">
+    <header class="login-portal__header">
+      <a class="login-brand" href="<?= $baseUrl ?>/login" aria-label="Ethan Assistant - início">
+        <span class="login-brand__symbol" aria-hidden="true"><span>E</span></span>
+        <span><strong>Ethan Assistant</strong><small>Central técnica</small></span>
+      </a>
+      <span class="login-status"><i aria-hidden="true"></i>Sistema operacional</span>
+    </header>
 
-      <div class="brand-lockup">
-        <div class="brand-mark" aria-hidden="true"><span>EA</span></div>
-        <div>
-          <strong>Ethan Assistant</strong>
-          <span>Gestão técnica inteligente</span>
+    <section class="login-workspace" aria-label="Acesso ao Ethan Assistant">
+      <div class="login-access">
+        <div class="login-access__intro">
+          <span class="login-kicker">Acesso à plataforma</span>
+          <h1>Entre no seu<br><em>espaço de trabalho.</em></h1>
+          <p>Continue de onde parou e acompanhe toda a operação técnica em um só lugar.</p>
         </div>
-      </div>
 
-      <div class="showcase-copy">
-        <span class="showcase-eyebrow"><span class="status-dot"></span>Central de operações</span>
-        <h1>Organize atendimentos.<br><span>Entregue resultados.</span></h1>
-        <p>Clientes, ordens de serviço e desempenho técnico reunidos em um ambiente simples e confiável.</p>
-
-        <div class="showcase-features" aria-label="Recursos do sistema">
-          <div class="showcase-feature">
-            <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
-            <span><strong>Fluxo centralizado</strong>Ordens e chamados sob controle</span>
+        <div class="login-form-panel">
+          <div class="login-form-panel__heading">
+            <span class="login-form-panel__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 10V8a5 5 0 0 1 10 0v2"/><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M12 15v2"/></svg></span>
+            <span><strong>Identificação</strong><small>Use suas credenciais corporativas</small></span>
           </div>
-          <div class="showcase-feature">
-            <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
-            <span><strong>Operação prática</strong>Menos etapas, mais produtividade</span>
-          </div>
-          <div class="showcase-feature">
-            <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span>
-            <span><strong>Acesso protegido</strong>Permissões por perfil de usuário</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="showcase-footer"><span>Ethan Assistant</span><span>•</span><span>Uso interno corporativo</span></div>
-    </section>
-
-    <section class="auth-content">
-      <div class="auth-content__inner">
-        <div class="auth-mobile-brand">
-          <div class="brand-mark" aria-hidden="true"><span>EA</span></div>
-          <strong>Ethan Assistant</strong>
-        </div>
-
-        <div class="auth-heading">
-          <span class="secure-label">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-            Ambiente seguro
-          </span>
-          <h2>Bem-vindo de volta</h2>
-          <p>Entre com suas credenciais para acessar o painel operacional.</p>
-        </div>
 
         <?php if ($error): ?>
           <div class="auth-alert auth-alert--danger" role="alert"><span class="auth-alert__icon">!</span><span><?= htmlspecialchars($error) ?></span></div>
@@ -109,9 +79,39 @@ $success = $success ?? null;
           </button>
         </form>
 
-        <div class="auth-help"><span>Problemas para acessar?</span><span>Procure o administrador do sistema.</span><a class="auth-link" href="<?= $baseUrl ?>/privacidade">Privacidade e proteção de dados</a></div>
+          <div class="auth-help"><span>Problemas para acessar?</span><span>Procure o administrador do sistema.</span><a class="auth-link" href="<?= $baseUrl ?>/privacidade">Privacidade e proteção de dados</a></div>
+        </div>
       </div>
+
+      <aside class="login-operations" aria-label="Visão do fluxo operacional">
+        <div class="login-operations__top">
+          <span><i aria-hidden="true"></i>Fluxo de hoje</span>
+          <span class="login-operations__date"><?= date('d/m') ?></span>
+        </div>
+
+        <div class="login-operations__hero">
+          <span class="login-operations__eyebrow">Sua rotina, organizada</span>
+          <h2>Do chamado à<br>solução técnica.</h2>
+          <p>Registre, acompanhe e finalize cada atendimento com clareza.</p>
+        </div>
+
+        <ol class="operation-track">
+          <li class="is-active"><span>01</span><div><strong>Entrada</strong><small>Chamados e ordens recebidas</small></div></li>
+          <li><span>02</span><div><strong>Execução</strong><small>Diagnóstico e atendimento</small></div></li>
+          <li><span>03</span><div><strong>Entrega</strong><small>Histórico e conclusão</small></div></li>
+        </ol>
+
+        <div class="login-operations__footer">
+          <span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Acesso por perfil</span>
+          <span>Uso interno</span>
+        </div>
+      </aside>
     </section>
+
+    <footer class="login-portal__footer">
+      <span>© <?= date('Y') ?> Ethan Assistant</span>
+      <span>Gestão técnica inteligente</span>
+    </footer>
   </main>
   <script src="<?= $baseUrl ?>/assets/js/auth.js"></script>
 </body>
