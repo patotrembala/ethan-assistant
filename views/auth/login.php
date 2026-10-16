@@ -3,6 +3,7 @@ $pageTitle = 'Login - Ethan Assistant';
 $baseUrl = $baseUrl ?? '';
 $error = $error ?? ($_SESSION['login_error'] ?? null);
 $success = $success ?? null;
+$authCssVersion = @filemtime(__DIR__ . '/../../assets/css/auth.css') ?: '2';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -14,7 +15,7 @@ $success = $success ?? null;
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/base.css">
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/components.css">
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/forms.css">
-  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/auth.css">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/auth.css?v=<?= urlencode((string)$authCssVersion) ?>">
 </head>
 <body class="auth-page auth-page--login">
   <main class="login-portal">
