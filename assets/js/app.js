@@ -8,7 +8,44 @@ document.addEventListener('DOMContentLoaded', () => {
   initTableSearch();
   initMobileSidebar();
   initCopyButtons();
+  initEthanChat();
 });
+
+/**
+ * Experiência de conversa do Ethan: atalhos, envio com Enter e rolagem.
+ */
+function initEthanChat() {
+  const form = document.querySelector('[data-ai-chat-form]');
+  const input = form?.querySelector('textarea[name="pergunta"]');
+  const conversation = document.querySelector('[data-ai-conversation]');
+
+  if (conversation) {
+    conversation.scrollTop = conversation.scrollHeight;
+  }
+
+  document.querySelectorAll('[data-ai-prompt]').forEach(button => {
+    button.addEventListener('click', () => {
+      if (!input || input.disabled) return;
+      input.value = button.getAttribute('data-ai-prompt') || '';
+      input.focus();
+      input.dispatchEvent(new Event('input'));
+    });
+  });
+
+  if (!form || !input) return;
+
+  const resize = () => {
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(input.scrollHeight, 160)}px`;
+  };
+  input.addEventListener('input', resize);
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      if (input.value.trim() !== '') form.requestSubmit();
+    }
+  });
+}
 
 /**
  * Copia resultados gerados pela IA sem depender de bibliotecas externas.

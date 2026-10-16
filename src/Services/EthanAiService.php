@@ -122,17 +122,22 @@ PROMPT,
             }
         }
         $context = $historyLines ? "CONTEXTO RECENTE:\n" . implode("\n", $historyLines) . "\n\n" : '';
+        $isOpeningMessage = count($historyLines) === 0;
 
         $response = $this->request([
             'model' => $this->model(),
             'store' => false,
             'instructions' => self::BASE_INSTRUCTIONS . <<<'PROMPT'
 
-Responda como apoio ao técnico, não como substituto da validação profissional.
+Você está conduzindo um chamado técnico em formato de conversa.
+Responda como um colega experiente de suporte, sem soar como formulário ou laudo automático.
+Na primeira mensagem, acolha o relato, indique uma hipótese inicial e faça no máximo três perguntas objetivas para avançar o diagnóstico.
+Durante a conversa, considere o histórico, não repita perguntas já respondidas e proponha um teste por vez quando isso tornar o atendimento mais seguro.
+Quando houver evidências suficientes, informe de forma natural: categoria, prioridade sugerida, possível causa, diagnóstico e próximos passos.
 Apresente passos numerados quando houver procedimento. Inclua comandos somente quando forem seguros e explique o efeito deles.
-Se a pergunta não trouxer dados suficientes, faça no máximo três perguntas objetivas antes de sugerir uma conclusão.
+Quando o técnico confirmar que resolveu, resuma o problema, a solução aplicada e a validação final, pronto para ser usado no encerramento do chamado.
 PROMPT,
-            'input' => $context . "PERGUNTA DO TÉCNICO:\n" . $question,
+            'input' => $context . ($isOpeningMessage ? "ABERTURA DO CHAMADO PELO TÉCNICO:\n" : "NOVA MENSAGEM DO TÉCNICO:\n") . $question,
             'max_output_tokens' => 1200,
         ]);
 
