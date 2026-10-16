@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../config/helpers.php';
 
 $pageTitle = $pageTitle ?? 'Ethan Assistant - Gestão Técnica';
 $baseUrl = $baseUrl ?? '';
+$assetVersion = '20261016-chat2';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -16,11 +17,11 @@ $baseUrl = $baseUrl ?? '';
   <title><?= htmlspecialchars($pageTitle) ?></title>
 
   <!-- Estilos Corporativos Ethan Assistant -->
-  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/base.css">
-  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/layout.css">
-  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/components.css">
-  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/forms.css">
-  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/print.css" media="print">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/base.css?v=<?= $assetVersion ?>">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/layout.css?v=<?= $assetVersion ?>">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/components.css?v=<?= $assetVersion ?>">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/forms.css?v=<?= $assetVersion ?>">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/print.css?v=<?= $assetVersion ?>" media="print">
 </head>
 <body>
 <div class="app-container">

@@ -45,8 +45,9 @@ $isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
   </div>
 
   <!-- Scripts Globais -->
-  <script src="<?= $baseUrl ?>/assets/js/app.js"></script>
-  <script src="<?= $baseUrl ?>/assets/js/undo-timer.js"></script>
-  <script src="<?= $baseUrl ?>/assets/js/validation.js"></script>
+  <?php $assetVersion = $assetVersion ?? '20261016-chat2'; ?>
+  <script src="<?= $baseUrl ?>/assets/js/app.js?v=<?= $assetVersion ?>"></script>
+  <script src="<?= $baseUrl ?>/assets/js/undo-timer.js?v=<?= $assetVersion ?>"></script>
+  <script src="<?= $baseUrl ?>/assets/js/validation.js?v=<?= $assetVersion ?>"></script>
 </body>
 </html>

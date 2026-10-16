@@ -740,6 +740,9 @@ switch (true) {
     case $requestUri === '/ethan-ia' && $_SERVER['REQUEST_METHOD'] === 'GET':
         $aiConfigured = $ethanAiService->isConfigured();
         $chatHistory = (array)($_SESSION['ethan_ai_chat'] ?? []);
+        $aiError = $_SESSION['ethan_ai_error'] ?? null;
+        $draftQuestion = (string)($_SESSION['ethan_ai_draft'] ?? '');
+        unset($_SESSION['ethan_ai_error'], $_SESSION['ethan_ai_draft']);
         require __DIR__ . '/views/ai/index.php';
         break;
 
@@ -805,8 +808,12 @@ switch (true) {
             error_log('Falha inesperada no Ethan IA: ' . $exception->getMessage());
             $aiError = 'Não foi possível responder agora. Tente novamente.';
         }
-        require __DIR__ . '/views/ai/index.php';
-        break;
+        if ($aiError) {
+            $_SESSION['ethan_ai_error'] = $aiError;
+            $_SESSION['ethan_ai_draft'] = mb_substr($question, 0, 3000);
+        }
+        header('Location: /ethan-ia');
+        exit;
 
     case $requestUri === '/ethan-ia/chat/limpar' && $_SERVER['REQUEST_METHOD'] === 'POST':
         verifyCsrf();

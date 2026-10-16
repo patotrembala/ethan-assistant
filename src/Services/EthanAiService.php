@@ -192,7 +192,7 @@ PROMPT,
         if ($status < 200 || $status >= 300) {
             error_log('Falha na API de IA (' . $status . '): ' . mb_substr((string)$raw, 0, 1000));
             $message = $status === 429
-                ? 'O limite temporário da IA foi atingido. Tente novamente em alguns minutos.'
+                ? 'O Ethan está temporariamente sem créditos de IA. O administrador precisa conferir o faturamento da API.'
                 : 'O serviço de IA não conseguiu concluir a solicitação.';
             throw new EthanAiException($message);
         }

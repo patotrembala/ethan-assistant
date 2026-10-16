@@ -5,7 +5,9 @@ $baseUrl = $baseUrl ?? '';
 $aiConfigured = $aiConfigured ?? false;
 $aiError = $aiError ?? null;
 $chatHistory = $chatHistory ?? [];
+$draftQuestion = $draftQuestion ?? '';
 $hasConversation = count($chatHistory) > 0;
+$isQuotaNotice = is_string($aiError) && str_contains($aiError, 'créditos de IA');
 
 require __DIR__ . '/../layouts/header.php';
 require __DIR__ . '/../layouts/sidebar.php';
@@ -46,7 +48,10 @@ require __DIR__ . '/../layouts/sidebar.php';
       <?php endif; ?>
 
       <?php if ($aiError): ?>
-        <div class="alert alert-danger ai-chat-alert"><span><?= htmlspecialchars($aiError) ?></span></div>
+        <div class="<?= $isQuotaNotice ? 'ai-service-note' : 'alert alert-danger ai-chat-alert' ?>">
+          <?php if ($isQuotaNotice): ?><span class="ai-service-note-icon" aria-hidden="true">i</span><?php endif; ?>
+          <span><?= htmlspecialchars($aiError) ?></span>
+        </div>
       <?php endif; ?>
 
       <section class="ai-conversation" data-ai-conversation aria-live="polite" aria-label="Conversa com o Ethan">
@@ -82,7 +87,7 @@ require __DIR__ . '/../layouts/sidebar.php';
         <form method="POST" action="<?= $baseUrl ?>/ethan-ia/perguntar" class="ai-composer" data-ai-chat-form>
           <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
           <label for="pergunta" class="sr-only">Mensagem para o Ethan</label>
-          <textarea id="pergunta" name="pergunta" maxlength="3000" required <?= !$aiConfigured ? 'disabled' : '' ?> placeholder="Descreva o problema, os sintomas e o que você já tentou..." rows="1"></textarea>
+          <textarea id="pergunta" name="pergunta" maxlength="3000" required <?= !$aiConfigured ? 'disabled' : '' ?> placeholder="Descreva o problema, os sintomas e o que você já tentou..." rows="1"><?= htmlspecialchars($draftQuestion) ?></textarea>
           <button type="submit" class="ai-send-button" <?= !$aiConfigured ? 'disabled' : '' ?> aria-label="Enviar mensagem">
             <span>Enviar</span><span aria-hidden="true">➜</span>
           </button>
