@@ -30,7 +30,7 @@ node scripts\chatgpt_oauth_node.mjs
 
 2. O navegador abrirá automaticamente; confirme a autorização na tela da OpenAI.
 3. O conector criará `config/chatgpt.oauth.local.json` fora do Git. O identificador de registro auxiliar também permanece privado.
-4. Em hospedagem remota, transfira esse arquivo por um canal privado para a pasta `config` e nunca o publique no repositório.
+4. Em hospedagem remota, transfira esse arquivo por um canal privado para a pasta `config` e nunca o publique no repositório. Na conta atual da InfinityFree, o destino correto é `/ethanassistant.infinityfreeapp.com/htdocs/config` (não a pasta `/htdocs` genérica).
 
 O sistema renova o acesso automaticamente enquanto a autorização permanecer válida. Por segurança, quando essa opção está ativa, todas as rotas do Ethan IA ficam restritas ao perfil administrador. O arquivo contém credenciais sensíveis: não deve ser aberto em capturas de tela, enviado em conversas nem copiado para computadores de terceiros.
 

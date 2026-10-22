@@ -2,10 +2,9 @@
 
 Lista de funcionalidades e configurações que ainda precisam ser concluídas.
 
-## 1. IA do Ethan Assistant — integração e autorização locais concluídas
+## 1. IA do Ethan Assistant — integração publicada e validada
 
-- Transferir `config/chatgpt.oauth.local.json` de forma privada para a hospedagem, sem passar pelo Git.
-- Testar a comunicação de saída da InfinityFree com a API.
+- Conexão com o plano ChatGPT autorizada, publicada na InfinityFree e validada com uma conversa real.
 - Conectar a análise aos chamados reais quando a persistência desse módulo for concluída.
 - Criar avaliações com exemplos reais anonimizados para medir a qualidade das respostas.
 
