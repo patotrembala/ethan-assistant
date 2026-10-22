@@ -2,9 +2,9 @@
 
 Lista de funcionalidades e configurações que ainda precisam ser concluídas.
 
-## 1. IA do Ethan Assistant — MVP implementado, configuração pendente
+## 1. IA do Ethan Assistant — integração e autorização locais concluídas
 
-- Configurar uma chave privada da API no ambiente local e na hospedagem.
+- Transferir `config/chatgpt.oauth.local.json` de forma privada para a hospedagem, sem passar pelo Git.
 - Testar a comunicação de saída da InfinityFree com a API.
 - Conectar a análise aos chamados reais quando a persistência desse módulo for concluída.
 - Criar avaliações com exemplos reais anonimizados para medir a qualidade das respostas.

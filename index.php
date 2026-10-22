@@ -57,10 +57,11 @@ $securityConfig = is_file($securityFile) ? require $securityFile : [];
 $adminMfaEnabled = (bool)($securityConfig['admin_mfa_enabled'] ?? true);
 $aiFile = __DIR__ . '/config/ai.local.php';
 $aiConfig = is_file($aiFile) ? require $aiFile : [];
+$chatGptOauthFile = __DIR__ . '/config/chatgpt.oauth.local.json';
 $pdo = database();
 $securityService = new SecurityService($pdo, (string)($securityConfig['key'] ?? $authConfig['admin_email'] ?? 'ethan-assistant'));
 $privacyRequestService = new PrivacyRequestService($pdo);
-$ethanAiService = new EthanAiService($aiConfig);
+$ethanAiService = new EthanAiService($aiConfig, null, $chatGptOauthFile);
 $userCount = (int)$pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn();
 
 if (isset($_SESSION['user'])) {
@@ -434,6 +435,12 @@ function consumeAiQuota(): void
     }
     $requests[] = $now;
     $_SESSION['ethan_ai_requests'] = $requests;
+}
+
+$aiUsesChatGptPlan = $ethanAiService->usesChatGptPlan();
+if ($aiUsesChatGptPlan && str_starts_with((string)$requestUri, '/ethan-ia')) {
+    // Uma assinatura pessoal do ChatGPT nunca é compartilhada com técnicos.
+    requireAdmin($isAdmin);
 }
 
 // Dados mock para visualização das telas

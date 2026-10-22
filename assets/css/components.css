@@ -775,6 +775,20 @@ textarea.ai-input-large {
   font-weight: 700;
 }
 
+.ai-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 5px;
+  padding: 3px 8px;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
 .ai-new-ticket {
   border-radius: 10px;
 }
@@ -1050,7 +1064,8 @@ textarea.ai-input-large {
     padding-right: 14px;
   }
   .ai-online-label,
-  .ai-chat-identity p {
+  .ai-chat-identity p,
+  .ai-plan-badge {
     display: none;
   }
   .ai-conversation {

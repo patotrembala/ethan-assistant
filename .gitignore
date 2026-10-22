@@ -6,6 +6,10 @@
 /config/mail.local.php
 /config/security.local.php
 /config/ai.local.php
+/config/chatgpt.oauth.local.json
+/config/chatgpt.oauth.transaction.local.json
+/config/chatgpt.host.local.txt
+/config/chatgpt.registration.local.json
 /database/seed.local.sql
 /storage/sessions/*
 !/storage/sessions/.gitkeep

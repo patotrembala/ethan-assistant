@@ -43,4 +43,31 @@ assert($report === 'Relatório técnico de teste.');
 
 $answer = $service->answerSupportQuestion('Como validar a conectividade?', []);
 assert($answer === 'Resposta de suporte de teste.');
+
+$oauthFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'ethan-oauth-test-' . bin2hex(random_bytes(6)) . '.json';
+file_put_contents($oauthFile, json_encode([
+    'client_id' => 'oaiapp_teste',
+    'access_token' => 'token-de-teste',
+    'refresh_token' => 'refresh-de-teste',
+    'expires_at' => time() + 3600,
+    'scopes' => ['chatgpt.tokens.use.direct'],
+    'model' => 'modelo-chatgpt-teste',
+], JSON_THROW_ON_ERROR));
+try {
+    $oauthService = new EthanAiService([], null, $oauthFile);
+    assert($oauthService->isConfigured());
+    assert($oauthService->usesChatGptPlan());
+
+    $parseStream = Closure::bind(
+        fn(string $raw, int $status): array => $this->parseStreamingResponse($raw, $status),
+        $oauthService,
+        EthanAiService::class
+    );
+    $stream = "data: {\"type\":\"response.output_text.delta\",\"delta\":\"Resposta via plano\"}\n\n"
+        . "data: {\"type\":\"response.completed\",\"response\":{}}\n\n";
+    $streamResponse = $parseStream($stream, 200);
+    assert($streamResponse['output'][0]['content'][0]['text'] === 'Resposta via plano');
+} finally {
+    @unlink($oauthFile);
+}
 echo "Ethan IA: OK\n";

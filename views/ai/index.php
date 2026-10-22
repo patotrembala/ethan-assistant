@@ -3,6 +3,7 @@ $pageTitle = 'Conversa com Ethan - Ethan Assistant';
 $currentRoute = 'ethan-ia';
 $baseUrl = $baseUrl ?? '';
 $aiConfigured = $aiConfigured ?? false;
+$aiUsesChatGptPlan = $aiUsesChatGptPlan ?? false;
 $aiError = $aiError ?? null;
 $chatHistory = $chatHistory ?? [];
 $draftQuestion = $draftQuestion ?? '';
@@ -30,6 +31,9 @@ require __DIR__ . '/../layouts/sidebar.php';
               <span class="ai-online-label"><?= $aiConfigured ? 'Disponível' : 'Indisponível' ?></span>
             </div>
             <p>Assistente de diagnóstico técnico</p>
+            <?php if ($aiUsesChatGptPlan): ?>
+              <span class="ai-plan-badge">Conectado ao seu ChatGPT</span>
+            <?php endif; ?>
           </div>
         </div>
 
