@@ -5,6 +5,7 @@ Lista de funcionalidades e configurações que ainda precisam ser concluídas.
 ## 1. IA do Ethan Assistant — integração publicada e validada
 
 - Conexão com o plano ChatGPT autorizada, publicada na InfinityFree e validada com uma conversa real.
+- Rascunho do capítulo de uso criado em `docs/MANUAL_USO_ETHAN_IA.md`; incorporar ao Manual do Usuário geral e adicionar as capturas de tela ao final do projeto.
 - Conectar a análise aos chamados reais quando a persistência desse módulo for concluída.
 - Criar avaliações com exemplos reais anonimizados para medir a qualidade das respostas.
 
