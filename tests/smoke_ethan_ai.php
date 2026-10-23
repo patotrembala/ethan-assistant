@@ -67,6 +67,23 @@ try {
         . "data: {\"type\":\"response.completed\",\"response\":{}}\n\n";
     $streamResponse = $parseStream($stream, 200);
     assert($streamResponse['output'][0]['content'][0]['text'] === 'Resposta via plano');
+
+    $incompleteStream = "data: {\"type\":\"response.output_text.delta\",\"delta\":\"Resposta parcial\"}\n\n"
+        . "data: {\"type\":\"response.incomplete\",\"response\":{\"incomplete_details\":{\"reason\":\"server_error\"}}}\n\n";
+    try {
+        $parseStream($incompleteStream, 200);
+        assert(false, 'Um stream incompleto deve solicitar uma nova tentativa controlada.');
+    } catch (EthanAiRetryableException) {
+        assert(true);
+    }
+
+    $usageLimitStream = "data: {\"type\":\"error\",\"error\":{\"code\":\"subscription_sharing_usage_limit_exceeded\"}}\n\n";
+    try {
+        $parseStream($usageLimitStream, 200);
+        assert(false, 'O limite do plano deve ser informado sem nova tentativa.');
+    } catch (EthanAiException $exception) {
+        assert(str_contains($exception->getMessage(), 'limite temporário'));
+    }
 } finally {
     @unlink($oauthFile);
 }

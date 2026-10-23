@@ -6,6 +6,10 @@ final class EthanAiException extends RuntimeException
 {
 }
 
+final class EthanAiRetryableException extends RuntimeException
+{
+}
+
 final class EthanAiService
 {
     private const TOKEN_ENDPOINT = 'https://auth.openai.com/api/accounts/oauth/token';
@@ -210,7 +214,21 @@ PROMPT,
         }
 
         if ($usesChatGptPlan) {
-            return $this->parseStreamingResponse((string)$raw, $status);
+            try {
+                return $this->parseStreamingResponse((string)$raw, $status);
+            } catch (EthanAiRetryableException) {
+                // Uma reconexão curta evita expor ao técnico oscilações transitórias do stream.
+                $retry = $this->performRequest($payload, $accessToken, true);
+                if ($retry['raw'] === false || $retry['error'] !== '') {
+                    throw new EthanAiException('A conexão com o ChatGPT oscilou. Tente enviar a mensagem novamente.');
+                }
+
+                try {
+                    return $this->parseStreamingResponse((string)$retry['raw'], (int)$retry['status']);
+                } catch (EthanAiRetryableException) {
+                    throw new EthanAiException('A conexão com o ChatGPT oscilou. Tente enviar a mensagem novamente.');
+                }
+            }
         }
 
         $data = json_decode((string)$raw, true);
@@ -286,17 +304,28 @@ PROMPT,
                 $completedResponse = is_array($event['response'] ?? null) ? $event['response'] : null;
             } elseif ($type === 'response.failed') {
                 $code = (string)($event['response']['error']['code'] ?? '');
+                error_log('Falha no stream do ChatGPT. Código: ' . ($code !== '' ? $code : 'não informado') . '.');
                 $message = in_array($code, ['subscription_sharing_usage_limit_exceeded', 'subscription_sharing_usage_unavailable'], true)
                     ? 'O limite temporário do seu plano ChatGPT foi atingido. Tente novamente mais tarde.'
                     : 'O ChatGPT não conseguiu concluir a solicitação.';
                 throw new EthanAiException($message);
-            } elseif ($type === 'response.incomplete' || $type === 'error') {
-                throw new EthanAiException('A resposta do ChatGPT foi interrompida. Tente novamente.');
+            } elseif ($type === 'response.incomplete') {
+                $reason = (string)($event['response']['incomplete_details']['reason'] ?? 'não informado');
+                error_log('Stream incompleto do ChatGPT. Motivo: ' . $reason . '.');
+                throw new EthanAiRetryableException('Stream incompleto.');
+            } elseif ($type === 'error') {
+                $code = (string)($event['error']['code'] ?? $event['code'] ?? '');
+                error_log('Erro no stream do ChatGPT. Código: ' . ($code !== '' ? $code : 'não informado') . '.');
+                if (in_array($code, ['subscription_sharing_usage_limit_exceeded', 'subscription_sharing_usage_unavailable'], true)) {
+                    throw new EthanAiException('O limite temporário do seu plano ChatGPT foi atingido. Tente novamente mais tarde.');
+                }
+                throw new EthanAiRetryableException('Erro transitório no stream.');
             }
         }
 
         if (!$completed) {
-            throw new EthanAiException('A conexão com o ChatGPT terminou antes da conclusão. Tente novamente.');
+            error_log('O stream do ChatGPT terminou sem o evento de conclusão.');
+            throw new EthanAiRetryableException('Stream encerrado antes da conclusão.');
         }
         if ($completedResponse !== null) {
             try {
