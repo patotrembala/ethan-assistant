@@ -2,6 +2,7 @@
  * Ethan Assistant - Main Application Scripts
  */
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
   initMasks();
   initModals();
   initFlashDismiss();
@@ -10,6 +11,37 @@ document.addEventListener('DOMContentLoaded', () => {
   initCopyButtons();
   initEthanChat();
 });
+
+/**
+ * Alterna o tema da área autenticada e preserva a escolha no navegador.
+ */
+function initThemeToggle() {
+  const toggle = document.querySelector('[data-theme-toggle]');
+  if (!toggle) return;
+
+  const applyTheme = theme => {
+    const isDark = theme === 'dark';
+    if (isDark) {
+      document.documentElement.dataset.theme = 'dark';
+    } else {
+      delete document.documentElement.dataset.theme;
+    }
+    toggle.setAttribute('aria-pressed', String(isDark));
+    toggle.setAttribute('aria-label', isDark ? 'Ativar modo claro' : 'Ativar modo escuro');
+    toggle.setAttribute('title', isDark ? 'Ativar modo claro' : 'Ativar modo escuro');
+    const label = toggle.querySelector('.theme-toggle-label');
+    if (label) label.textContent = isDark ? 'Modo claro' : 'Modo escuro';
+  };
+
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  toggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+    try {
+      localStorage.setItem('ethan-theme', nextTheme);
+    } catch (error) {}
+  });
+}
 
 /**
  * Experiência de conversa do Ethan: atalhos, envio com Enter e rolagem.

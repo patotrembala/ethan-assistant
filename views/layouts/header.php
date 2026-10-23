@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../config/helpers.php';
 
 $pageTitle = $pageTitle ?? 'Ethan Assistant - Gestão Técnica';
 $baseUrl = $baseUrl ?? '';
-$assetVersion = '20261016-chat2';
+$assetVersion = '20261023-dark1';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -16,11 +16,22 @@ $assetVersion = '20261016-chat2';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($pageTitle) ?></title>
 
+  <script>
+    (() => {
+      try {
+        if (localStorage.getItem('ethan-theme') === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      } catch (error) {}
+    })();
+  </script>
+
   <!-- Estilos Corporativos Ethan Assistant -->
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/base.css?v=<?= $assetVersion ?>">
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/layout.css?v=<?= $assetVersion ?>">
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/components.css?v=<?= $assetVersion ?>">
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/forms.css?v=<?= $assetVersion ?>">
+  <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/dark.css?v=<?= $assetVersion ?>">
   <link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/print.css?v=<?= $assetVersion ?>" media="print">
 </head>
 <body>
