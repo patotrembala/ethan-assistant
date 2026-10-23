@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../config/helpers.php';
 
 $pageTitle = $pageTitle ?? 'Ethan Assistant - Gestão Técnica';
 $baseUrl = $baseUrl ?? '';
-$assetVersion = '20261023-dark1';
+$assetVersion = '20261023-sidebar1';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

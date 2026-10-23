@@ -42,7 +42,9 @@ html[data-theme="dark"] body {
 
 html[data-theme="dark"] .app-sidebar {
   color: #cbd5e1;
-  background: #050d18;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.18), transparent 30%),
+    linear-gradient(180deg, #07111f 0%, #081321 58%, #050c16 100%);
   border-right-color: #1e293b;
 }
 
