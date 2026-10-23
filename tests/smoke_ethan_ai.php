@@ -73,8 +73,8 @@ try {
     try {
         $parseStream($incompleteStream, 200);
         assert(false, 'Um stream incompleto deve solicitar uma nova tentativa controlada.');
-    } catch (EthanAiRetryableException) {
-        assert(true);
+    } catch (EthanAiException $exception) {
+        assert(str_contains($exception->getMessage(), 'oscilou'));
     }
 
     $usageLimitStream = "data: {\"type\":\"error\",\"error\":{\"code\":\"subscription_sharing_usage_limit_exceeded\"}}\n\n";

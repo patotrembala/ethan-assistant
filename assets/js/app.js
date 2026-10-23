@@ -45,6 +45,20 @@ function initEthanChat() {
       if (input.value.trim() !== '') form.requestSubmit();
     }
   });
+
+  form.addEventListener('submit', event => {
+    const sendButton = form.querySelector('.ai-send-button');
+    if (form.dataset.submitting === 'true') {
+      event.preventDefault();
+      return;
+    }
+    form.dataset.submitting = 'true';
+    if (sendButton) {
+      sendButton.disabled = true;
+      const label = sendButton.querySelector('span');
+      if (label) label.textContent = 'Enviando';
+    }
+  });
 }
 
 /**
