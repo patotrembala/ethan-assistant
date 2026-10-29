@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 final class SecurityService
 {
+    public const LOGIN_BLOCK_MINUTES = 5;
+
     public function __construct(private PDO $pdo, private string $key)
     {
     }
@@ -12,7 +14,7 @@ final class SecurityService
     {
         $stmt = $this->pdo->prepare(
             'SELECT COUNT(*) FROM login_attempts
-             WHERE sucesso = 0 AND tentativa_em >= DATE_SUB(NOW(), INTERVAL 15 MINUTE)
+             WHERE sucesso = 0 AND tentativa_em >= DATE_SUB(NOW(), INTERVAL ' . self::LOGIN_BLOCK_MINUTES . ' MINUTE)
                AND (email_hash = :email_hash OR ip_hash = :ip_hash)'
         );
         $stmt->execute([

@@ -194,7 +194,7 @@ if ($requestUri === '/login') {
         $ip = (string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
 
         if ($securityService->isLoginBlocked($email, $ip)) {
-            $error = 'Muitas tentativas de acesso. Aguarde 15 minutos e tente novamente.';
+            $error = 'Muitas tentativas de acesso. Aguarde ' . SecurityService::LOGIN_BLOCK_MINUTES . ' minutos e tente novamente.';
             require __DIR__ . '/views/auth/login.php';
             exit;
         }
