@@ -438,10 +438,9 @@ function consumeAiQuota(): void
 }
 
 $aiUsesChatGptPlan = $ethanAiService->usesChatGptPlan();
-if ($aiUsesChatGptPlan && str_starts_with((string)$requestUri, '/ethan-ia')) {
-    // Uma assinatura pessoal do ChatGPT nunca é compartilhada com técnicos.
-    requireAdmin($isAdmin);
-}
+// O Ethan IA é uma ferramenta operacional para administradores e técnicos.
+// As credenciais permanecem exclusivamente no servidor e nunca são enviadas
+// ao navegador do usuário autenticado.
 
 // Operações autenticadas com persistência real no banco de dados.
 try {

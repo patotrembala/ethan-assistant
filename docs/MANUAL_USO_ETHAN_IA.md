@@ -16,7 +16,7 @@ As respostas são sugestões de apoio. O técnico deve validar cada orientação
 
 ## 2. Quem pode acessar
 
-Na configuração atual, que utiliza a conta ChatGPT autorizada do administrador, o módulo é restrito ao perfil **Administrador**. Usuários sem essa permissão não devem visualizar nem acessar diretamente as rotas do Ethan IA.
+O módulo pode ser utilizado pelos perfis **Administrador** e **Técnico**. Cada usuário precisa entrar com sua própria conta do Assistance. A autorização do serviço de IA permanece protegida no servidor e não é exibida aos usuários.
 
 ## 3. Como iniciar um chamado assistido
 
@@ -160,4 +160,3 @@ Quando o Manual do Usuário geral for produzido, incluir imagens de:
 5. relatório técnico de encerramento;
 6. botão **Novo chamado**;
 7. mensagem de erro ou indisponibilidade, sem expor credenciais ou dados pessoais.
-
