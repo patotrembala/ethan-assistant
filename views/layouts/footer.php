@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Footer Layout
+ * Assistance - Footer Layout
  * Inclui modal global de confirmação de exclusão e scripts
  */
 $baseUrl = $baseUrl ?? '';
@@ -46,7 +46,7 @@ $isAdmin = ($currentUser['perfil'] ?? '') === 'admin';
 
   <!-- Scripts Globais -->
   <?php $assetVersion = $assetVersion ?? '20261016-chat2'; ?>
-  <script src="<?= $baseUrl ?>/assets/js/app.js?v=<?= $assetVersion ?>"></script>
+  <script src="<?= $baseUrl ?>/assets/js/app.js?v=<?= $assetVersion ?>&chatwait=20261025"></script>
   <script src="<?= $baseUrl ?>/assets/js/undo-timer.js?v=<?= $assetVersion ?>"></script>
   <script src="<?= $baseUrl ?>/assets/js/validation.js?v=<?= $assetVersion ?>"></script>
 </body>

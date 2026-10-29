@@ -51,7 +51,39 @@ function initFormValidation() {
         // Focar no primeiro campo inválido
         const firstInvalid = form.querySelector('.is-invalid');
         if (firstInvalid) firstInvalid.focus();
+        return;
       }
+
+      // Impede cliques duplos e requisições repetidas enquanto o cadastro é processado.
+      if (form.dataset.submitting === 'true') {
+        e.preventDefault();
+        return;
+      }
+
+      form.dataset.submitting = 'true';
+      form.setAttribute('aria-busy', 'true');
+      const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.dataset.originalLabel = submitButton.value || submitButton.textContent || '';
+        if (submitButton.tagName === 'INPUT') submitButton.value = 'Salvando...';
+        else submitButton.textContent = 'Salvando...';
+      }
+    });
+  });
+
+  // Restaura o formulário ao voltar pelo histórico do navegador.
+  window.addEventListener('pageshow', () => {
+    forms.forEach(form => {
+      delete form.dataset.submitting;
+      form.removeAttribute('aria-busy');
+      const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+      if (!submitButton) return;
+      submitButton.disabled = false;
+      const originalLabel = submitButton.dataset.originalLabel;
+      if (!originalLabel) return;
+      if (submitButton.tagName === 'INPUT') submitButton.value = originalLabel;
+      else submitButton.textContent = originalLabel;
     });
   });
 }

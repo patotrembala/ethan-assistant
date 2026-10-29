@@ -1,11 +1,11 @@
 <?php
 /**
- * Ethan Assistant - Formulário de Usuário / Técnico (RF19)
+ * Assistance - Formulário de Usuário / Técnico (RF19)
  * @var array|null $usuario Dados do usuário (se edição)
  * @var array $errors Erros de validação
  */
 $isEdit = !empty($usuario['id']);
-$pageTitle = ($isEdit ? 'Editar Usuário' : 'Novo Usuário') . ' - Ethan Assistant';
+$pageTitle = ($isEdit ? 'Editar Usuário' : 'Novo Usuário') . ' - Assistance';
 $currentRoute = 'usuarios';
 $baseUrl = $baseUrl ?? '';
 $actionUrl = $isEdit ? "{$baseUrl}/usuarios/{$usuario['id']}/atualizar" : "{$baseUrl}/usuarios/salvar";
@@ -23,7 +23,7 @@ require __DIR__ . '/../layouts/sidebar.php';
     <div class="page-header">
       <div class="page-title-wrap">
         <h1><?= $isEdit ? 'Editar Usuário / Redefinir Senha' : 'Cadastrar Novo Usuário' ?></h1>
-        <p class="page-subtitle">Configuração de credenciais e perfil de acesso ao Ethan Assistant</p>
+        <p class="page-subtitle">Configuração de credenciais e perfil de acesso ao Assistance</p>
       </div>
       <div class="page-actions">
         <a href="<?= $baseUrl ?>/usuarios" class="btn btn-outline">
@@ -34,6 +34,13 @@ require __DIR__ . '/../layouts/sidebar.php';
 
     <div class="card" style="max-width: 800px;">
       <form action="<?= $actionUrl ?>" method="POST" data-validate>
+        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+        <?php if (!empty($errors)): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Confira os campos antes de salvar.</strong>
+            <ul><?php foreach ($errors as $message): ?><li><?= htmlspecialchars((string)$message) ?></li><?php endforeach; ?></ul>
+          </div>
+        <?php endif; ?>
         <div class="card-body">
           <div class="form-grid-2">
             <div class="form-group">

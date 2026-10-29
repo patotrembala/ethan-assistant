@@ -1,0 +1,128 @@
+/* Assistance: apresentação móvel responsiva, sem alterar dados ou a ordem dos registros. */
+.mobile-cell-label{display:none}
+.mobile-cell-value{display:contents}
+@media screen and (max-width:768px){
+  :root{--mobile-surface:#fff;--mobile-soft:#f4f7fb;--mobile-border:#dfe7f1;--mobile-ink:#17283f;--mobile-muted:#667a94;--mobile-screen:#f4f7fb}
+  :root[data-theme="dark"]{--mobile-surface:#142236;--mobile-soft:#192c43;--mobile-border:#2b3e55;--mobile-ink:#e7eef9;--mobile-muted:#9dafc7;--mobile-screen:#0e192a}
+  html,body{max-width:100%;margin:0}
+  body{background:var(--mobile-screen)}
+  .app-main button,.app-main input,.app-main select,.app-main textarea{font-family:inherit}
+  body.mobile-menu-open{overflow:hidden}
+  .app-container{width:100%;min-width:0}
+  body .app-main{min-width:0;width:100%;max-width:100%;margin-left:0!important}
+  body .app-topbar{min-height:64px;width:100%;padding:10px 16px;gap:12px;box-sizing:border-box;z-index:50}
+  .app-topbar .topbar-left{flex:0 0 auto;min-width:0}
+  .app-topbar .topbar-left>span,.app-topbar .user-info-text,.app-topbar .theme-toggle-label{display:none!important}
+  .app-topbar .topbar-right{flex:1;min-width:0;justify-content:flex-end;gap:10px}
+  .app-topbar .topbar-right form{margin-left:0!important}
+  .app-topbar .btn-sidebar-toggle,.app-topbar .theme-toggle{width:42px;height:42px;min-height:42px;display:inline-flex;align-items:center;justify-content:center;padding:8px;border-radius:11px}
+  .app-topbar .user-profile-menu{padding:0;gap:0}
+  .app-topbar .user-avatar-badge{width:32px;height:32px;flex:0 0 32px;font-size:11px}
+  .app-topbar .btn{min-height:40px;padding:8px 10px;font-size:12px;white-space:nowrap}
+  body .app-sidebar{width:min(282px,calc(100vw - 56px));max-width:calc(100vw - 56px);height:100dvh;top:0;bottom:0;left:0;z-index:1100;display:flex;flex-direction:column;transform:translateX(-105%);transition:transform .2s ease;box-shadow:12px 0 36px #02081740}
+  body .app-sidebar.open{transform:translateX(0)}
+  body .app-sidebar .sidebar-header{min-height:78px;padding:18px 16px!important;flex:0 0 auto;justify-content:space-between;gap:8px}
+  .app-sidebar .sidebar-close-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;font-size:20px}
+  body .app-sidebar .sidebar-nav{flex:1;min-height:0;padding:18px 12px!important;overflow-y:auto;overscroll-behavior:contain}
+  body .app-sidebar .sidebar-footer{flex:0 0 auto;padding:16px 22px calc(16px + env(safe-area-inset-bottom,0px))}
+  body .app-sidebar .nav-link{min-height:45px;font-size:13px}
+  body .sidebar-overlay,body #sidebarOverlay{position:fixed;inset:0;z-index:1000;background:rgba(3,10,23,.56);backdrop-filter:blur(3px);display:none;opacity:1}
+  body .sidebar-overlay.active,body #sidebarOverlay.active{display:block}
+  body .app-content{width:100%;max-width:100%;min-width:0;padding:22px 16px!important;box-sizing:border-box}
+  .app-content .page-header{display:flex;flex-direction:column;align-items:stretch;gap:16px;width:100%;min-width:0;padding-bottom:20px;margin-bottom:20px}
+  .app-content .page-title-wrap{min-width:0;max-width:100%}
+  body .app-content h1{font-size:25px!important;letter-spacing:-.7px;line-height:1.25;overflow-wrap:anywhere}
+  body .app-content .page-subtitle{font-size:13px!important;line-height:1.65;max-width:100%;overflow-wrap:anywhere}
+  .app-content .page-actions{display:flex;flex-wrap:wrap;gap:8px;width:100%;max-width:100%;justify-content:flex-start}
+  .app-content .page-actions .btn{flex:1 1 145px;justify-content:center;min-height:44px;padding:12px;font-size:13px;white-space:normal;text-align:center}
+  .app-content .card,.app-content .filter-bar{box-sizing:border-box;min-width:0;max-width:100%;border-radius:14px}
+  .app-content .card-header{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;padding:17px 16px}
+  .app-content .card-title{font-size:15px;line-height:1.5}
+  .app-content .card-body{padding:16px;min-width:0}
+  .app-content .card-footer{padding:16px;display:flex;flex-wrap:wrap;gap:10px}
+  .app-content .card-footer .btn{flex:1;min-height:44px}
+  .app-content .filter-bar{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:16px;margin-bottom:18px}
+  .app-content .filter-group,.app-content .search-input-wrap{display:flex;flex-direction:column;align-items:stretch;width:100%;min-width:0;max-width:100%;gap:10px}
+  .app-content .filter-bar form{display:flex;flex-wrap:wrap;width:100%;min-width:0;max-width:100%}
+  .app-content .filter-bar .form-select,.app-content .filter-bar .form-control,.app-content .search-input-wrap input{width:100%!important;min-width:0!important;max-width:100%;box-sizing:border-box}
+  .app-content .filter-bar>div{min-width:0;max-width:100%}
+  .app-content .form-grid-2,.app-content .form-grid-3,.app-content .form-grid-4{display:grid;grid-template-columns:minmax(0,1fr)!important;gap:16px}
+  .app-content .form-group{min-width:0}
+  .app-content .form-control,.app-content .form-select{font-size:16px!important;min-height:46px;max-width:100%;box-sizing:border-box;border-radius:10px}
+  .app-content textarea.form-control{line-height:1.65;min-height:115px;resize:vertical}
+  .app-content .form-label{font-size:13px;line-height:1.5}
+  .app-content .form-text{font-size:12px;line-height:1.6}
+  .app-content .btn{min-height:42px;font-size:12px;max-width:100%;white-space:normal}
+  /* Avisos são faixas compactas acima do conteúdo, nunca uma coluna lateral. */
+  body .app-content>.alert,body .ai-workspace-content>.alert{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between;flex:0 0 auto;width:100%;max-width:100%;height:auto!important;min-height:0;padding:12px 14px;margin:0 0 14px;gap:10px;box-sizing:border-box;border-radius:12px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+  .app-content>.alert>div{min-width:0;flex:1;align-items:flex-start!important}
+  .app-content>.alert>button{flex:0 0 28px;width:28px;min-height:28px!important;line-height:1;font-size:18px;align-self:flex-start}
+  .undo-banner{left:12px!important;right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;width:auto!important;max-width:none!important;flex-wrap:wrap;gap:12px;box-sizing:border-box;padding:14px;font-size:13px}
+  /* Tabelas permanecem tabelas para leitores de tela, com linhas apresentadas em cartões. */
+  body .app-content .table-responsive:has(.mobile-record-table){border:0;background:transparent;overflow:visible;border-radius:0;min-width:0;max-width:100%}
+  body .app-content table.mobile-record-table{display:block;min-width:0!important;width:100%!important;max-width:100%;border:0;background:transparent;table-layout:auto}
+  .mobile-record-table thead{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;clip-path:inset(50%);overflow:hidden;white-space:nowrap;border:0}
+  body .app-content .mobile-record-table tbody{display:block;width:100%}
+  body .app-content .mobile-record-table tbody tr{display:block;width:100%;margin:0 0 14px;border:1px solid var(--mobile-border);border-radius:14px;overflow:hidden;background:var(--mobile-surface);box-shadow:0 3px 14px #10223c05;box-sizing:border-box}
+  body .app-content .mobile-record-table td{display:grid;grid-template-columns:minmax(82px,33%) minmax(0,1fr);align-items:start;gap:12px;width:100%;max-width:100%;min-width:0!important;padding:12px 14px;border:0!important;box-sizing:border-box;font-size:13px;line-height:1.65;text-align:left!important;white-space:normal!important;color:var(--mobile-ink);overflow-wrap:anywhere}
+  body .app-content .mobile-record-table td+td{border-top:1px solid var(--mobile-border)!important}
+  .mobile-record-table .mobile-cell-label{display:block;font-size:11px;line-height:1.6;font-weight:600;color:var(--mobile-muted);letter-spacing:.1px;padding-top:2px;text-transform:none}
+  .mobile-record-table .mobile-cell-value{display:block;min-width:0;max-width:100%;overflow-wrap:anywhere}
+  .mobile-record-table .mobile-cell-value>div{max-width:100%}
+  .mobile-record-table .mobile-cell-value .btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 12px;margin:3px 3px 3px 0;white-space:normal}
+  .mobile-record-table .mobile-cell-value .badge{display:inline-block;font-size:11px;max-width:100%;white-space:normal}
+  .mobile-record-table .mobile-cell-value form{display:inline-block;max-width:100%}
+  body .app-content .mobile-record-table .mobile-empty-row td{display:block;text-align:center!important;padding:30px 20px;min-height:0}
+  .mobile-record-table .mobile-empty-row .empty-state-title{font-size:16px;line-height:1.45;margin-bottom:8px}
+  .mobile-record-table .mobile-empty-row p{font-size:13px;line-height:1.7;max-width:100%;margin:0;color:var(--mobile-muted)}
+  /* Conversa ocupa a área visível; apenas as mensagens rolam dentro do painel. */
+  body .app-content.ai-workspace-content{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0;padding:12px!important;min-width:0}
+  body .ai-workspace-content .ai-chat-shell{display:flex;flex-direction:column;flex:0 0 auto;width:100%;min-width:0;max-width:100%;height:var(--mobile-chat-height,calc(100dvh - 88px))!important;min-height:260px!important;max-height:none!important;margin:0;border-radius:17px;overflow:hidden;box-sizing:border-box}
+  body .ai-workspace-content .ai-chat-topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 13px;min-width:0}
+  .ai-chat-topbar .ai-chat-identity{min-width:0;gap:10px}
+  .ai-chat-topbar .ai-avatar{width:37px;height:37px;flex:0 0 37px;border-radius:12px;font-size:14px}
+  body .app-content.ai-workspace-content .ai-chat-topbar h1{font-size:18px!important;letter-spacing:-.2px;line-height:1.3}
+  .ai-chat-title-row{flex-wrap:wrap;gap:5px;min-width:0}
+  .ai-chat-topbar .ai-online-label{font-size:10px}
+  .ai-chat-topbar .ai-chat-identity p{font-size:10px;line-height:1.5;margin-top:3px}
+  .ai-chat-topbar .ai-plan-badge{font-size:9px;padding:3px 6px;line-height:1.4;max-width:100%;white-space:normal}
+  .ai-chat-topbar>form{flex:0 0 auto;margin:0}
+  .ai-chat-topbar .ai-new-ticket{min-height:38px;padding:8px 9px;font-size:10px;line-height:1.4;border-radius:9px;white-space:nowrap}
+  body .ai-workspace-content .ai-conversation{flex:1 1 0!important;min-width:0;min-height:0!important;height:auto!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:16px 13px}
+  body .ai-workspace-content .ai-chat-welcome{min-height:0!important;height:auto;padding:12px 0 16px;margin:0;max-width:100%;width:100%;box-sizing:border-box}
+  .ai-chat-welcome .ai-welcome-mark{width:44px;height:44px;font-size:18px;border-radius:14px;margin-bottom:17px}
+  .ai-chat-welcome .ai-welcome-eyebrow{font-size:9px;letter-spacing:1.5px}
+  .ai-chat-welcome h2{font-size:25px!important;line-height:1.24;letter-spacing:-.8px;max-width:290px;margin:12px auto}
+  .ai-chat-welcome>p{font-size:13px;line-height:1.7;max-width:320px;margin:0 auto 18px;overflow-wrap:anywhere}
+  body .ai-workspace-content .ai-prompt-suggestions{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;width:100%;margin-top:18px}
+  .ai-prompt-suggestions button{width:100%;min-height:43px;padding:11px 12px;border-radius:11px;font-size:12px;line-height:1.5}
+  .ai-chat-message{max-width:100%;gap:8px;margin-bottom:18px}
+  .ai-message-content{min-width:0;max-width:calc(100% - 36px)}
+  .ai-message-avatar{width:28px;height:28px;flex:0 0 28px;font-size:11px;border-radius:9px}
+  .ai-message-bubble{max-width:100%;font-size:14px;line-height:1.7;padding:12px 14px;overflow-wrap:anywhere;word-break:normal}
+  .ai-message-meta{font-size:10px;margin-bottom:5px}
+  body .ai-workspace-content .ai-composer-wrap{flex:0 0 auto;margin-top:0!important;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));min-width:0;box-sizing:border-box}
+  body .ai-workspace-content .ai-composer{display:flex;align-items:flex-end;gap:8px;min-width:0;max-width:100%;padding:7px 7px 7px 11px;border-radius:14px}
+  .ai-composer textarea{flex:1;min-width:0!important;width:auto;min-height:42px;max-height:120px!important;padding:9px 0;font-size:16px!important;line-height:1.5;overflow-y:auto;box-sizing:border-box;resize:none}
+  .ai-composer .ai-send-button{flex:0 0 42px;width:42px;height:42px;min-height:42px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;padding:8px}
+  .ai-send-button>span:first-child{display:none}
+  .ai-send-button>span:last-child{display:inline;font-size:20px}
+  .ai-composer-hint{font-size:11px;line-height:1.5;margin:7px 2px 0;text-align:center}
+  .ai-keyboard-hint{display:none}
+  .ai-draft-action{flex:0 0 auto;padding:10px 12px!important;min-width:0}
+  .ai-draft-action button{width:100%;min-height:38px;font-size:11px}
+  .ai-draft-action .form-text{font-size:10px;line-height:1.5;margin:5px 0 0}
+  .ai-chat-alert,.ai-service-note{flex:0 0 auto;font-size:12px;padding:12px;max-width:100%;overflow-wrap:anywhere}
+  .ai-response-pending{font-size:13px!important;padding:13px 14px!important}
+  .dashboard-view .grid-cards-3{grid-template-columns:minmax(0,1fr);gap:12px}
+  .dashboard-view .metric-card{padding:18px}
+  .dashboard-view .metric-value{font-size:30px}
+}
+@media screen and (max-width:350px){
+ .app-topbar .topbar-right{gap:6px}.app-topbar .user-avatar-badge{display:none}
+ .ai-chat-topbar .ai-online-label{display:none}.ai-chat-topbar .ai-chat-identity p{max-width:130px}
+ .ai-chat-topbar .ai-new-ticket{font-size:9px;padding:7px}
+ .app-content .mobile-record-table td{grid-template-columns:minmax(72px,31%) minmax(0,1fr);gap:10px;padding:11px 12px}
+}
+@media(prefers-reduced-motion:reduce){body .app-sidebar{transition:none}}
+@media print{.mobile-cell-label{display:none!important}.mobile-cell-value{display:contents!important}}

@@ -443,6 +443,17 @@ if ($aiUsesChatGptPlan && str_starts_with((string)$requestUri, '/ethan-ia')) {
     requireAdmin($isAdmin);
 }
 
+// Operações autenticadas com persistência real no banco de dados.
+try {
+    require __DIR__ . '/operations.php';
+} catch (Throwable $exception) {
+    error_log('Falha operacional: ' . $exception->getMessage());
+    http_response_code(503);
+    echo '<h1>Não foi possível carregar esta operação.</h1>';
+    echo '<p>Os dados foram preservados. Tente novamente em instantes.</p>';
+    exit;
+}
+
 // Dados mock para visualização das telas
 $mockClientes = [
     [
