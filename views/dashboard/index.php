@@ -5,6 +5,7 @@
  * @var array $atividadesRecentes Lista de OS, chamados ou pendências que demandam atenção
  * @var array $tecnicos Lista de técnicos para filtro do administrador
  * @var string $tecnicoFiltroId ID do técnico selecionado no filtro
+ * @var array $graficoChamados Série de chamados resolvidos nos últimos sete dias
  */
 $pageTitle = 'Dashboard Operacional - Ethan Assistant';
 $currentRoute = 'dashboard';
@@ -21,6 +22,41 @@ $metricas = $metricas ?? [
   'tempo_medio' => '0h',
   'conclusao_no_prazo' => '100%'
 ];
+$graficoChamados = $graficoChamados ?? [
+  'labels' => [],
+  'valores' => [],
+  'tendencia' => 'estavel',
+  'variacao' => 0
+];
+
+$chartValues = array_map('intval', $graficoChamados['valores'] ?? []);
+$chartLabels = array_values($graficoChamados['labels'] ?? []);
+$chartMax = max(1, ...($chartValues ?: [1]));
+$chartWidth = 760;
+$chartHeight = 220;
+$chartPaddingX = 42;
+$chartPaddingY = 24;
+$chartPlotWidth = $chartWidth - ($chartPaddingX * 2);
+$chartPlotHeight = $chartHeight - ($chartPaddingY * 2);
+$chartPoints = [];
+foreach ($chartValues as $index => $value) {
+  $x = $chartPaddingX + ($index * ($chartPlotWidth / max(1, count($chartValues) - 1)));
+  $y = $chartPaddingY + $chartPlotHeight - (($value / $chartMax) * $chartPlotHeight);
+  $chartPoints[] = round($x, 2) . ',' . round($y, 2);
+}
+$chartTrend = in_array(($graficoChamados['tendencia'] ?? ''), ['alta', 'queda'], true)
+  ? $graficoChamados['tendencia']
+  : 'estavel';
+$chartTrendText = match ($chartTrend) {
+  'alta' => 'Desempenho em alta',
+  'queda' => 'Desempenho em queda',
+  default => 'Desempenho estável'
+};
+$chartTrendDetail = match ($chartTrend) {
+  'alta' => 'Mais chamados foram resolvidos ao final do período.',
+  'queda' => 'Menos chamados foram resolvidos ao final do período.',
+  default => 'O ritmo de resoluções permaneceu equilibrado.'
+};
 
 require __DIR__ . '/../layouts/header.php';
 require __DIR__ . '/../layouts/sidebar.php';
@@ -29,7 +65,7 @@ require __DIR__ . '/../layouts/sidebar.php';
 <main class="app-main">
   <?php require __DIR__ . '/../layouts/topbar.php'; ?>
 
-  <div class="app-content">
+  <div class="app-content dashboard-view">
     <?php require __DIR__ . '/../layouts/flash.php'; ?>
 
     <div class="page-header">
@@ -210,5 +246,50 @@ require __DIR__ . '/../layouts/sidebar.php';
         </table>
       </div>
     </div>
+
+    <section class="card performance-chart-card trend-<?= htmlspecialchars($chartTrend) ?>" aria-labelledby="performance-chart-title">
+      <div class="performance-chart-header">
+        <div>
+          <span class="performance-chart-eyebrow">Evolução operacional</span>
+          <h2 id="performance-chart-title" class="card-title">Chamados resolvidos — últimos 7 dias</h2>
+          <p>Quantidade de chamados concluídos por dia<?= !empty($tecnicoFiltroId) ? ' para o técnico selecionado' : ' pela equipe' ?>.</p>
+        </div>
+        <div class="performance-trend" aria-label="<?= htmlspecialchars($chartTrendText) ?>">
+          <span class="performance-trend-icon" aria-hidden="true"><?= $chartTrend === 'alta' ? '↗' : ($chartTrend === 'queda' ? '↘' : '→') ?></span>
+          <span>
+            <strong><?= htmlspecialchars($chartTrendText) ?></strong>
+            <small><?= htmlspecialchars($chartTrendDetail) ?></small>
+          </span>
+        </div>
+      </div>
+
+      <div class="performance-chart" role="img" aria-label="Gráfico de linha: <?= htmlspecialchars(implode(', ', array_map(static fn($label, $value) => $label . ': ' . $value, $chartLabels, $chartValues))) ?>">
+        <svg viewBox="0 0 <?= $chartWidth ?> <?= $chartHeight ?>" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <line class="chart-grid-line" x1="<?= $chartPaddingX ?>" y1="<?= $chartPaddingY ?>" x2="<?= $chartWidth - $chartPaddingX ?>" y2="<?= $chartPaddingY ?>" />
+          <line class="chart-grid-line" x1="<?= $chartPaddingX ?>" y1="<?= $chartHeight / 2 ?>" x2="<?= $chartWidth - $chartPaddingX ?>" y2="<?= $chartHeight / 2 ?>" />
+          <line class="chart-grid-line" x1="<?= $chartPaddingX ?>" y1="<?= $chartHeight - $chartPaddingY ?>" x2="<?= $chartWidth - $chartPaddingX ?>" y2="<?= $chartHeight - $chartPaddingY ?>" />
+          <?php if ($chartPoints): ?>
+            <polyline class="performance-line" points="<?= htmlspecialchars(implode(' ', $chartPoints)) ?>" />
+            <?php foreach ($chartPoints as $index => $point): ?>
+              <?php [$pointX, $pointY] = explode(',', $point); ?>
+              <circle class="performance-point" cx="<?= $pointX ?>" cy="<?= $pointY ?>" r="5">
+                <title><?= htmlspecialchars(($chartLabels[$index] ?? '') . ': ' . ($chartValues[$index] ?? 0) . ' resolvido(s)') ?></title>
+              </circle>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </svg>
+        <div class="performance-chart-labels" aria-hidden="true">
+          <?php foreach ($chartLabels as $index => $label): ?>
+            <span><strong><?= (int)($chartValues[$index] ?? 0) ?></strong><?= htmlspecialchars($label) ?></span>
+          <?php endforeach; ?>
+        </div>
+      </div>
+
+      <div class="performance-chart-legend" aria-label="Legenda das tendências">
+        <span><i class="legend-up"></i> Subindo: bom</span>
+        <span><i class="legend-stable"></i> Estável: atenção</span>
+        <span><i class="legend-down"></i> Descendo: requer acompanhamento</span>
+      </div>
+    </section>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>

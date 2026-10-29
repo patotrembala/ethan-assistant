@@ -111,6 +111,10 @@ html[data-theme="dark"] .btn-outline:hover {
 html[data-theme="dark"] .btn-secondary { background: #1b2a40; }
 html[data-theme="dark"] .btn-secondary:hover { background: #253650; }
 
+html[data-theme="dark"] .performance-trend-icon { background: #0b1627; }
+html[data-theme="dark"] .performance-chart-legend { background: #0b1627; }
+html[data-theme="dark"] .performance-point { fill: #101b2e; }
+
 .theme-toggle {
   display: inline-flex;
   align-items: center;

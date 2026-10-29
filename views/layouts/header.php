@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../config/helpers.php';
 
 $pageTitle = $pageTitle ?? 'Assistance - Gestão Técnica';
 $baseUrl = $baseUrl ?? '';
-$assetVersion = '20261029-userfix1';
+$assetVersion = '20261029-dashboard-chart1';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

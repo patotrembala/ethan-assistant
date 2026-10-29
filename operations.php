@@ -156,7 +156,32 @@ if($requestUri==='/' || $requestUri==='/dashboard'){
     usort($atividadesRecentes,fn($a,$b)=>strcmp($a['sort'],$b['sort']));$atividadesRecentes=array_slice($atividadesRecentes,0,20);
     if($durations){$minutes=(int)round(array_sum($durations)/count($durations)/60);$metricas['tempo_medio']=intdiv($minutes,60).'h '.($minutes%60).'min';}
     if($completedWithDeadline)$metricas['conclusao_no_prazo']=number_format(100*$onTime/$completedWithDeadline,1,',','.').'%';
-    opView('dashboard/index',compact('metricas','tecnicos','atividadesRecentes','tecnicoFiltroId'));
+
+    // Série diária usada no indicador visual da dashboard. O gráfico representa
+    // chamados efetivamente resolvidos (e não chamados recebidos), por isso uma
+    // tendência de alta é uma melhora operacional.
+    $graficoChamados=['labels'=>[],'valores'=>[],'tendencia'=>'estavel','variacao'=>0];
+    $inicioGrafico=(new DateTimeImmutable('today'))->modify('-6 days');
+    for($dia=0;$dia<7;$dia++){
+      $data=$inicioGrafico->modify('+'.$dia.' days');
+      $chave=$data->format('Y-m-d');
+      $graficoChamados['labels'][]=$data->format('d/m');
+      $graficoChamados['valores'][$chave]=0;
+    }
+    foreach($sets['chamados'] as $chamado){
+      if(!in_array(opStatus((string)($chamado['status']??'')),['Concluido','Concluida'],true))continue;
+      $concluidoEm=(string)($chamado['concluido_em']??'');
+      if($concluidoEm==='')continue;
+      $chave=date('Y-m-d',strtotime($concluidoEm));
+      if(array_key_exists($chave,$graficoChamados['valores']))$graficoChamados['valores'][$chave]++;
+    }
+    $graficoChamados['valores']=array_values($graficoChamados['valores']);
+    $primeiro=(int)$graficoChamados['valores'][0];
+    $ultimo=(int)$graficoChamados['valores'][6];
+    $graficoChamados['variacao']=$ultimo-$primeiro;
+    $graficoChamados['tendencia']=$ultimo>$primeiro?'alta':($ultimo<$primeiro?'queda':'estavel');
+
+    opView('dashboard/index',compact('metricas','tecnicos','atividadesRecentes','tecnicoFiltroId','graficoChamados'));
 }
 if(preg_match('#^/(ordens|chamados|pendencias|tipos-servico)(?:/(nova|novo|salvar|\d+)(?:/(editar|atualizar|assumir|reabrir|atualizar-status|concluir|imprimir))?)?$#',$requestUri,$match)){
     $module=$match[1];$segment=$match[2]??'';$action=$match[3]??'';$id=ctype_digit($segment)?(int)$segment:null;
