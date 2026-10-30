@@ -2,6 +2,13 @@ Options -Indexes
 DirectoryIndex index.php
 
 RewriteEngine On
+
+# Compatibilidade da nova identidade "Pajezinho IA" com as rotas antigas do
+# backend. O redirecionamento 307 preserva o metodo e os dados dos formularios
+# POST. A rota de rascunho ja e tratada diretamente pelo operations.php.
+RewriteRule ^assistance-ia/?$ /ethan-ia [R=307,L,NE]
+RewriteRule ^assistance-ia/(?!rascunho$)(.+)$ /ethan-ia/$1 [R=307,L,NE]
+
 RewriteRule ^(?:config|database|docs|scripts|src|storage|tests)(?:/|$) - [F,L,NC]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
