@@ -1,10 +1,10 @@
 <?php
 /**
- * Ethan Assistant - Formulário de Tipo de Serviço (RF11)
+ * Assistance - Formulário de Tipo de Serviço (RF11)
  * @var array|null $tipoServico Dados do tipo de serviço
  */
 $isEdit = !empty($tipoServico['id']);
-$pageTitle = ($isEdit ? 'Editar Tipo de Serviço' : 'Novo Tipo de Serviço') . ' - Ethan Assistant';
+$pageTitle = ($isEdit ? 'Editar Tipo de Serviço' : 'Novo Tipo de Serviço') . ' - Assistance';
 $currentRoute = 'tipos-servico';
 $baseUrl = $baseUrl ?? '';
 $actionUrl = $isEdit ? "{$baseUrl}/tipos-servico/{$tipoServico['id']}/atualizar" : "{$baseUrl}/tipos-servico/salvar";

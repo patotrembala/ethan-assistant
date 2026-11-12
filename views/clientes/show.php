@@ -1,11 +1,11 @@
 <?php
 /**
- * Ethan Assistant - Detalhes do Cliente (RF04)
+ * Assistance - Detalhes do Cliente (RF04)
  * @var array $cliente Dados do cliente
  * @var array $historicoOS Ordens de serviço vinculadas
  * @var array $historicoChamados Chamados online vinculados
  */
-$pageTitle = htmlspecialchars($cliente['razao_social'] ?? 'Cliente') . ' - Ethan Assistant';
+$pageTitle = htmlspecialchars($cliente['razao_social'] ?? 'Cliente') . ' - Assistance';
 $currentRoute = 'clientes';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['perfil' => 'admin']);

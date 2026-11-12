@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Front Controller & Visualizador de Telas
+ * Assistance - Front Controller & Visualizador de Telas
  * Permite navegação direta nas telas do frontend com dados simulados
  * enquanto os controllers do Codex são integrados.
  */
@@ -356,7 +356,7 @@ if ($requestUri === '/redefinir-senha') {
 }
 
 if ($requestUri === '/privacidade') {
-    $privacyController = (string)($authConfig['privacy_controller'] ?? 'Responsável pelo Ethan Assistant');
+    $privacyController = (string)($authConfig['privacy_controller'] ?? 'Responsável pelo Assistance');
     $privacyEmail = (string)($authConfig['privacy_email'] ?? $authConfig['admin_email'] ?? '');
     require __DIR__ . '/views/privacy/notice.php';
     exit;

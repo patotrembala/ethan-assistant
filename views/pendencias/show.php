@@ -1,9 +1,9 @@
 <?php
 /**
- * Ethan Assistant - Detalhes da Pendência Interna (RF13 / RN11 / RN12)
+ * Assistance - Detalhes da Pendência Interna (RF13 / RN11 / RN12)
  * @var array $pendencia Dados da pendência interna
  */
-$pageTitle = htmlspecialchars($pendencia['titulo'] ?? 'Pendência') . ' - Ethan Assistant';
+$pageTitle = htmlspecialchars($pendencia['titulo'] ?? 'Pendência') . ' - Assistance';
 $currentRoute = 'pendencias';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);

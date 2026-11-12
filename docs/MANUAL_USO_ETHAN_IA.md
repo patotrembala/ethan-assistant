@@ -4,7 +4,7 @@
 
 ## 1. Finalidade
 
-O Ethan é o assistente de diagnóstico técnico do Ethan Assistant. Ele ajuda o responsável pelo atendimento a:
+O Ethan é o assistente de diagnóstico técnico do Assistance. Ele ajuda o responsável pelo atendimento a:
 
 - interpretar a descrição de um problema;
 - levantar hipóteses e possíveis causas;
@@ -20,7 +20,7 @@ O módulo pode ser utilizado pelos perfis **Administrador** e **Técnico**. Cada
 
 ## 3. Como iniciar um chamado assistido
 
-1. Entre no Ethan Assistant com uma conta autorizada.
+1. Entre no Assistance com uma conta autorizada.
 2. No menu lateral, selecione **Ethan IA**.
 3. Confirme se o cabeçalho apresenta o estado **Disponível**.
 4. No campo de mensagem, descreva o problema, os sintomas observados, o equipamento envolvido e o que já foi testado.

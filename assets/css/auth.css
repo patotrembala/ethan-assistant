@@ -85,7 +85,7 @@
 @media (max-width: 480px) { .auth-content { align-items: start; padding: 24px 18px 36px; } .auth-mobile-brand { margin-bottom: 42px; } .auth-heading { margin-bottom: 26px; } .auth-heading h2 { font-size: 29px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
 
-/* Login portal: composição exclusiva do Ethan Assistant */
+/* Login portal: composição exclusiva do Assistance */
 .auth-page--login { background: #07101e; color: #eaf1fb; }
 .login-portal { position: relative; display: grid; grid-template-rows: auto 1fr auto; min-height: 100vh; padding: 28px clamp(24px, 4vw, 64px) 22px; overflow: hidden; isolation: isolate; }
 .login-portal::before { content: ""; position: absolute; z-index: -2; inset: 0; background: radial-gradient(circle at 12% 15%, rgba(14,165,233,.16), transparent 28%), radial-gradient(circle at 86% 86%, rgba(37,99,235,.17), transparent 32%), linear-gradient(135deg, #07101e 0%, #0b1729 52%, #07111f 100%); }
@@ -120,7 +120,7 @@
 .login-form-panel .auth-submit { height: 50px; background: linear-gradient(135deg, #0284c7, #2563eb); box-shadow: 0 12px 26px rgba(2,132,199,.23); }
 .login-form-panel .auth-help { margin-top: 22px; }
 .login-operations { position: relative; display: flex; flex-direction: column; padding: 38px 40px; overflow: hidden; border-left: 1px solid rgba(148,163,184,.13); background: linear-gradient(160deg, rgba(14,116,144,.16), rgba(30,64,175,.08) 50%, rgba(15,23,42,.22)); }
-.login-operations::before { content: "EA"; position: absolute; right: -26px; bottom: -54px; color: rgba(125,211,252,.035); font-size: 220px; font-weight: 900; letter-spacing: -.12em; }
+.login-operations::before { content: "A"; position: absolute; right: -26px; bottom: -54px; color: rgba(125,211,252,.035); font-size: 220px; font-weight: 900; letter-spacing: -.12em; }
 .login-operations__top, .login-operations__footer { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
 .login-operations__top { color: #9fb0c6; font-size: 11px; text-transform: uppercase; letter-spacing: .11em; }
 .login-operations__top > span:first-child { display: inline-flex; align-items: center; gap: 8px; }

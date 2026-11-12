@@ -1,4 +1,4 @@
-<?php $pageTitle = 'Solicitação de privacidade - Ethan Assistant'; $baseUrl = $baseUrl ?? ''; ?>
+<?php $pageTitle = 'Solicitação de privacidade - Assistance'; $baseUrl = $baseUrl ?? ''; ?>
 <!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title><?= htmlspecialchars($pageTitle) ?></title><link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/base.css"><link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/components.css"><link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/forms.css"></head>
 <body style="background: var(--color-slate-50);"><main style="max-width: 720px; margin: 0 auto; padding: 40px 20px;"><div class="card"><div class="card-body">
   <h1>Solicitação de privacidade</h1><p>Use este canal para exercer direitos relacionados aos seus dados pessoais. Não informe senhas, códigos ou dados de terceiros.</p>

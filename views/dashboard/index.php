@@ -1,13 +1,13 @@
 <?php
 /**
- * Ethan Assistant - Dashboard Operacional (RF15 / RF16 / Seção 12)
+ * Assistance - Dashboard Operacional (RF15 / RF16 / Seção 12)
  * @var array $metricas Dados consolidados de indicadores
  * @var array $atividadesRecentes Lista de OS, chamados ou pendências que demandam atenção
  * @var array $tecnicos Lista de técnicos para filtro do administrador
  * @var string $tecnicoFiltroId ID do técnico selecionado no filtro
  * @var array $graficoChamados Série de chamados resolvidos nos últimos sete dias
  */
-$pageTitle = 'Dashboard Operacional - Ethan Assistant';
+$pageTitle = 'Dashboard Operacional - Assistance';
 $currentRoute = 'dashboard';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['nome' => 'Administrador', 'perfil' => 'admin']);

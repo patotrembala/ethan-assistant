@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Topbar
+ * Assistance - Topbar
  * @var array $currentUser
  */
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['nome' => 'Usuário Sistema', 'email' => 'admin@ethan.local', 'perfil' => 'admin']);

@@ -1,13 +1,13 @@
 <?php
 /**
- * Ethan Assistant - Formulário de Chamado Online (RF12 / RN12)
+ * Assistance - Formulário de Chamado Online (RF12 / RN12)
  * @var array|null $chamado Dados do chamado (para edição)
  * @var array $clientes Lista de clientes cadastrados
  * @var array $tecnicos Lista de técnicos do sistema
  * @var array $errors Erros de validação
  */
 $isEdit = !empty($chamado['id']);
-$pageTitle = ($isEdit ? 'Atender Chamado #' . (int)$chamado['id'] : 'Novo Chamado Online') . ' - Ethan Assistant';
+$pageTitle = ($isEdit ? 'Atender Chamado #' . (int)$chamado['id'] : 'Novo Chamado Online') . ' - Assistance';
 $currentRoute = 'chamados';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);

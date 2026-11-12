@@ -1,9 +1,9 @@
 <?php
 /**
- * Ethan Assistant - Listagem de Clientes (RF03 / RF04 / RN01 / RN02)
+ * Assistance - Listagem de Clientes (RF03 / RF04 / RN01 / RN02)
  * @var array $clientes Lista de empresas cadastradas
  */
-$pageTitle = 'Clientes - Ethan Assistant';
+$pageTitle = 'Clientes - Assistance';
 $currentRoute = 'clientes';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['perfil' => 'admin']);

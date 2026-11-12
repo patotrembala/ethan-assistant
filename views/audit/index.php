@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Auditoria - Ethan Assistant';
+$pageTitle = 'Auditoria - Assistance';
 $currentRoute = 'auditoria';
 $baseUrl = $baseUrl ?? '';
 require __DIR__ . '/../layouts/header.php';

@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Recuperações de Senha - Ethan Assistant';
+$pageTitle = 'Recuperações de Senha - Assistance';
 $currentRoute = 'recuperacoes-senha';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['perfil' => 'admin']);

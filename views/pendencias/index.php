@@ -1,9 +1,9 @@
 <?php
 /**
- * Ethan Assistant - Listagem de Pendências Internas (RF13 / RN11 / RN12)
+ * Assistance - Listagem de Pendências Internas (RF13 / RN11 / RN12)
  * @var array $pendencias Lista de tarefas internas
  */
-$pageTitle = 'Pendências Internas - Ethan Assistant';
+$pageTitle = 'Pendências Internas - Assistance';
 $currentRoute = 'pendencias';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['perfil' => 'tecnico']);

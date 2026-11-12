@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Conversa com Ethan - Ethan Assistant';
+$pageTitle = 'Conversa com Ethan - Assistance';
 $currentRoute = 'ethan-ia';
 $baseUrl = $baseUrl ?? '';
 $aiConfigured = $aiConfigured ?? false;

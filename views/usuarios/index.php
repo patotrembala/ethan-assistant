@@ -1,9 +1,9 @@
 <?php
 /**
- * Ethan Assistant - Gestão de Técnicos e Usuários (RF19)
+ * Assistance - Gestão de Técnicos e Usuários (RF19)
  * @var array $usuarios Lista de usuários cadastrados
  */
-$pageTitle = 'Técnicos & Usuários - Ethan Assistant';
+$pageTitle = 'Técnicos & Usuários - Assistance';
 $currentRoute = 'usuarios';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['perfil' => 'admin']);

@@ -1,5 +1,5 @@
 /**
- * Ethan Assistant - Form Validations (RNF05 / Seção 13)
+ * Assistance - Form Validations (RNF05 / Seção 13)
  * Validações no navegador com mensagens em conformidade com a especificação do projeto.
  */
 document.addEventListener('DOMContentLoaded', () => {

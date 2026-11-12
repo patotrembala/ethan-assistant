@@ -1,11 +1,11 @@
 <?php
 /**
- * Ethan Assistant - Listagem de Ordens de Serviço (RF05 / RF06 / RF07 / RF08 / RF17)
+ * Assistance - Listagem de Ordens de Serviço (RF05 / RF06 / RF07 / RF08 / RF17)
  * @var array $ordens Lista de ordens de serviço
  * @var array $tecnicos Lista de técnicos para filtro
  * @var array $filtros Filtros ativos (status, tecnico_id, prioridade)
  */
-$pageTitle = 'Ordens de Serviço - Ethan Assistant';
+$pageTitle = 'Ordens de Serviço - Assistance';
 $currentRoute = 'ordens';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);

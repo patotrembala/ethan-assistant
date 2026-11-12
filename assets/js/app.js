@@ -1,5 +1,5 @@
 /**
- * Ethan Assistant - Main Application Scripts
+ * Assistance - Main Application Scripts
  */
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();

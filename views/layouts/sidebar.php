@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Sidebar Navigation
+ * Assistance - Sidebar Navigation
  * @var string $currentRoute Rota ativa para marcar o item selecionado
  * @var array $currentUser Dados do usuário logado na sessão
  */
@@ -12,9 +12,9 @@ $baseUrl = $baseUrl ?? '';
 <aside class="app-sidebar">
   <div class="sidebar-header">
     <div class="sidebar-brand">
-      <div class="brand-symbol" aria-hidden="true">EA</div>
+      <div class="brand-symbol" aria-hidden="true">A</div>
       <div class="brand-copy">
-        <strong>Ethan Assistant</strong>
+        <strong>Assistance</strong>
         <span>Gestão técnica</span>
       </div>
     </div>
@@ -104,6 +104,6 @@ $baseUrl = $baseUrl ?? '';
 
   <div class="sidebar-footer">
     <div class="sidebar-status"><span class="status-indicator" aria-hidden="true"></span><span>Sistema operacional</span></div>
-    <div class="sidebar-version"><span>Ethan Assistant</span><span>v1.0</span></div>
+    <div class="sidebar-version"><span>Assistance</span><span>v1.0</span></div>
   </div>
 </aside>

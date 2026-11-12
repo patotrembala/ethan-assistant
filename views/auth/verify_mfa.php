@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Verificar acesso - Ethan Assistant';
+$pageTitle = 'Verificar acesso - Assistance';
 $baseUrl = $baseUrl ?? '';
 $error = $error ?? null;
 ?>
@@ -17,7 +17,7 @@ $error = $error ?? null;
 <body class="auth-page">
   <main class="auth-shell">
     <section class="auth-showcase" aria-label="Verificação em duas etapas">
-      <div class="brand-lockup"><div class="brand-mark" aria-hidden="true"><span>EA</span></div><div><strong>Ethan Assistant</strong><span>Gestão técnica inteligente</span></div></div>
+      <div class="brand-lockup"><div class="brand-mark" aria-hidden="true"><span>A</span></div><div><strong>Assistance</strong><span>Gestão técnica inteligente</span></div></div>
       <div class="showcase-copy"><span class="showcase-eyebrow"><span class="status-dot"></span>Segunda etapa</span><h1>Confirme que<br><span>é você.</span></h1><p>Enviamos um código temporário para o e-mail do administrador.</p></div>
     </section>
     <section class="auth-content"><div class="auth-content__inner">

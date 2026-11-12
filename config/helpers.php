@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Funcoes Helper Globais
+ * Assistance - Funcoes Helper Globais
  */
 
 if (!function_exists('statusBadgeClass')) {

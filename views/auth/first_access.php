@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Primeiro acesso - Ethan Assistant';
+$pageTitle = 'Primeiro acesso - Assistance';
 $baseUrl = $baseUrl ?? '';
 $error = $error ?? null;
 $adminEmail = (string)($authConfig['admin_email'] ?? '');
@@ -25,7 +25,7 @@ $adminEmail = (string)($authConfig['admin_email'] ?? '');
   <main class="first-access">
     <div class="first-access__brand">
       <h1>Configurar administrador</h1>
-      <p>Crie a senha do primeiro acesso ao Ethan Assistant</p>
+      <p>Crie a senha do primeiro acesso ao Assistance</p>
     </div>
 
     <div class="card">

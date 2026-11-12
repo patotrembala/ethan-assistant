@@ -1,8 +1,8 @@
-# Pendências do Ethan Assistant
+# Pendências do Assistance
 
 Lista de funcionalidades e configurações que ainda precisam ser concluídas.
 
-## 1. IA do Ethan Assistant — integração publicada e validada
+## 1. IA do Assistance — integração publicada e validada
 
 - Conexão com o plano ChatGPT autorizada, publicada na InfinityFree e validada com uma conversa real.
 - Rascunho do capítulo de uso criado em `docs/MANUAL_USO_ETHAN_IA.md`; incorporar ao Manual do Usuário geral e adicionar as capturas de tela ao final do projeto.

@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Redefinir senha - Ethan Assistant';
+$pageTitle = 'Redefinir senha - Assistance';
 $baseUrl = $baseUrl ?? '';
 $error = $error ?? null;
 ?>
@@ -20,18 +20,18 @@ $error = $error ?? null;
     <section class="auth-showcase" aria-label="Definição de nova senha">
       <div class="auth-showcase__glow auth-showcase__glow--one"></div>
       <div class="auth-showcase__glow auth-showcase__glow--two"></div>
-      <div class="brand-lockup"><div class="brand-mark" aria-hidden="true"><span>EA</span></div><div><strong>Ethan Assistant</strong><span>Gestão técnica inteligente</span></div></div>
+      <div class="brand-lockup"><div class="brand-mark" aria-hidden="true"><span>A</span></div><div><strong>Assistance</strong><span>Gestão técnica inteligente</span></div></div>
       <div class="showcase-copy">
         <span class="showcase-eyebrow"><span class="status-dot"></span>Nova credencial</span>
         <h1>Proteja sua conta.<br><span>Crie uma nova senha.</span></h1>
         <p>Use uma senha exclusiva, difícil de adivinhar e que você não utilize em outros serviços.</p>
       </div>
-      <div class="showcase-footer"><span>Ethan Assistant</span><span>•</span><span>Uso interno corporativo</span></div>
+      <div class="showcase-footer"><span>Assistance</span><span>•</span><span>Uso interno corporativo</span></div>
     </section>
 
     <section class="auth-content">
       <div class="auth-content__inner">
-        <div class="auth-mobile-brand"><div class="brand-mark" aria-hidden="true"><span>EA</span></div><strong>Ethan Assistant</strong></div>
+        <div class="auth-mobile-brand"><div class="brand-mark" aria-hidden="true"><span>A</span></div><strong>Assistance</strong></div>
         <div class="auth-heading"><span class="secure-label">Redefinir acesso</span><h2>Crie sua nova senha</h2><p>O link será invalidado assim que a alteração for concluída.</p></div>
 
         <?php if ($error): ?>

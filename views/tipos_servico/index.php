@@ -1,9 +1,9 @@
 <?php
 /**
- * Ethan Assistant - Catálogo de Tipos de Serviço (RF11)
+ * Assistance - Catálogo de Tipos de Serviço (RF11)
  * @var array $tiposServico Catálogo de serviços configuráveis
  */
-$pageTitle = 'Tipos de Serviço - Ethan Assistant';
+$pageTitle = 'Tipos de Serviço - Assistance';
 $currentRoute = 'tipos-servico';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['perfil' => 'admin']);

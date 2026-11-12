@@ -1,4 +1,4 @@
-# Registro das Operações de Tratamento — Ethan Assistant
+# Registro das Operações de Tratamento — Assistance
 
 > Situação: modelo técnico preenchido com hipóteses iniciais. O controlador deve validar as bases legais e os prazos antes do uso definitivo.
 

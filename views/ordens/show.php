@@ -1,10 +1,10 @@
 <?php
 /**
- * Ethan Assistant - Visualização de Detalhes da OS (RF05 / RF07 / RF08 / RF09 / RF18 / RN05 / RN11)
+ * Assistance - Visualização de Detalhes da OS (RF05 / RF07 / RF08 / RF09 / RF18 / RN05 / RN11)
  * @var array $ordem Dados completos da OS
  * @var bool $isAtrasada Flag indicando se o prazo foi violado
  */
-$pageTitle = 'OS #' . (int)($ordem['id'] ?? 0) . ' - Ethan Assistant';
+$pageTitle = 'OS #' . (int)($ordem['id'] ?? 0) . ' - Assistance';
 $currentRoute = 'ordens';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);

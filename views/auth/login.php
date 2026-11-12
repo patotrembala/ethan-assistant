@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Login - Ethan Assistant';
+$pageTitle = 'Login - Assistance';
 $baseUrl = $baseUrl ?? '';
 $error = $error ?? ($_SESSION['login_error'] ?? null);
 $success = $success ?? null;
@@ -20,14 +20,14 @@ $authCssVersion = @filemtime(__DIR__ . '/../../assets/css/auth.css') ?: '2';
 <body class="auth-page auth-page--login">
   <main class="login-portal">
     <header class="login-portal__header">
-      <a class="login-brand" href="<?= $baseUrl ?>/login" aria-label="Ethan Assistant - início">
-        <span class="login-brand__symbol" aria-hidden="true"><span>E</span></span>
-        <span><strong>Ethan Assistant</strong><small>Central técnica</small></span>
+      <a class="login-brand" href="<?= $baseUrl ?>/login" aria-label="Assistance - início">
+        <span class="login-brand__symbol" aria-hidden="true"><span>A</span></span>
+        <span><strong>Assistance</strong><small>Central técnica</small></span>
       </a>
       <span class="login-status"><i aria-hidden="true"></i>Sistema operacional</span>
     </header>
 
-    <section class="login-workspace" aria-label="Acesso ao Ethan Assistant">
+    <section class="login-workspace" aria-label="Acesso ao Assistance">
       <div class="login-access">
         <div class="login-access__intro">
           <span class="login-kicker">Acesso à plataforma</span>
@@ -110,7 +110,7 @@ $authCssVersion = @filemtime(__DIR__ . '/../../assets/css/auth.css') ?: '2';
     </section>
 
     <footer class="login-portal__footer">
-      <span>© <?= date('Y') ?> Ethan Assistant</span>
+      <span>© <?= date('Y') ?> Assistance</span>
       <span>Gestão técnica inteligente</span>
     </footer>
   </main>

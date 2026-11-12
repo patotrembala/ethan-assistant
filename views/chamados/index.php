@@ -1,10 +1,10 @@
 <?php
 /**
- * Ethan Assistant - Listagem de Chamados Online (RF12 / RN12)
+ * Assistance - Listagem de Chamados Online (RF12 / RN12)
  * @var array $chamados Lista de atendimentos online
  * @var array $tecnicos Lista de técnicos para filtros
  */
-$pageTitle = 'Chamados Online - Ethan Assistant';
+$pageTitle = 'Chamados Online - Assistance';
 $currentRoute = 'chamados';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['perfil' => 'tecnico']);

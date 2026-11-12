@@ -56,7 +56,7 @@ async function start(response) {
     code_challenge: createHash('sha256').update(verifier).digest('base64url'),
     ext_agent_host_id: hostId,
   }).toString();
-  if (clientId === 'dynamic_agent_client') authorization.searchParams.set('agent_name_hint', 'Ethan Assistant');
+  if (clientId === 'dynamic_agent_client') authorization.searchParams.set('agent_name_hint', 'Assistance');
 
   response.writeHead(302, { location: authorization.toString(), 'cache-control': 'no-store' });
   response.end();
@@ -190,5 +190,5 @@ function base64url(value) { return Buffer.from(value).toString('base64url'); }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]); }
 function page(response, status, title, message, action) {
   response.writeHead(status, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' });
-  response.end(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>body{margin:0;font-family:system-ui;background:#071525;color:#eef7ff;display:grid;place-items:center;min-height:100vh}.card{width:min(520px,calc(100% - 48px));padding:42px;border:1px solid #22425f;border-radius:24px;background:#0b2034;box-shadow:0 24px 70px #0007}h1{margin:0 0 12px;font-size:30px}p{color:#acc5d9;line-height:1.6}.button{display:inline-block;margin-top:18px;padding:13px 20px;border-radius:12px;background:#2f7df4;color:white;text-decoration:none;font-weight:700}.secondary{background:#173b5a}</style><body><main class="card"><div style="color:#59c9ff;font-weight:800;margin-bottom:18px">ETHAN ASSISTANT</div><h1>${escapeHtml(title)}</h1><p>${message}</p>${action}</main></body></html>`);
+  response.end(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title><style>body{margin:0;font-family:system-ui;background:#071525;color:#eef7ff;display:grid;place-items:center;min-height:100vh}.card{width:min(520px,calc(100% - 48px));padding:42px;border:1px solid #22425f;border-radius:24px;background:#0b2034;box-shadow:0 24px 70px #0007}h1{margin:0 0 12px;font-size:30px}p{color:#acc5d9;line-height:1.6}.button{display:inline-block;margin-top:18px;padding:13px 20px;border-radius:12px;background:#2f7df4;color:white;text-decoration:none;font-weight:700}.secondary{background:#173b5a}</style><body><main class="card"><div style="color:#59c9ff;font-weight:800;margin-bottom:18px">ASSISTANCE</div><h1>${escapeHtml(title)}</h1><p>${message}</p>${action}</main></body></html>`);
 }

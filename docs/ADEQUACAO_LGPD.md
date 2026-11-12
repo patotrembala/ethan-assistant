@@ -1,4 +1,4 @@
-# Avaliação de Adequação à LGPD — Ethan Assistant
+# Avaliação de Adequação à LGPD — Assistance
 
 **Versão:** 1.1  
 **Data da avaliação:** 8 de outubro de 2026  
@@ -8,7 +8,7 @@
 
 ## 1. Conclusão executiva
 
-O Ethan Assistant **ainda não pode ser declarado integralmente adequado à LGPD**.
+O Assistance **ainda não pode ser declarado integralmente adequado à LGPD**.
 
 O sistema já possui controles positivos, como autenticação, senhas armazenadas com hash, consultas preparadas, proteção CSRF em operações implementadas, conexão HTTPS na versão publicada e separação básica entre administrador e técnico. Porém, ainda existem lacunas relevantes de transparência, governança, atendimento aos titulares, retenção e eliminação, rastreabilidade, resposta a incidentes e segurança da hospedagem.
 
@@ -31,7 +31,7 @@ O campo de observações de uma ordem de serviço menciona a possibilidade de re
 
 ## 3. Agentes de tratamento e responsabilidades
 
-Antes da entrada em produção, a organização que utilizar o Ethan Assistant deve definir formalmente:
+Antes da entrada em produção, a organização que utilizar o Assistance deve definir formalmente:
 
 - **Controlador:** empresa ou profissional que decide por que e como os dados serão tratados.
 - **Operadores:** fornecedores que tratam dados em nome do controlador, inclusive hospedagem, banco de dados, e-mail, suporte e backup.

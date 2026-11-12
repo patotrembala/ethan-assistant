@@ -20,7 +20,7 @@ Na InfinityFree, crie o arquivo `config/ai.local.php` diretamente pelo gerenciad
 
 ## Opção 2 — uso autorizado do plano ChatGPT
 
-Para a demonstração escolar, o administrador pode autorizar sua própria conta pelo fluxo oficial **Entrar com ChatGPT**. Essa opção não reutiliza cookies, não pede a senha ao Ethan Assistant e não revela as credenciais aos técnicos.
+Para a demonstração escolar, o administrador pode autorizar sua própria conta pelo fluxo oficial **Entrar com ChatGPT**. Essa opção não reutiliza cookies, não pede a senha ao Assistance e não revela as credenciais aos técnicos.
 
 1. No computador do administrador, execute:
 
@@ -30,7 +30,7 @@ node scripts\chatgpt_oauth_node.mjs
 
 2. O navegador abrirá automaticamente; confirme a autorização na tela da OpenAI.
 3. O conector criará `config/chatgpt.oauth.local.json` fora do Git. O identificador de registro auxiliar também permanece privado.
-4. Em hospedagem remota, transfira esse arquivo por um canal privado para a pasta `config` e nunca o publique no repositório. Na conta atual da InfinityFree, o destino correto é `/ethanassistant.infinityfreeapp.com/htdocs/config` (não a pasta `/htdocs` genérica).
+4. Em hospedagem remota, transfira esse arquivo por um canal privado para a pasta `config` e nunca o publique no repositório. Na conta atual da InfinityFree, o destino correto é `/assistance.infinityfreeapp.com/htdocs/config` (não a pasta `/htdocs` genérica).
 
 O sistema renova o acesso automaticamente enquanto a autorização permanecer válida. Administradores e técnicos autenticados podem acessar o Ethan IA. O arquivo de autorização permanece somente no servidor e contém credenciais sensíveis: não deve ser aberto em capturas de tela, enviado em conversas nem copiado para computadores de terceiros.
 

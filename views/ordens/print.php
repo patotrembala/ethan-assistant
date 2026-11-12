@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Impressão da Ordem de Serviço (RF18)
+ * Assistance - Impressão da Ordem de Serviço (RF18)
  * @var array $ordem Dados completos da OS
  */
 $baseUrl = $baseUrl ?? '';
@@ -45,7 +45,7 @@ $baseUrl = $baseUrl ?? '';
 <div class="print-sheet print-page">
   <div class="print-header">
     <div>
-      <div class="print-title">Ethan Assistant — Assistência Técnica</div>
+      <div class="print-title">Assistance — Assistência Técnica</div>
       <div style="font-size: 9pt; color: #555555; margin-top: 4px;">Comprovante de Atendimento e Ordem de Serviço</div>
     </div>
     <div style="text-align: right;">

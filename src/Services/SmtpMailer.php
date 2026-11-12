@@ -20,7 +20,7 @@ final class SmtpMailer
         $username = trim((string)($this->config['username'] ?? ''));
         $password = (string)($this->config['password'] ?? '');
         $fromEmail = trim((string)($this->config['from_email'] ?? $username));
-        $fromName = $this->sanitizeHeader((string)($this->config['from_name'] ?? 'Ethan Assistant'));
+        $fromName = $this->sanitizeHeader((string)($this->config['from_name'] ?? 'Assistance'));
 
         if ($host === '' || $username === '' || $password === '' || !filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
             throw new RuntimeException('O envio de e-mail ainda não foi configurado.');
@@ -74,9 +74,9 @@ final class SmtpMailer
             $this->command($socket, 'DATA', [354]);
 
             $safeName = trim(preg_replace('/[\r\n]+/', ' ', $recipientName)) ?: 'usuário';
-            $subject = 'Redefinição de senha - Ethan Assistant';
+            $subject = 'Redefinição de senha - Assistance';
             $body = "Olá, {$safeName}!\n\n"
-                . "O administrador aprovou sua solicitação para redefinir a senha no Ethan Assistant.\n\n"
+                . "O administrador aprovou sua solicitação para redefinir a senha no Assistance.\n\n"
                 . "Abra o link abaixo. Ele é válido por 30 minutos e pode ser usado uma única vez:\n"
                 . $resetUrl . "\n\n"
                 . "Se você não fez esta solicitação, ignore este e-mail. Sua senha continuará a mesma.\n";
@@ -106,7 +106,7 @@ final class SmtpMailer
         $this->sendTextMessage(
             $recipientEmail,
             $recipientName,
-            'Código de acesso - Ethan Assistant',
+            'Código de acesso - Assistance',
             "Seu código de segurança é: {$code}\n\nEle expira em 10 minutos. Se você não tentou entrar, ignore esta mensagem e informe o administrador."
         );
     }
@@ -123,7 +123,7 @@ final class SmtpMailer
         $username = trim((string)($this->config['username'] ?? ''));
         $password = (string)($this->config['password'] ?? '');
         $fromEmail = trim((string)($this->config['from_email'] ?? $username));
-        $fromName = $this->sanitizeHeader((string)($this->config['from_name'] ?? 'Ethan Assistant'));
+        $fromName = $this->sanitizeHeader((string)($this->config['from_name'] ?? 'Assistance'));
 
         if ($host === '' || $username === '' || $password === '' || !filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
             throw new RuntimeException('O envio de e-mail ainda não foi configurado.');

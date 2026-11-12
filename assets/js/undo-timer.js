@@ -1,5 +1,5 @@
 /**
- * Ethan Assistant - Undo Timer Component (RF14 / RN08)
+ * Assistance - Undo Timer Component (RF14 / RN08)
  * Gerencia a espera de 3 minutos para exclusões solicitadas por técnicos.
  */
 document.addEventListener('DOMContentLoaded', () => {

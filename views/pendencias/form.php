@@ -1,12 +1,12 @@
 <?php
 /**
- * Ethan Assistant - Formulário de Pendência Interna (RF13 / RN12)
+ * Assistance - Formulário de Pendência Interna (RF13 / RN12)
  * @var array|null $pendencia Dados da pendência
  * @var array $usuarios Lista de responsáveis (técnicos e administradores)
  * @var array $errors Erros de validação
  */
 $isEdit = !empty($pendencia['id']);
-$pageTitle = ($isEdit ? 'Editar Pendência' : 'Nova Pendência Interna') . ' - Ethan Assistant';
+$pageTitle = ($isEdit ? 'Editar Pendência' : 'Nova Pendência Interna') . ' - Assistance';
 $currentRoute = 'pendencias';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);

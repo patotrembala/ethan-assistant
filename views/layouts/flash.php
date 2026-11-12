@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Flash Messages & Undo Notification (RF14 / RF20)
+ * Assistance - Flash Messages & Undo Notification (RF14 / RF20)
  * @var array $flash Mensagens flash da sessão: ['tipo' => 'success'|'danger'|'info', 'mensagem' => '...']
  * @var array $pendingDeletion Dados de exclusão pendente de técnico com janela de 3 minutos (RN08)
  */

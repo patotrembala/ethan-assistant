@@ -1,6 +1,6 @@
 <?php
 /**
- * Ethan Assistant - Formulário de Ordem de Serviço (RF05 / RF06 / RF07 / RF08 / RF10 / RN04 / RN06 / RN07)
+ * Assistance - Formulário de Ordem de Serviço (RF05 / RF06 / RF07 / RF08 / RF10 / RN04 / RN06 / RN07)
  * @var array|null $ordem Dados da OS (para edição)
  * @var array $clientes Lista de clientes cadastrados
  * @var array $tiposServico Lista de tipos de serviço configurados
@@ -8,7 +8,7 @@
  * @var array $errors Lista de erros de validação
  */
 $isEdit = !empty($ordem['id']);
-$pageTitle = ($isEdit ? 'Editar OS #' . (int)$ordem['id'] : 'Nova Ordem de Serviço') . ' - Ethan Assistant';
+$pageTitle = ($isEdit ? 'Editar OS #' . (int)$ordem['id'] : 'Nova Ordem de Serviço') . ' - Assistance';
 $currentRoute = 'ordens';
 $baseUrl = $baseUrl ?? '';
 $currentUser = $currentUser ?? ($_SESSION['user'] ?? ['id' => 1, 'nome' => 'Técnico', 'perfil' => 'tecnico']);

@@ -7,5 +7,5 @@ return [
     'username' => 'ethanassistant1@gmail.com',
     'password' => 'senha-de-aplicativo',
     'from_email' => 'ethanassistant1@gmail.com',
-    'from_name' => 'Ethan Assistant'
+    'from_name' => 'Assistance'
 ];

@@ -1,11 +1,11 @@
 <?php
 /**
- * Ethan Assistant - Formulário de Cliente (RF03 / RN01)
+ * Assistance - Formulário de Cliente (RF03 / RN01)
  * @var array|null $cliente Dados do cliente para edição (se houver)
  * @var array $errors Lista de erros de validação retornados pelo backend
  */
 $isEdit = !empty($cliente['id']);
-$pageTitle = ($isEdit ? 'Editar Cliente' : 'Novo Cliente') . ' - Ethan Assistant';
+$pageTitle = ($isEdit ? 'Editar Cliente' : 'Novo Cliente') . ' - Assistance';
 $currentRoute = 'clientes';
 $baseUrl = $baseUrl ?? '';
 $actionUrl = $isEdit ? "{$baseUrl}/clientes/{$cliente['id']}/atualizar" : "{$baseUrl}/clientes/salvar";

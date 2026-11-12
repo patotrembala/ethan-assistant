@@ -1,11 +1,11 @@
 # Configuração do e-mail do sistema
 
-O Ethan Assistant utiliza uma conta de e-mail exclusiva para enviar códigos de autenticação administrativa e links de redefinição de senha.
+O Assistance utiliza uma conta de e-mail exclusiva para enviar códigos de autenticação administrativa e links de redefinição de senha.
 
 ## Conta oficial
 
 - E-mail: `ethanassistant1@gmail.com`
-- Remetente exibido: `Ethan Assistant`
+- Remetente exibido: `Assistance`
 - Situação: a aplicação está preparada; falta cadastrar no servidor uma senha de aplicativo gerada nessa conta.
 - O e-mail pessoal não deve ser usado em novas instalações.
 
@@ -14,12 +14,12 @@ O Ethan Assistant utiliza uma conta de e-mail exclusiva para enviar códigos de 
 1. Acessar a conta oficial em um dispositivo e uma rede já reconhecidos pelo Google.
 2. Ativar a verificação em duas etapas.
 3. Abrir a página **Senhas de app** da Conta Google.
-4. Criar uma senha de aplicativo com o nome `Ethan Assistant`.
+4. Criar uma senha de aplicativo com o nome `Assistance`.
 5. Copiar `config/mail.example.php` para `config/mail.local.php` no servidor e preencher:
    - `username`: e-mail oficial;
    - `password`: senha de aplicativo de 16 caracteres;
    - `from_email`: e-mail oficial;
-   - `from_name`: `Ethan Assistant`.
+   - `from_name`: `Assistance`.
 6. Testar o envio por meio do fluxo **Esqueci minha senha**.
 7. Revogar a senha de aplicativo da conta antiga somente depois que o teste for concluído com sucesso.
 
@@ -35,7 +35,7 @@ return [
     'username' => 'ethanassistant1@gmail.com',
     'password' => 'COLE_A_SENHA_DE_APLICATIVO_DIRETAMENTE_NO_SERVIDOR',
     'from_email' => 'ethanassistant1@gmail.com',
-    'from_name' => 'Ethan Assistant'
+    'from_name' => 'Assistance'
 ];
 ```
 

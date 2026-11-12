@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Solicitações LGPD - Ethan Assistant';
+$pageTitle = 'Solicitações LGPD - Assistance';
 $currentRoute = 'solicitacoes-privacidade';
 $baseUrl = $baseUrl ?? '';
 require __DIR__ . '/../layouts/header.php';

@@ -1,4 +1,4 @@
-# Ethan Assistant
+# Assistance
 
 Sistema web em PHP e MySQL para organizar o fluxo de trabalho de técnicos de informática. O projeto possui autenticação, perfis de administrador e técnico, dashboard operacional e CRUD de clientes. As demais áreas estão estruturadas para a continuidade do desenvolvimento.
 
@@ -51,7 +51,7 @@ Os arquivos terminados em `.local.php` são privados e não são enviados ao Git
 Como alternativa à cobrança separada da API, a demonstração escolar aceita a autorização oficial da conta ChatGPT do administrador. Veja o procedimento e as limitações em [`docs/ETHAN_IA.md`](docs/ETHAN_IA.md). As credenciais ficam em `config/chatgpt.oauth.local.json`, nunca no Git ou no navegador. Administradores e técnicos autenticados podem usar o Ethan IA, sujeitos ao limite de uso configurado pelo sistema.
 
 Na hospedagem gratuita da InfinityFree, a função `mail()` não está disponível. Configure um SMTP externo. Para Gmail, ative a verificação em duas etapas e utilize uma senha de aplicativo; nunca coloque a senha normal da conta no arquivo.
-O remetente oficial do projeto é `Ethan Assistant <ethanassistant1@gmail.com>`; a senha de aplicativo deve existir apenas no `config/mail.local.php` de cada ambiente.
+O remetente oficial do projeto é `Assistance <ethanassistant1@gmail.com>`; a senha de aplicativo deve existir apenas no `config/mail.local.php` de cada ambiente.
 
 ## Criar o banco local
 
