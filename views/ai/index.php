@@ -1,6 +1,6 @@
 <?php
 $pageTitle = 'Conversa com Ethan - Assistance';
-$currentRoute = 'ethan-ia';
+$currentRoute = 'assistance-ia';
 $baseUrl = $baseUrl ?? '';
 $aiConfigured = $aiConfigured ?? false;
 $aiUsesChatGptPlan = $aiUsesChatGptPlan ?? false;
@@ -37,7 +37,7 @@ require __DIR__ . '/../layouts/sidebar.php';
           </div>
         </div>
 
-        <form method="POST" action="<?= $baseUrl ?>/ethan-ia/chat/limpar">
+        <form method="POST" action="<?= $baseUrl ?>/assistance-ia/chat/limpar">
           <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
           <button type="submit" class="btn btn-outline btn-sm ai-new-ticket">
             <span aria-hidden="true">＋</span> Novo chamado
@@ -88,7 +88,7 @@ require __DIR__ . '/../layouts/sidebar.php';
       </section>
 
       <footer class="ai-composer-wrap">
-        <form method="POST" action="<?= $baseUrl ?>/ethan-ia/perguntar" class="ai-composer" data-ai-chat-form>
+        <form method="POST" action="<?= $baseUrl ?>/assistance-ia/perguntar" class="ai-composer" data-ai-chat-form>
           <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
           <label for="pergunta" class="sr-only">Mensagem para o Ethan</label>
           <textarea id="pergunta" name="pergunta" maxlength="3000" required <?= !$aiConfigured ? 'disabled' : '' ?> placeholder="Descreva o problema, os sintomas e o que você já tentou..." rows="1"><?= htmlspecialchars($draftQuestion) ?></textarea>

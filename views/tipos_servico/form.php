@@ -33,6 +33,7 @@ require __DIR__ . '/../layouts/sidebar.php';
 
     <div class="card" style="max-width: 700px;">
       <form action="<?= $actionUrl ?>" method="POST" data-validate>
+        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
         <div class="card-body">
           <div class="form-group">
             <label for="nome" class="form-label required">Nome do Tipo de Serviço</label>

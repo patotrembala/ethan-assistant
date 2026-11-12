@@ -46,6 +46,12 @@ require_once __DIR__ . '/src/Services/EthanAiService.php';
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $baseUrl = '';
 
+if ($requestUri === '/ethan-ia' || str_starts_with($requestUri, '/ethan-ia/')) {
+    $legacySuffix = substr($requestUri, strlen('/ethan-ia'));
+    header('Location: /assistance-ia' . $legacySuffix, true, 307);
+    exit;
+}
+
 // Autenticação temporária da prévia publicada.
 // As credenciais reais ficam em auth.local.php, arquivo ignorado pelo Git.
 $authFile = __DIR__ . '/config/auth.local.php';
@@ -754,7 +760,7 @@ switch (true) {
         require __DIR__ . '/views/ordens/print.php';
         break;
 
-    case $requestUri === '/ethan-ia' && $_SERVER['REQUEST_METHOD'] === 'GET':
+    case $requestUri === '/assistance-ia' && $_SERVER['REQUEST_METHOD'] === 'GET':
         $aiConfigured = $ethanAiService->isConfigured();
         $chatHistory = (array)($_SESSION['ethan_ai_chat'] ?? []);
         $aiError = $_SESSION['ethan_ai_error'] ?? null;
@@ -763,7 +769,7 @@ switch (true) {
         require __DIR__ . '/views/ai/index.php';
         break;
 
-    case $requestUri === '/ethan-ia/analisar' && $_SERVER['REQUEST_METHOD'] === 'POST':
+    case $requestUri === '/assistance-ia/analisar' && $_SERVER['REQUEST_METHOD'] === 'POST':
         verifyCsrf();
         $activeTool = 'analise';
         $formData = ['descricao' => trim((string)($_POST['descricao'] ?? ''))];
@@ -782,7 +788,7 @@ switch (true) {
         require __DIR__ . '/views/ai/index.php';
         break;
 
-    case $requestUri === '/ethan-ia/relatorio' && $_SERVER['REQUEST_METHOD'] === 'POST':
+    case $requestUri === '/assistance-ia/relatorio' && $_SERVER['REQUEST_METHOD'] === 'POST':
         verifyCsrf();
         $activeTool = 'relatorio';
         $formData = [
@@ -805,7 +811,7 @@ switch (true) {
         require __DIR__ . '/views/ai/index.php';
         break;
 
-    case $requestUri === '/ethan-ia/perguntar' && $_SERVER['REQUEST_METHOD'] === 'POST':
+    case $requestUri === '/assistance-ia/perguntar' && $_SERVER['REQUEST_METHOD'] === 'POST':
         verifyCsrf();
         $activeTool = 'chat';
         $aiConfigured = $ethanAiService->isConfigured();
@@ -829,13 +835,13 @@ switch (true) {
             $_SESSION['ethan_ai_error'] = $aiError;
             $_SESSION['ethan_ai_draft'] = mb_substr($question, 0, 3000);
         }
-        header('Location: /ethan-ia');
+        header('Location: /assistance-ia');
         exit;
 
-    case $requestUri === '/ethan-ia/chat/limpar' && $_SERVER['REQUEST_METHOD'] === 'POST':
+    case $requestUri === '/assistance-ia/chat/limpar' && $_SERVER['REQUEST_METHOD'] === 'POST':
         verifyCsrf();
         unset($_SESSION['ethan_ai_chat']);
-        redirectWithFlash('/ethan-ia', 'success', 'Conversa com o Ethan limpa.');
+        redirectWithFlash('/assistance-ia', 'success', 'Conversa com o Ethan limpa.');
 
     case $requestUri === '/chamados':
         $chamados = $mockChamados;

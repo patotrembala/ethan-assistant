@@ -38,6 +38,7 @@ $baseUrl = $baseUrl ?? '';
     </div>
 
     <form action="<?= $baseUrl ?>/exclusoes/<?= urlencode($pendingDeletion['id'] ?? 0) ?>/desfazer" method="POST" style="margin: 0;">
+      <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
       <button type="submit" class="btn btn-undo btn-sm">
         Desfazer Exclusão
       </button>

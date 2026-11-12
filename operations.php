@@ -1,7 +1,7 @@
 <?php
 /** Operação persistente do Assistance; carregada somente pelo controlador autenticado. */
 if (!isset($pdo, $currentUser, $requestUri)) { http_response_code(404); exit; }
-if (!preg_match('#^/(dashboard|ordens|chamados|pendencias|tipos-servico|usuarios|dados-operacionais)(/|$)#', $requestUri) && $requestUri !== '/' && $requestUri !== '/assistance-ia/rascunho') return;
+if (!preg_match('#^/(dashboard|ordens|chamados|pendencias|tipos-servico|usuarios|dados-operacionais|exclusoes)(/|$)#', $requestUri) && $requestUri !== '/' && $requestUri !== '/assistance-ia/rascunho') return;
 date_default_timezone_set('America/Sao_Paulo');
 function opQuery(string $sql, array $params = []): array { global $pdo; $q = $pdo->prepare($sql); $q->execute($params); return $q->fetchAll(); }
 function opFail(int $status, string $message): never { http_response_code($status); echo '<h1>' . htmlspecialchars($message) . '</h1><p><a href="/dashboard">Voltar ao painel</a></p>'; exit; }
@@ -22,7 +22,11 @@ function opAccess(string $module, array $record, bool $write = false): void {
     if (in_array($module,['usuarios','tipos-servico'],true)) opFail(403,'Acesso restrito ao administrador.');
     $key=$module==='pendencias'?'responsavel_id':'tecnico_id';
     $owner=$record[$key]??null;
-    if ((int)$owner !== (int)$currentUser['id'] && !($module==='ordens' && $owner===null)) opFail(403,'Este atendimento pertence a outro responsável.');
+    if ($module==='ordens' && $owner===null) {
+      if ($write) opFail(403,'Assuma esta ordem de serviço antes de alterá-la.');
+      return;
+    }
+    if ((int)$owner !== (int)$currentUser['id']) opFail(403,'Este atendimento pertence a outro responsável.');
 }
 function opRows(string $module): array {
     global $isAdmin,$currentUser;
@@ -62,11 +66,14 @@ function opFilter(array $rows): array {
       return true;
     }));
 }
+function opBackupPath(): string {
+    return dirname(__DIR__).'/ethan-assistant-private/operational-backups/dados-'.date('Y-m-d').'.json';
+}
 function opBackup(): void {
     global $pdo;
-    $dir=__DIR__.'/storage/operational-backups';
+    $file=opBackupPath();
+    $dir=dirname($file);
     if(!is_dir($dir) && !@mkdir($dir,0700,true)) throw new RuntimeException('Não foi possível criar a pasta privada de backup.');
-    $file=$dir.'/dados-'.date('Y-m-d').'.json';
     if(is_file($file)){ $existing=json_decode((string)file_get_contents($file),true); if(!is_array($existing)||!isset($existing['tabelas']))throw new RuntimeException('A cópia diária existente precisa de revisão antes de salvar.'); return; }
     $pdo->beginTransaction();
     try {
@@ -80,6 +87,37 @@ function opBackup(): void {
       try { if(fwrite($handle,$json)!==strlen($json)) throw new RuntimeException('Backup incompleto.'); } finally { fclose($handle); }
       @chmod($file,0600);
     } catch(Throwable $e) { if($pdo->inTransaction())$pdo->rollBack(); throw $e; }
+}
+function opDeletionTarget(string $entity): ?array {
+    return match($entity) {
+      'ordem_servico' => ['table'=>'ordens_servico','module'=>'ordens','label'=>'Ordem de serviço'],
+      'chamado_online' => ['table'=>'chamados_online','module'=>'chamados','label'=>'Chamado online'],
+      'pendencia' => ['table'=>'pendencias','module'=>'pendencias','label'=>'Pendência'],
+      default => null,
+    };
+}
+function opProcessDueDeletions(): void {
+    global $pdo,$securityService;
+    $due=opQuery("SELECT id,entidade,registro_id,solicitado_por FROM exclusoes_pendentes WHERE executar_em<=NOW() AND cancelado_em IS NULL AND executado_em IS NULL ORDER BY id LIMIT 50");
+    foreach($due as $item){
+      $target=opDeletionTarget((string)$item['entidade']);
+      if(!$target)continue;
+      try{
+        $pdo->beginTransaction();
+        $lock=$pdo->prepare('SELECT id FROM exclusoes_pendentes WHERE id=? AND executar_em<=NOW() AND cancelado_em IS NULL AND executado_em IS NULL FOR UPDATE');
+        $lock->execute([(int)$item['id']]);
+        if(!$lock->fetchColumn()){$pdo->rollBack();continue;}
+        $delete=$pdo->prepare('DELETE FROM '.$target['table'].' WHERE id=?');
+        $delete->execute([(int)$item['registro_id']]);
+        $done=$pdo->prepare('UPDATE exclusoes_pendentes SET executado_em=NOW() WHERE id=?');
+        $done->execute([(int)$item['id']]);
+        $securityService->audit((int)$item['solicitado_por'],'excluir_agendado',(string)$item['entidade'],(int)$item['registro_id']);
+        $pdo->commit();
+      }catch(Throwable $exception){
+        if($pdo->inTransaction())$pdo->rollBack();
+        error_log('Exclusão agendada #'.$item['id'].': '.$exception->getMessage());
+      }
+    }
 }
 function opInput(string $module, ?array $old): array {
     global $isAdmin,$currentUser,$clienteRepository;
@@ -126,7 +164,30 @@ function opInput(string $module, ?array $old): array {
     }else $d['ativo']=((string)($_POST['ativo']??'')==='1')?1:0;
     return [$d,$errors];
 }
+opProcessDueDeletions();
+$pendingDeletion=null;
+if(!empty($_SESSION['pending_deletion']['id'])){
+    $pendingRows=opQuery('SELECT id,entidade,registro_id,executar_em FROM exclusoes_pendentes WHERE id=? AND solicitado_por=? AND cancelado_em IS NULL AND executado_em IS NULL LIMIT 1',[(int)$_SESSION['pending_deletion']['id'],(int)$currentUser['id']]);
+    if($pendingRows){
+      $pendingTarget=opDeletionTarget((string)$pendingRows[0]['entidade']);
+      $pendingDeletion=['id'=>(int)$pendingRows[0]['id'],'descricao'=>($pendingTarget['label']??'Registro').' #'.(int)$pendingRows[0]['registro_id'],'seconds_left'=>max(0,strtotime((string)$pendingRows[0]['executar_em'])-time())];
+      $_SESSION['pending_deletion']=$pendingDeletion;
+    }else unset($_SESSION['pending_deletion']);
+}
 $tecnicos=opQuery('SELECT id,nome,email,perfil,ativo FROM usuarios WHERE ativo=1 ORDER BY nome');
+if(preg_match('#^/exclusoes/(\d+)/desfazer$#',$requestUri,$undoMatch)){
+    if($_SERVER['REQUEST_METHOD']!=='POST')opFail(405,'Método não permitido.');
+    verifyCsrf();
+    $undoId=(int)$undoMatch[1];
+    $stmt=$pdo->prepare('UPDATE exclusoes_pendentes SET cancelado_em=NOW() WHERE id=? AND solicitado_por=? AND executar_em>NOW() AND cancelado_em IS NULL AND executado_em IS NULL');
+    $stmt->execute([$undoId,(int)$currentUser['id']]);
+    unset($_SESSION['pending_deletion']);
+    if($stmt->rowCount()===1){
+      $securityService->audit((int)$currentUser['id'],'desfazer_exclusao','exclusao_pendente',$undoId);
+      redirectWithFlash('/dashboard','success','Exclusão cancelada. O registro foi preservado.');
+    }
+    redirectWithFlash('/dashboard','danger','O prazo para desfazer terminou ou a exclusão já foi cancelada.');
+}
 if($requestUri==='/assistance-ia/rascunho'){
     if($_SERVER['REQUEST_METHOD']!=='POST')opFail(405,'Use o botão de gerar rascunho.');
     verifyCsrf(); $conversation=(array)($_SESSION['ethan_ai_chat']??[]); $problem=[];$suggestions=[];
@@ -139,7 +200,7 @@ if($requestUri==='/assistance-ia/rascunho'){
 if($requestUri==='/dados-operacionais/backup'){
     requireAdmin($isAdmin);if($_SERVER['REQUEST_METHOD']!=='POST')opFail(405,'Use o formulário de backup.');verifyCsrf();
     opBackup(); $securityService->audit((int)$currentUser['id'],'exportar_backup','operacao');
-    header('Content-Type: application/json; charset=utf-8');header('Content-Disposition: attachment; filename="assistance-dados-'.date('Y-m-d').'.json"');header('Cache-Control: no-store');readfile(__DIR__.'/storage/operational-backups/dados-'.date('Y-m-d').'.json');exit;
+    header('Content-Type: application/json; charset=utf-8');header('Content-Disposition: attachment; filename="assistance-dados-'.date('Y-m-d').'.json"');header('Cache-Control: no-store');readfile(opBackupPath());exit;
 }
 if($requestUri==='/' || $requestUri==='/dashboard'){
     $tecnicoFiltroId=$isAdmin?(string)($_GET['tecnico_id']??''):(string)$currentUser['id'];
@@ -183,12 +244,12 @@ if($requestUri==='/' || $requestUri==='/dashboard'){
 
     opView('dashboard/index',compact('metricas','tecnicos','atividadesRecentes','tecnicoFiltroId','graficoChamados'));
 }
-if(preg_match('#^/(ordens|chamados|pendencias|tipos-servico)(?:/(nova|novo|salvar|\d+)(?:/(editar|atualizar|assumir|reabrir|atualizar-status|concluir|imprimir))?)?$#',$requestUri,$match)){
+if(preg_match('#^/(ordens|chamados|pendencias|tipos-servico)(?:/(nova|novo|salvar|\d+)(?:/(editar|atualizar|assumir|reabrir|atualizar-status|concluir|imprimir|excluir))?)?$#',$requestUri,$match)){
     $module=$match[1];$segment=$match[2]??'';$action=$match[3]??'';$id=ctype_digit($segment)?(int)$segment:null;
     $folder=$module==='tipos-servico'?'tipos_servico':$module;
     $entity=match($module){'ordens'=>'ordem_servico','chamados'=>'chamado_online','pendencias'=>'pendencia',default=>'tipo_servico'};
     if($module==='tipos-servico')requireAdmin($isAdmin);
-    $old=$id?opRecord($module,$id):null;if($old)opAccess($module,$old);
+    $old=$id?opRecord($module,$id):null;if($old)opAccess($module,$old,$action==='editar');
     $tables=['ordens'=>'ordens_servico','chamados'=>'chamados_online','pendencias'=>'pendencias','tipos-servico'=>'tipos_servico'];
     $clients=$clienteRepository->all($currentUser);$types=opQuery('SELECT * FROM tipos_servico ORDER BY nome');
     $data=['clientes'=>$clients,'tiposServico'=>$types,'tecnicos'=>$tecnicos,'usuarios'=>$tecnicos,'errors'=>[]];
@@ -198,7 +259,28 @@ if(preg_match('#^/(ordens|chamados|pendencias|tipos-servico)(?:/(nova|novo|salva
       try {
         opBackup();$pdo->beginTransaction();
         if($id){$old=opRecord($module,$id,true);opAccess($module,$old,true);}
-        if($id && in_array($action,['assumir','reabrir','atualizar-status','concluir'],true)){
+        if($id && $action==='excluir'){
+          if(!$isAdmin){
+            $target=opDeletionTarget($entity);
+            if(!$target)throw new InvalidArgumentException('Este registro não pode ser excluído por um técnico.');
+            $existing=opQuery('SELECT id,executar_em FROM exclusoes_pendentes WHERE entidade=? AND registro_id=? AND cancelado_em IS NULL AND executado_em IS NULL ORDER BY id DESC LIMIT 1',[$entity,$id]);
+            if($existing){$deletionId=(int)$existing[0]['id'];$executeAt=(string)$existing[0]['executar_em'];}
+            else{
+              $queue=$pdo->prepare('INSERT INTO exclusoes_pendentes (entidade,registro_id,solicitado_por,executar_em) VALUES (?,?,?,DATE_ADD(NOW(),INTERVAL 3 MINUTE))');
+              $queue->execute([$entity,$id,(int)$currentUser['id']]);
+              $deletionId=(int)$pdo->lastInsertId();$executeAt=date('Y-m-d H:i:s',time()+180);
+            }
+            $securityService->audit((int)$currentUser['id'],'agendar_exclusao',$entity,$id,['exclusao_id'=>$deletionId]);
+            $pdo->commit();
+            $_SESSION['pending_deletion']=['id'=>$deletionId,'descricao'=>($target['label']??'Registro').' #'.$id,'seconds_left'=>max(0,strtotime($executeAt)-time())];
+            redirectWithFlash('/'.$module,'info','Exclusão agendada. Você tem 3 minutos para desfazer.');
+          }
+          $stmt=$pdo->prepare('DELETE FROM '.$tables[$module].' WHERE id=?');
+          $stmt->execute([$id]);
+          $securityService->audit((int)$currentUser['id'],'excluir',$entity,$id);
+          $pdo->commit();
+          redirectWithFlash('/'.$module,'success','Registro excluído com sucesso.');
+        }elseif($id && in_array($action,['assumir','reabrir','atualizar-status','concluir'],true)){
           if($action==='assumir'){
             if($module!=='ordens'||$old['tecnico_id']!==null)throw new InvalidArgumentException('Esta OS já tem responsável.');
             if(opClosed($old['status']))throw new InvalidArgumentException('Uma OS encerrada não pode ser assumida.');

@@ -44,6 +44,7 @@ require __DIR__ . '/../layouts/sidebar.php';
 
         <?php if (!$isConcluida): ?>
           <form action="<?= $baseUrl ?>/pendencias/<?= (int)$pendencia['id'] ?>/concluir" method="POST" style="margin: 0;">
+            <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <button type="submit" class="btn btn-primary">
               ✓ Marcar como Concluída
             </button>

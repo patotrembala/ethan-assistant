@@ -39,6 +39,7 @@ require __DIR__ . '/../layouts/sidebar.php';
 
     <div class="card" style="max-width: 900px;">
       <form action="<?= $actionUrl ?>" method="POST" data-validate>
+        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
         <div class="card-body">
           <div class="form-grid-2">
             <div class="form-group">

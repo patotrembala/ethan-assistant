@@ -18,5 +18,6 @@
 /deploy/
 *.log
 /storage/logs/*
+/storage/operational-backups/*
 .DS_Store
 Thumbs.db

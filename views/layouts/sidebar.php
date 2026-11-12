@@ -56,7 +56,7 @@ $baseUrl = $baseUrl ?? '';
         </a>
       </li>
       <li class="nav-item">
-        <a href="<?= $baseUrl ?>/ethan-ia" class="nav-link <?= $currentRoute === 'ethan-ia' ? 'active' : '' ?>">
+        <a href="<?= $baseUrl ?>/assistance-ia" class="nav-link <?= $currentRoute === 'assistance-ia' ? 'active' : '' ?>">
           <span class="icon icon-ai"><svg viewBox="0 0 24 24"><path d="m12 3 1.3 4.2L17.5 8.5l-4.2 1.3L12 14l-1.3-4.2-4.2-1.3 4.2-1.3z"/><path d="m18 14 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/></svg></span>
           <span class="nav-label">Ethan IA</span>
           <span class="nav-beta">IA</span>

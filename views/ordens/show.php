@@ -51,6 +51,7 @@ require __DIR__ . '/../layouts/sidebar.php';
 
         <?php if ($semTecnico && !$isAdmin): ?>
           <form action="<?= $baseUrl ?>/ordens/<?= (int)$ordem['id'] ?>/assumir" method="POST" style="margin: 0;">
+            <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <button type="submit" class="btn btn-primary">
               Assumir esta OS
             </button>
@@ -60,6 +61,7 @@ require __DIR__ . '/../layouts/sidebar.php';
         <?php if ($isConcluida): ?>
           <!-- Reabertura de OS (RF09 / RN05: permitido para admin e técnico) -->
           <form action="<?= $baseUrl ?>/ordens/<?= (int)$ordem['id'] ?>/reabrir" method="POST" style="margin: 0;">
+            <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <button type="submit" class="btn btn-secondary" onclick="return confirm('Deseja reabrir esta Ordem de Serviço?')">
               🔄 Reabrir OS
             </button>
@@ -148,6 +150,7 @@ require __DIR__ . '/../layouts/sidebar.php';
           </div>
           <div class="card-body">
             <form action="<?= $baseUrl ?>/ordens/<?= (int)$ordem['id'] ?>/atualizar-status" method="POST">
+              <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
               <div class="form-group">
                 <label for="novo_status" class="form-label">Atualizar Situação</label>
                 <select name="status" id="novo_status" class="form-select">

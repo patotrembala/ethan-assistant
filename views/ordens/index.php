@@ -131,6 +131,7 @@ require __DIR__ . '/../layouts/sidebar.php';
                     <span style="color: var(--color-slate-400); font-style: italic;">Disponível</span>
                     <?php if (!$isAdmin): ?>
                       <form action="<?= $baseUrl ?>/ordens/<?= (int)$os['id'] ?>/assumir" method="POST" style="display: inline; margin-left: 4px;">
+                        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken) ?>">
                         <button type="submit" class="btn btn-outline btn-sm" title="Assumir esta OS para atendimento">
                           Assumir
                         </button>
